@@ -165,10 +165,7 @@ module.exports = {
 
 		},
 		sortByTaskName:async (_,args)=>{
-			console.log(1234)
-			console.log(1234)
-			console.log(1234)
-			console.log(1234)
+			
 			const {_id,newItems}=args;
 			const listId = new ObjectId(_id);
 			const found=await Todolist.findOne({_id:listId});

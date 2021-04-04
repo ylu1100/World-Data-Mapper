@@ -141,13 +141,141 @@ const Homescreen = (props) => {
 		setActiveList(list)
 	};
 	
-	const sortListByDesc=()=>{
+	const sortListByAscendingDesc=()=>{
 		
 		let items=[]
 		items.push(...activeList.items)
 		for(let i=0;i<items.length-1;i++){
 			for(let j=0;j<items.length-i-1;j++){
 				if(items[j].description.localeCompare(items[j+1].description)>0){
+					let temp=items[j];
+					items[j]=items[j+1];
+					items[j+1]=temp;
+				}
+			}
+		}
+		let listID = activeList._id;
+		let transaction=new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
+		props.tps.addTransaction(transaction);
+		tpsRedo();
+	}
+	const sortListByDescendingDesc=()=>{
+		
+		let items=[]
+		items.push(...activeList.items)
+		for(let i=0;i<items.length-1;i++){
+			for(let j=0;j<items.length-i-1;j++){
+				if(items[j].description.localeCompare(items[j+1].description)<0){
+					let temp=items[j];
+					items[j]=items[j+1];
+					items[j+1]=temp;
+				}
+			}
+		}
+		let listID = activeList._id;
+		let transaction=new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
+		props.tps.addTransaction(transaction);
+		tpsRedo();
+	}
+	const sortListByDescendingDate=()=>{
+		
+		let items=[]
+		items.push(...activeList.items)
+		for(let i=0;i<items.length-1;i++){
+			for(let j=0;j<items.length-i-1;j++){
+				if(items[j].due_date<items[j+1].due_date){
+					let temp=items[j];
+					items[j]=items[j+1];
+					items[j+1]=temp;
+				}
+				
+			}
+		}
+		let listID = activeList._id;
+		let transaction=new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
+		props.tps.addTransaction(transaction);
+		tpsRedo();
+	}
+	const sortListByAscendingDate=()=>{
+		
+		let items=[]
+		items.push(...activeList.items)
+		for(let i=0;i<items.length-1;i++){
+			for(let j=0;j<items.length-i-1;j++){
+				if(items[j].due_date>items[j+1].due_date){
+					let temp=items[j];
+					items[j]=items[j+1];
+					items[j+1]=temp;
+				}
+				
+			}
+		}
+		let listID = activeList._id;
+		let transaction=new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
+		props.tps.addTransaction(transaction);
+		tpsRedo();
+	}
+	const sortListByComplete=()=>{
+		
+		let items=[]
+		items.push(...activeList.items)
+		for(let i=0;i<items.length-1;i++){
+			for(let j=0;j<items.length-i-1;j++){
+				if(!items[j].completed&&items[j+1].completed){
+					let temp=items[j];
+					items[j]=items[j+1];
+					items[j+1]=temp;
+				}
+				console.log(items[j].status)
+			}
+		}
+		let listID = activeList._id;
+		let transaction=new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
+		props.tps.addTransaction(transaction);
+		tpsRedo();
+	}
+	const sortListByIncomplete=()=>{
+		console.log(activeList.items)
+		let items=[]
+		items.push(...activeList.items)
+		for(let i=0;i<items.length-1;i++){
+			for(let j=0;j<items.length-i-1;j++){
+				if(items[j].completed&&!items[j+1].completed){
+					let temp=items[j];
+					items[j]=items[j+1];
+					items[j+1]=temp;
+				}
+				
+			}
+		}
+		let listID = activeList._id;
+		let transaction=new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
+		props.tps.addTransaction(transaction);
+		tpsRedo();
+	}
+	const sortListByAscendingAssignment=()=>{
+		let items=[]
+		items.push(...activeList.items)
+		for(let i=0;i<items.length-1;i++){
+			for(let j=0;j<items.length-i-1;j++){
+				if(items[j].assigned_to.localeCompare(items[j+1].assigned_to)>0){
+					let temp=items[j];
+					items[j]=items[j+1];
+					items[j+1]=temp;
+				}
+			}
+		}
+		let listID = activeList._id;
+		let transaction=new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
+		props.tps.addTransaction(transaction);
+		tpsRedo();
+	}
+	const sortListByDescendingAssignment=()=>{
+		let items=[]
+		items.push(...activeList.items)
+		for(let i=0;i<items.length-1;i++){
+			for(let j=0;j<items.length-i-1;j++){
+				if(items[j].assigned_to.localeCompare(items[j+1].assigned_to)<0){
 					let temp=items[j];
 					items[j]=items[j+1];
 					items[j+1]=temp;
@@ -240,7 +368,14 @@ const Homescreen = (props) => {
 					activeList ? 
 							<div className="container-secondary">
 								<MainContents
-									sortByTaskName={sortListByDesc}
+									sortByTaskName={sortListByAscendingDesc}
+									sortByDescTaskName={sortListByDescendingDesc}
+									sortListByDescendingDate={sortListByDescendingDate}
+									sortListByAscendingDate={sortListByAscendingDate}
+									sortListByIncomplete={sortListByIncomplete}
+									sortListByComplete={sortListByComplete}
+									sortListByDescendingAssignment={sortListByDescendingAssignment}
+									sortListByAscendingAssignment={sortListByAscendingAssignment}
 									addItem={addItem} deleteItem={deleteItem}
 									editItem={editItem} reorderItem={reorderItem}
 									setShowDelete={setShowDelete}

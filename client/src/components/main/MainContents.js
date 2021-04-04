@@ -6,7 +6,14 @@ const MainContents = (props) => {
     return (
         <div className='table ' >
             <TableHeader
+                sortByDescTaskName={props.sortByDescTaskName}
                 sortByTaskName={props.sortByTaskName}
+                sortListByDescendingDate={props.sortListByDescendingDate}
+                sortListByAscendingDate={props.sortListByAscendingDate}
+                sortListByIncomplete={props.sortListByIncomplete}
+				sortListByComplete={props.sortListByComplete}
+                sortListByDescendingAssignment={props.sortListByDescendingAssignment}
+				sortListByAscendingAssignment={props.sortListByAscendingAssignment}
                 disabled={!props.activeList._id} addItem={props.addItem}
                 setShowDelete={props.setShowDelete} setActiveList={props.setActiveList}
             />

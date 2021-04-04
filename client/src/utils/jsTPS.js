@@ -67,7 +67,12 @@ export class SortItemsByTaskName_Transaction extends jsTPS_Transaction{
     }
 
     async undoTransaction() {
-		const {data} = await this.updateFunction({ variables: { _id: this.listID,newItems:this.oldList}});
+        let temp=[]
+        for(let i=0;i<this.oldList.length;i++){
+            temp.push(this.oldList[i].id)
+        
+        }
+		const {data} = await this.updateFunction({ variables: { _id: this.listID,newItems:temp}});
 		return data;
 
     }
