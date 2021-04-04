@@ -22,12 +22,14 @@ module.exports = {
 			@param 	 {object} res - response object containing the current access/refresh tokens  
 			@returns {object} the user object or an object with an error message
 		**/
-		login: async (_, args, { res }) => {	
+		login: async (_, args, { res }) => {
+			
 			const { email, password } = args;
 
 			const user = await User.findOne({email: email});
+			
 			if(!user) return({});
-
+			
 			const valid = await bcrypt.compare(password, user.password);
 			if(!valid) return({});
 			// Set tokens if login info was valid
@@ -43,6 +45,7 @@ module.exports = {
 			@returns {object} the user object or an object with an error message
 		**/
 		register: async (_, args, { res }) => {
+		
 			const { email, password, firstName, lastName } = args;
 			const alreadyRegistered = await User.findOne({email: email});
 			if(alreadyRegistered) {
@@ -83,5 +86,6 @@ module.exports = {
 			res.clearCookie('access-token');
 			return true;
 		}
+		
 	}
 }

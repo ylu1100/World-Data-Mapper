@@ -14,7 +14,8 @@ import { WLayout, WLHeader, WLMain, WLSide } from 'wt-frontend';
 import { UpdateListField_Transaction, 
 	UpdateListItems_Transaction, 
 	ReorderItems_Transaction, 
-	EditItem_Transaction } 				from '../../utils/jsTPS';
+	EditItem_Transaction, 
+	SortItemsByTaskName_Transaction} 				from '../../utils/jsTPS';
 import WInput from 'wt-frontend/build/components/winput/WInput';
 
 
@@ -33,7 +34,7 @@ const Homescreen = (props) => {
 	const [DeleteTodoItem] 			= useMutation(mutations.DELETE_ITEM);
 	const [AddTodolist] 			= useMutation(mutations.ADD_TODOLIST);
 	const [AddTodoItem] 			= useMutation(mutations.ADD_ITEM);
-
+	const [SortByTaskName] 			= useMutation(mutations.SORT_BY_TASK);
 
 	const { loading, error, data, refetch } = useQuery(GET_DB_TODOS);
 	if(loading) { console.log(loading, 'loading'); }
@@ -139,7 +140,25 @@ const Homescreen = (props) => {
 		const { data } = await AddTodolist({ variables: { todolist: list }, refetchQueries: [{ query: GET_DB_TODOS }] });
 		setActiveList(list)
 	};
-
+	
+	const sortListByDesc=()=>{
+		
+		let items=[]
+		items.push(...activeList.items)
+		for(let i=0;i<items.length-1;i++){
+			for(let j=0;j<items.length-i-1;j++){
+				if(items[j].description.localeCompare(items[j+1].description)>0){
+					let temp=items[j];
+					items[j]=items[j+1];
+					items[j+1]=temp;
+				}
+			}
+		}
+		let listID = activeList._id;
+		let transaction=new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
+		props.tps.addTransaction(transaction);
+		tpsRedo();
+	}
 	const deleteList = async (_id) => {
 		DeleteTodolist({ variables: { _id: _id }, refetchQueries: [{ query: GET_DB_TODOS }] });
 		refetch();
@@ -221,6 +240,7 @@ const Homescreen = (props) => {
 					activeList ? 
 							<div className="container-secondary">
 								<MainContents
+									sortByTaskName={sortListByDesc}
 									addItem={addItem} deleteItem={deleteItem}
 									editItem={editItem} reorderItem={reorderItem}
 									setShowDelete={setShowDelete}

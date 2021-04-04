@@ -1,16 +1,17 @@
 import React from 'react';
-
+import {SORT_BY_TASK} from '../../cache/mutations';
 import { WButton, WRow, WCol } from 'wt-frontend';
-
+import { useMutation }    	from '@apollo/client';
 const TableHeader = (props) => {
 
     const buttonStyle = props.disabled ? ' table-header-button-disabled ' : 'table-header-button ';
     const clickDisabled = () => { };
-
+    
+    
     return (
         <WRow className="table-header">
             <WCol size="4">
-                <WButton className='table-header-section' wType="texted" >Task</WButton>
+                <WButton onClick={props.sortByTaskName} className='table-header-section' wType="texted" >Task</WButton>
             </WCol>
 
             <WCol size="3">

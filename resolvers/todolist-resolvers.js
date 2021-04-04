@@ -163,7 +163,32 @@ module.exports = {
 			listItems = found.items;
 			return (found.items);
 
+		},
+		sortByTaskName:async (_,args)=>{
+			console.log(1234)
+			console.log(1234)
+			console.log(1234)
+			console.log(1234)
+			const {_id,newItems}=args;
+			const listId = new ObjectId(_id);
+			const found=await Todolist.findOne({_id:listId});
+			console.log(newItems)
+			let newList=[]
+			for(let i=0;i<newItems.length;i++){
+				let items=found.items
+				for(let j=0;j<items.length;j++){
+					if(items[j].id==newItems[i]){
+						newList.push(items[j])
+					}
+				}
+			}
+			console.log(newList)
+			const updated=await Todolist.updateOne({_id:listId},{items:newList})
+			return "lol"
+			// const updated=await TodoList.updateOne({_id:listId},{items:newItems})
+			// if(updated) return (newItems);
+			// return (found.items);
 		}
-
+		
 	}
 }

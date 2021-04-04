@@ -17,6 +17,7 @@ const typeDefs = gql `
 		assigned_to: String!
 		completed:  Boolean!
 	}
+	
 	extend type Query {
 		getAllTodos: [Todolist]
 		getTodoById(_id: String!): Todolist 
@@ -29,6 +30,7 @@ const typeDefs = gql `
 		updateTodolistField(_id: String!, field: String!, value: String!): String
 		updateItemField(itemId: String!, _id: String!, field: String!, value: String!, flag: Int!): [Item]
 		reorderItems(itemId: String!, _id: String!, direction: Int!): [Item]
+		sortByTaskName(_id:String!,newItems:[Int!]):String
 	}
 	input FieldInput {
 		_id: String

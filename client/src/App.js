@@ -10,7 +10,7 @@ const App = () => {
     let transactionStack = new jsTPS();
 	
     const { loading, error, data, refetch } = useQuery(queries.GET_DB_USER);
-
+	
     if(error) { console.log(error); }
 	if(loading) { console.log(loading); }
 	if(data) { 
