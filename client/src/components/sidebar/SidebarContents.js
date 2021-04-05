@@ -6,6 +6,8 @@ const SidebarContents = (props) => {
     return (
         <>
             <SidebarHeader 
+                tps={props.tps}
+                activeid={props.activeid}
                 auth={props.auth} createNewList={props.createNewList} 
                 undo={props.undo} redo={props.redo} 
             />

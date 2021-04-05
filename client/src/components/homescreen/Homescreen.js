@@ -15,7 +15,8 @@ import { UpdateListField_Transaction,
 	UpdateListItems_Transaction, 
 	ReorderItems_Transaction, 
 	EditItem_Transaction, 
-	SortItemsByTaskName_Transaction} 				from '../../utils/jsTPS';
+	SortItemsByTaskName_Transaction,
+	jsTPS} 				from '../../utils/jsTPS';
 import WInput from 'wt-frontend/build/components/winput/WInput';
 
 
@@ -295,8 +296,10 @@ const Homescreen = (props) => {
 	}
 	const deleteList = async (_id) => {
 		DeleteTodolist({ variables: { _id: _id,userId:props.user._id }, refetchQueries: [{ query: GET_DB_TODOS }] });
-		refetch();
+		
 		setActiveList({});
+		
+		props.tps.clearAllTransactions()
 	};
 
 	const updateListField = async (_id, field, value, prev) => {
@@ -385,6 +388,7 @@ const Homescreen = (props) => {
 								handleSetActive={handleSetActive} createNewList={createNewList}
 								undo={tpsUndo} redo={tpsRedo}
 								updateListField={updateListField}
+								tps={props.tps}
 							/>
 							:
 							<></>
@@ -396,6 +400,7 @@ const Homescreen = (props) => {
 					activeList ? 
 							<div className="container-secondary">
 								<MainContents
+									undo={tpsUndo} redo={tpsRedo}
 									sortByTaskName={sortListByAscendingDesc}
 									sortByDescTaskName={sortListByDescendingDesc}
 									sortListByDescendingDate={sortListByDescendingDate}
@@ -407,6 +412,7 @@ const Homescreen = (props) => {
 									addItem={addItem} deleteItem={deleteItem}
 									editItem={editItem} reorderItem={reorderItem}
 									setShowDelete={setShowDelete}
+									tps={props.tps}
 									activeList={activeList} setActiveList={setActiveList}
 								/>
 							</div>

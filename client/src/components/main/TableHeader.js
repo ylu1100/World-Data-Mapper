@@ -45,7 +45,7 @@ const TableHeader = (props) => {
     }
     return (
         <WRow className="table-header">
-            <WCol size="3">
+            <WCol size="2">
                 {!sortedAscend?
                 <WButton onClick={sortAscendTask} className='table-header-section' wType="texted" >Task</WButton>
                 :
@@ -77,7 +77,30 @@ const TableHeader = (props) => {
                 <WButton onClick={sortListByDescendAssignment} className='table-header-section' wType="texted" >Assignment</WButton>
                 }   
             </WCol>    
-            <WCol size="3">
+            <WCol size="2">
+            <div className='button-group'>
+            {   
+                        props.tps.hasTransactionToUndo()?
+                        <WButton className="table-entry-buttons undo-redo" onClick={props.undo} wType="texted" clickAnimation="ripple-light" shape="rounded">
+                            <i className="material-icons">undo</i>
+                        </WButton>
+                        :
+                        <WButton className="table-entry-buttons undo-redo button-disable" onClick={props.undo} wType="texted" clickAnimation="ripple-light" shape="rounded">
+                            <i className="material-icons">undo</i>
+                        </WButton>
+                        }
+                        {props.tps.hasTransactionToRedo()?
+                        <WButton className="table-entry-buttons undo-redo" onClick={props.redo} wType="texted" clickAnimation="ripple-light" shape="rounded">
+                            <i className="material-icons">redo</i>
+                        </WButton>
+                        :
+                        <WButton className="table-entry-buttons undo-redo button-disable" onClick={props.redo} wType="texted" clickAnimation="ripple-light" shape="rounded">
+                            <i className="material-icons">redo</i>
+                        </WButton>
+                        }
+            </div>            
+            </WCol>
+            <WCol size="2">
                 <div className="table-header-buttons">
                     <WButton onClick={props.disabled ? clickDisabled : props.addItem} wType="texted" className={`${buttonStyle}`}>
                         <i className="material-icons">add_box</i>
@@ -85,7 +108,7 @@ const TableHeader = (props) => {
                     <WButton onClick={props.disabled ? clickDisabled : props.setShowDelete} wType="texted" className={`${buttonStyle}`}>
                         <i className="material-icons">delete_outline</i>
                     </WButton>
-                    <WButton onClick={props.disabled ? clickDisabled : () => props.setActiveList({})} wType="texted" className={`${buttonStyle}`}>
+                    <WButton onClick={props.disabled ? clickDisabled : () => {props.setActiveList({});props.tps.clearAllTransactions()}} wType="texted" className={`${buttonStyle}`}>
                         <i className="material-icons">close</i>
                     </WButton>
                 </div>

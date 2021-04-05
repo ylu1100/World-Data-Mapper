@@ -6,6 +6,8 @@ const MainContents = (props) => {
     return (
         <div className='table ' >
             <TableHeader
+                tps={props.tps}
+                undo={props.undo} redo={props.redo}
                 sortByDescTaskName={props.sortByDescTaskName}
                 sortByTaskName={props.sortByTaskName}
                 sortListByDescendingDate={props.sortListByDescendingDate}
