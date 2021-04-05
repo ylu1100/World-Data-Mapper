@@ -81,8 +81,8 @@ export const ADD_TODOLIST = gql`
 `;
 
 export const DELETE_TODOLIST = gql`
-	mutation DeleteTodolist($_id: String!) {
-		deleteTodolist(_id: $_id)
+	mutation DeleteTodolist($_id: String!,$userId:String!) {
+		deleteTodolist(_id: $_id,userId:$userId)
 	}
 `;
 
@@ -101,3 +101,8 @@ export const SORT_BY_TASK = gql`
 		sortByTaskName(_id:$_id,newItems:$newItems)
 	}
 `;
+export const SELECT_LIST_FIRST=gql`
+	mutation SelectedListFirst($ownerId:String!,$listIds:[Int!]){
+		selectedListFirst(ownerId:$ownerId,listIds:$listIds)
+	}
+	`;

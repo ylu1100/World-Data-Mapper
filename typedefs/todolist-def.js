@@ -26,11 +26,12 @@ const typeDefs = gql `
 		addItem(item: ItemInput!, _id: String!): String
 		addTodolist(todolist: TodoInput!): String
 		deleteItem(itemId: String!, _id: String!): [Item]		
-		deleteTodolist(_id: String!): Boolean
+		deleteTodolist(_id: String!,userId:String!): Boolean
 		updateTodolistField(_id: String!, field: String!, value: String!): String
 		updateItemField(itemId: String!, _id: String!, field: String!, value: String!, flag: Int!): [Item]
 		reorderItems(itemId: String!, _id: String!, direction: Int!): [Item]
 		sortByTaskName(_id:String!,newItems:[Int!]):String
+		selectedListFirst(ownerId:String!,listIds:[Int!]):[Int!]
 	}
 	input FieldInput {
 		_id: String

@@ -192,3 +192,7 @@ html, body {
 .table-entry-buttons {
     color: $text-color;
 }
+.button-disable{
+    pointer-events:none;
+    color:darkslategray
+}

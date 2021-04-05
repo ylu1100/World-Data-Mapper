@@ -25,7 +25,10 @@ const userSchema = new Schema(
 		password: {
 			type: String,
 			required: true
-		}
+		},
+		todolists:{
+			type:Array
+		},
 	},
 	{ timestamps: true }
 );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } 	from 'react';
+import React, { useState, useEffect,Component } 	from 'react';
 import Logo 							from '../navbar/Logo';
 import NavbarOptions 					from '../navbar/NavbarOptions';
 import MainContents 					from '../main/MainContents';
@@ -20,12 +20,14 @@ import WInput from 'wt-frontend/build/components/winput/WInput';
 
 
 const Homescreen = (props) => {
-
+	
 	let todolists 							= [];
+	const [todolistlist,setTodolists] = useState([])
 	const [activeList, setActiveList] 		= useState({});
 	const [showDelete, toggleShowDelete] 	= useState(false);
 	const [showLogin, toggleShowLogin] 		= useState(false);
 	const [showCreate, toggleShowCreate] 	= useState(false);
+	
 
 	const [ReorderTodoItems] 		= useMutation(mutations.REORDER_ITEMS);
 	const [UpdateTodoItemField] 	= useMutation(mutations.UPDATE_ITEM_FIELD);
@@ -35,23 +37,27 @@ const Homescreen = (props) => {
 	const [AddTodolist] 			= useMutation(mutations.ADD_TODOLIST);
 	const [AddTodoItem] 			= useMutation(mutations.ADD_ITEM);
 	const [SortByTaskName] 			= useMutation(mutations.SORT_BY_TASK);
+	const [SelectedListFirst]		= useMutation(mutations.SELECT_LIST_FIRST)
 
 	const { loading, error, data, refetch } = useQuery(GET_DB_TODOS);
+	console.log(refetch)
 	if(loading) { console.log(loading, 'loading'); }
 	if(error) { console.log(error, 'error'); }
 	if(data) { todolists = data.getAllTodos; }
-
+	//if(data) { setTodolists(data.getAllTodos); }
 	const auth = props.user === null ? false : true;
 
 	const refetchTodos = async (refetch) => {
 		const { loading, error, data } = await refetch();
 		if (data) {
 			todolists = data.getAllTodos;
+			
 			if (activeList._id) {
 				let tempID = activeList._id;
 				let list = todolists.find(list => list._id === tempID);
 				setActiveList(list);
 			}
+			
 		}
 	}
 
@@ -226,7 +232,7 @@ const Homescreen = (props) => {
 					items[j]=items[j+1];
 					items[j+1]=temp;
 				}
-				console.log(items[j].status)
+				
 			}
 		}
 		let listID = activeList._id;
@@ -235,7 +241,7 @@ const Homescreen = (props) => {
 		tpsRedo();
 	}
 	const sortListByIncomplete=()=>{
-		console.log(activeList.items)
+		
 		let items=[]
 		items.push(...activeList.items)
 		for(let i=0;i<items.length-1;i++){
@@ -288,7 +294,7 @@ const Homescreen = (props) => {
 		tpsRedo();
 	}
 	const deleteList = async (_id) => {
-		DeleteTodolist({ variables: { _id: _id }, refetchQueries: [{ query: GET_DB_TODOS }] });
+		DeleteTodolist({ variables: { _id: _id,userId:props.user._id }, refetchQueries: [{ query: GET_DB_TODOS }] });
 		refetch();
 		setActiveList({});
 	};
@@ -300,12 +306,32 @@ const Homescreen = (props) => {
 
 	};
 
-	const handleSetActive = (id) => {
+	const handleSetActive = async (id) => {
 		const todo = todolists.find(todo => todo.id === id || todo._id === id);
+		
+		
+		let temp=[]
+		temp.push(...todolists)
+		let index=todolists.indexOf(todo)
+		let temp2=[]
+		temp2.push(temp[index])
+		temp.splice(index,1)
+		temp2.push(...temp)
+		//temp2= new list of todolists
+		let listids=[]
+		for(let i=0;i<temp2.length;i++){
+			listids.push(temp2[i].id)
+		}
+		const {data} = await SelectedListFirst({
+			variables:{ownerId:props.user._id,listIds:listids}})
+			
+		
 		setActiveList(todo);
+		refetch()
+		
 	};
 
-	
+
 	/*
 		Since we only have 3 modals, this sort of hardcoding isnt an issue, if there
 		were more it would probably make sense to make a general modal component, and
@@ -328,8 +354,9 @@ const Homescreen = (props) => {
 		toggleShowLogin(false);
 		toggleShowDelete(!showDelete)
 	}
-
+	
 	return (
+		
 		<WLayout wLayout="header-lside">
 			<WLHeader>
 				<WNavbar color="colored">
@@ -353,6 +380,7 @@ const Homescreen = (props) => {
 					{
 						activeList ?
 							<SidebarContents
+								activeList={activeList}
 								todolists={todolists} activeid={activeList.id} auth={auth}
 								handleSetActive={handleSetActive} createNewList={createNewList}
 								undo={tpsUndo} redo={tpsRedo}

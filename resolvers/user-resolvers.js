@@ -66,7 +66,8 @@ module.exports = {
 				lastName: lastName,
 				email: email, 
 				password: hashed,
-				initials: `${firstName[0]}.${lastName[0]}.`
+				initials: `${firstName[0]}.${lastName[0]}.`,
+				todolists:[]
 			})
 			const saved = await user.save();
 			// After registering the user, their tokens are generated here so they

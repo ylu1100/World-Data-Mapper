@@ -1,6 +1,6 @@
 const ObjectId = require('mongoose').Types.ObjectId;
 const Todolist = require('../models/todolist-model');
-
+const User=require('../models/user-model')
 // The underscore param, "_", is a wildcard that can represent any value;
 // here it is a stand-in for the parent parameter, which can be read about in
 // the Apollo Server documentation regarding resolvers
@@ -15,7 +15,15 @@ module.exports = {
 			const _id = new ObjectId(req.userId);
 			if(!_id) { return([])};
 			const todolists = await Todolist.find({owner: _id});
-			if(todolists) return (todolists);
+			const listIds=await User.findOne({_id:_id})
+			let todolistIds=listIds.todolists
+			let todolistordered=[]
+			for(let i=0;i<todolistIds.length;i++){
+				const todolist= await Todolist.findOne({owner:_id,id:todolistIds[i]})
+				todolistordered.push(todolist)
+			}
+			console.log(todolistordered)
+			if(todolists) return (todolistordered);
 
 		},
 		/** 
@@ -65,6 +73,14 @@ module.exports = {
 				owner: owner,
 				items: items
 			});
+			const user=await User.findOne({_id:owner})
+			let currList=[]
+			
+			currList.push(...user.todolists)
+			currList.push(id)
+			await User.updateOne({_id:owner},{todolists:currList})
+			//console.log(user)
+			//console.log(currList)
 			const updated = newList.save();
 			if(updated) return objectId;
 			else return ('Could not add todolist');
@@ -90,9 +106,20 @@ module.exports = {
 			@returns {boolean} true on successful delete, false on failure
 		**/
 		deleteTodolist: async (_, args) => {
-			const { _id } = args;
+			const { _id ,userId} = args;
 			const objectId = new ObjectId(_id);
+			const deletedTodolist=await Todolist.findOne({_id: objectId});
 			const deleted = await Todolist.deleteOne({_id: objectId});
+			//console.log(deletedTodolist.id)
+			//console.log(userId)
+			let todolistsId=await User.findOne({_id:userId})
+			
+			//console.log(todolistsId.todolists)
+			let newtodolists=[]
+			newtodolists.push(...todolistsId.todolists)
+			newtodolists.splice(newtodolists.indexOf(deletedTodolist.id),1)
+			console.log(newtodolists)
+			await User.updateOne({_id:userId},{todolists:newtodolists})
 			if(deleted) return true;
 			else return false;
 		},
@@ -185,6 +212,29 @@ module.exports = {
 			// const updated=await TodoList.updateOne({_id:listId},{items:newItems})
 			// if(updated) return (newItems);
 			// return (found.items);
+		},
+		selectedListFirst:async(_,args)=>{
+			const {ownerId,listIds}=args
+			const user = await User.findOne({_id: ownerId});
+			//console.log(user)
+			let todolists=[]
+			todolists.push(...user.todolists)
+			// console.log(todolists)
+			// console.log(listIds)
+			// console.log(123)
+			let newtodolists=[];
+			for(let i=0;i<listIds.length;i++){
+				let todolist=listIds[i]
+				for(let j=0;j<todolists.length;j++){
+					if(todolist==todolists[j]){
+						newtodolists.push(todolists[j])
+						break;
+					}
+				}
+			}
+			const updated= await User.updateOne({_id: ownerId},{todolists:newtodolists})
+		
+			return newtodolists
 		}
 		
 	}
