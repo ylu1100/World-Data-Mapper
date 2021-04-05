@@ -85,7 +85,7 @@ module.exports = {
 			await User.updateOne({_id:owner},{todolists:currList})
 			//console.log(user)
 			//console.log(currList)
-			const updated = newList.save();
+			const updated = await newList.save();
 			if(updated) return objectId;
 			else return ('Could not add todolist');
 		},
@@ -96,6 +96,7 @@ module.exports = {
 		**/
 		deleteItem: async (_, args) => {
 			const  { itemId, _id } = args;
+			console.log(_id)
 			const listId = new ObjectId(_id);
 			const found = await Todolist.findOne({_id: listId});
 			let listItems = found.items;

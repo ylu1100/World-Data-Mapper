@@ -10,7 +10,7 @@ const TableContents = (props) => {
                 entries.map((entry, index) => (
                     <TableEntry
                         size={entries.length}
-                        
+                        activeList={props.activeList}
                         index={index}
                         data={entry} key={entry.id}
                         deleteItem={props.deleteItem} reorderItem={props.reorderItem}

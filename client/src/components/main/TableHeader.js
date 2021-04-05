@@ -7,23 +7,75 @@ const TableHeader = (props) => {
     const buttonStyle = props.disabled ? ' table-header-button-disabled ' : 'table-header-button ';
     const clickDisabled = () => { };
     
+    
+
     const[sortedAscend,setSortedAscend]=useState(false)
     const[sortedDate,setSortedDate]=useState(false)
     const[sortedComplete,setSortedComplete]=useState(false)
     const[sortedAssignment,setSortedAssignment]=useState(false)
-    const sortAscendTask=()=>{
-        props.sortByTaskName()
-        setSortedAscend(true)
+    const checkForSortedTask=()=>{
+        if(!props.activeList.items){
+            
+            return false
+        }
+        let items=props.activeList.items;
+        for(let i=0;i<items.length-1;i++){
+            if(items[i].description.localeCompare(items[i+1].description)>0){
+                
+                return false
+            }
+        }
+        
+        return true
     }
+    const checkForSortedDate=()=>{
+        if(!props.activeList.items){
+            return false
+        }
+        let items=props.activeList.items;
+        for(let i=0;i<items.length-1;i++){
+            if(items[i].due_date>items[i+1].due_date){
+                return false
+            }
+        }
+        return true
+    }
+    const checkForSortedAssignment=()=>{
+        if(!props.activeList.items){
+            return false
+        }
+        let items=props.activeList.items;
+        for(let i=0;i<items.length-1;i++){
+            if(items[i].assigned_to.localeCompare(items[i+1].assigned_to)>0){
+                return false
+            }
+        }
+        return true
+    }
+    
     const sortDescendTask=()=>{
         props.sortByDescTaskName()
         setSortedAscend(false)
+    }
+    const sortAscendTask=()=>{
+       
+        if(checkForSortedTask()){
+            sortDescendTask()
+            
+            return "lol"
+        }
+        props.sortByTaskName()
+        setSortedAscend(true)
     }
     const sortDescendDate=()=>{
         props.sortListByDescendingDate()
         setSortedDate(false)
     }
     const sortAscendDate=()=>{
+        if(checkForSortedDate()){
+            sortDescendDate()
+            return
+        }
         props.sortListByAscendingDate()
         setSortedDate(true)
     }
@@ -35,18 +87,30 @@ const TableHeader = (props) => {
         props.sortListByComplete()
         setSortedComplete(true)
     }
-    const sortListByAscendAssignment=()=>{
-        props.sortListByAscendingAssignment()
-        setSortedAssignment(true)
-    }
+   
     const sortListByDescendAssignment=()=>{
         props.sortListByDescendingAssignment()
         setSortedAssignment(false)
     }
+    const sortListByAscendAssignment=()=>{
+        if(checkForSortedAssignment()){
+            sortListByDescendAssignment()
+            return
+        }
+        props.sortListByAscendingAssignment()
+        setSortedAssignment(true)
+    }
     return (
+       
         <WRow className="table-header">
-            <WCol size="2">
-                {!sortedAscend?
+             <WCol size="2">
+
+                {
+                !props.activeList.items?
+                <WButton  className='table-header-section button-disable' wType="texted" >Task</WButton>
+                :
+
+                !sortedAscend?
                 <WButton onClick={sortAscendTask} className='table-header-section' wType="texted" >Task</WButton>
                 :
                 <WButton onClick={sortDescendTask} className='table-header-section' wType="texted" >Task</WButton>
@@ -55,7 +119,12 @@ const TableHeader = (props) => {
             </WCol>
 
             <WCol size="2">
-                {!sortedDate?
+            
+                {
+                    !props.activeList.items?
+                <WButton  className='table-header-section button-disable' wType="texted" >Due Date</WButton>
+                :
+                    !sortedDate?
                 <WButton onClick={sortAscendDate} className='table-header-section' wType="texted">Due Date</WButton>
                 :
                 <WButton onClick={sortDescendDate} className='table-header-section' wType="texted">Due Date</WButton>
@@ -64,14 +133,22 @@ const TableHeader = (props) => {
             </WCol>
 
             <WCol size="2">
-                {!sortedComplete?
+                {
+                    !props.activeList.items?
+                <WButton  className='table-header-section button-disable' wType="texted" >Status</WButton>
+                :
+                    !sortedComplete?
                 <WButton onClick={sortListByComplete} className='table-header-section' wType="texted" >Status</WButton>
                  :
                 <WButton onClick={sortListByIncomplete} className='table-header-section' wType="texted" >Status</WButton>
                 }   
             </WCol>
             <WCol size="2">
-                {!sortedAssignment?
+                {
+                    !props.activeList.items?
+                <WButton  className='table-header-section button-disable' wType="texted" >Assignment</WButton>
+                :
+                    !sortedAssignment?
                 <WButton onClick={sortListByAscendAssignment} className='table-header-section' wType="texted" >Assignment</WButton>
                  :
                 <WButton onClick={sortListByDescendAssignment} className='table-header-section' wType="texted" >Assignment</WButton>

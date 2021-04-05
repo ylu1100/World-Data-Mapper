@@ -152,7 +152,9 @@ const Homescreen = (props) => {
 		
 		const { data } = await AddTodolist({ variables: { todolist: list }, refetchQueries: [{ query: GET_DB_TODOS }] });
 		props.tps.clearAllTransactions()
-		setActiveList(list)
+		await new Promise(r => setTimeout(r, 250));
+		
+		//setActiveList(list)
 	};
 	
 	const sortListByAscendingDesc=async()=>{

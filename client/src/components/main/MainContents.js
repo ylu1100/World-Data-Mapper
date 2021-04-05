@@ -3,11 +3,14 @@ import TableHeader      from './TableHeader';
 import TableContents    from './TableContents';
 
 const MainContents = (props) => {
+    
     return (
         <div className='table ' >
             <TableHeader
+                
                 addingItem={props.addingItem}
                 tps={props.tps}
+                activeList={props.activeList}
                 undo={props.undo} redo={props.redo}
                 sortByDescTaskName={props.sortByDescTaskName}
                 sortByTaskName={props.sortByTaskName}
