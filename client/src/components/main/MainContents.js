@@ -6,6 +6,7 @@ const MainContents = (props) => {
     return (
         <div className='table ' >
             <TableHeader
+                addingItem={props.addingItem}
                 tps={props.tps}
                 undo={props.undo} redo={props.redo}
                 sortByDescTaskName={props.sortByDescTaskName}

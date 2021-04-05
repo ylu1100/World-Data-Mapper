@@ -28,7 +28,7 @@ const Homescreen = (props) => {
 	const [showDelete, toggleShowDelete] 	= useState(false);
 	const [showLogin, toggleShowLogin] 		= useState(false);
 	const [showCreate, toggleShowCreate] 	= useState(false);
-	
+	const [addingItem,setAddingItem] =useState(false)
 
 	const [ReorderTodoItems] 		= useMutation(mutations.REORDER_ITEMS);
 	const [UpdateTodoItemField] 	= useMutation(mutations.UPDATE_ITEM_FIELD);
@@ -78,7 +78,8 @@ const Homescreen = (props) => {
 	// Creates a default item and passes it to the backend resolver.
 	// The return id is assigned to the item, and the item is appended
 	//  to the local cache copy of the active todolist. 
-	const addItem = async () => {
+	const addItem = async() => {
+		setAddingItem(true)
 		let list = activeList;
 		const items = list.items;
 		const lastID = items.length >= 1 ? items[items.length - 1].id + 1 : 0;
@@ -93,9 +94,13 @@ const Homescreen = (props) => {
 		let opcode = 1;
 		let itemID = newItem._id;
 		let listID = activeList._id;
-		let transaction = new UpdateListItems_Transaction(listID, itemID, newItem, opcode, AddTodoItem, DeleteTodoItem);
+		let transaction =  await new UpdateListItems_Transaction(listID, itemID, newItem, opcode, AddTodoItem, DeleteTodoItem);
+		
 		props.tps.addTransaction(transaction);
+		
 		tpsRedo();
+		await new Promise(r => setTimeout(r, 250));
+		setAddingItem(false)
 	};
 
 
@@ -111,7 +116,7 @@ const Homescreen = (props) => {
 			assigned_to: item.assigned_to,
 			completed: item.completed
 		}
-		let transaction = new UpdateListItems_Transaction(listID, itemID, itemToDelete, opcode, AddTodoItem, DeleteTodoItem);
+		let transaction = await new UpdateListItems_Transaction(listID, itemID, itemToDelete, opcode, AddTodoItem, DeleteTodoItem);
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 	};
@@ -120,7 +125,7 @@ const Homescreen = (props) => {
 		let flag = 0;
 		if (field === 'completed') flag = 1;
 		let listID = activeList._id;
-		let transaction = new EditItem_Transaction(listID, itemID, field, prev, value, flag, UpdateTodoItemField);
+		let transaction = await new EditItem_Transaction(listID, itemID, field, prev, value, flag, UpdateTodoItemField);
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 
@@ -128,7 +133,7 @@ const Homescreen = (props) => {
 
 	const reorderItem = async (itemID, dir) => {
 		let listID = activeList._id;
-		let transaction = new ReorderItems_Transaction(listID, itemID, dir, ReorderTodoItems);
+		let transaction = await new ReorderItems_Transaction(listID, itemID, dir, ReorderTodoItems);
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 
@@ -144,11 +149,12 @@ const Homescreen = (props) => {
 			owner: props.user._id,
 			items: [],
 		}
+		
 		const { data } = await AddTodolist({ variables: { todolist: list }, refetchQueries: [{ query: GET_DB_TODOS }] });
 		setActiveList(list)
 	};
 	
-	const sortListByAscendingDesc=()=>{
+	const sortListByAscendingDesc=async()=>{
 		
 		let items=[]
 		items.push(...activeList.items)
@@ -162,11 +168,11 @@ const Homescreen = (props) => {
 			}
 		}
 		let listID = activeList._id;
-		let transaction=new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
+		let transaction=await new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 	}
-	const sortListByDescendingDesc=()=>{
+	const sortListByDescendingDesc=async()=>{
 		
 		let items=[]
 		items.push(...activeList.items)
@@ -180,11 +186,11 @@ const Homescreen = (props) => {
 			}
 		}
 		let listID = activeList._id;
-		let transaction=new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
+		let transaction=await new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 	}
-	const sortListByDescendingDate=()=>{
+	const sortListByDescendingDate=async()=>{
 		
 		let items=[]
 		items.push(...activeList.items)
@@ -199,11 +205,11 @@ const Homescreen = (props) => {
 			}
 		}
 		let listID = activeList._id;
-		let transaction=new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
+		let transaction=await new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 	}
-	const sortListByAscendingDate=()=>{
+	const sortListByAscendingDate=async()=>{
 		
 		let items=[]
 		items.push(...activeList.items)
@@ -218,11 +224,11 @@ const Homescreen = (props) => {
 			}
 		}
 		let listID = activeList._id;
-		let transaction=new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
+		let transaction=await new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 	}
-	const sortListByComplete=()=>{
+	const sortListByComplete=async()=>{
 		
 		let items=[]
 		items.push(...activeList.items)
@@ -237,11 +243,11 @@ const Homescreen = (props) => {
 			}
 		}
 		let listID = activeList._id;
-		let transaction=new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
+		let transaction=await new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 	}
-	const sortListByIncomplete=()=>{
+	const sortListByIncomplete=async()=>{
 		
 		let items=[]
 		items.push(...activeList.items)
@@ -256,11 +262,11 @@ const Homescreen = (props) => {
 			}
 		}
 		let listID = activeList._id;
-		let transaction=new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
+		let transaction=await new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 	}
-	const sortListByAscendingAssignment=()=>{
+	const sortListByAscendingAssignment=async()=>{
 		let items=[]
 		items.push(...activeList.items)
 		for(let i=0;i<items.length-1;i++){
@@ -273,11 +279,11 @@ const Homescreen = (props) => {
 			}
 		}
 		let listID = activeList._id;
-		let transaction=new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
+		let transaction=await new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 	}
-	const sortListByDescendingAssignment=()=>{
+	const sortListByDescendingAssignment=async ()=>{
 		let items=[]
 		items.push(...activeList.items)
 		for(let i=0;i<items.length-1;i++){
@@ -290,7 +296,7 @@ const Homescreen = (props) => {
 			}
 		}
 		let listID = activeList._id;
-		let transaction=new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
+		let transaction=await new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 	}
@@ -303,7 +309,7 @@ const Homescreen = (props) => {
 	};
 
 	const updateListField = async (_id, field, value, prev) => {
-		let transaction = new UpdateListField_Transaction(_id, field, prev, value, UpdateTodolistField);
+		let transaction =await  new UpdateListField_Transaction(_id, field, prev, value, UpdateTodolistField);
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 
@@ -400,6 +406,7 @@ const Homescreen = (props) => {
 					activeList ? 
 							<div className="container-secondary">
 								<MainContents
+									addingItem={addingItem}
 									undo={tpsUndo} redo={tpsRedo}
 									sortByTaskName={sortListByAscendingDesc}
 									sortByDescTaskName={sortListByDescendingDesc}
@@ -421,17 +428,22 @@ const Homescreen = (props) => {
 				}
 
 			</WLMain>
-
+			{showDelete||showCreate||showLogin?
+				<div className="blurBackground"></div>
+			:
+			null
+			}	
+			
 			{
 				showDelete && (<Delete deleteList={deleteList} activeid={activeList._id} setShowDelete={setShowDelete} />)
 			}
 
 			{
-				showCreate && (<CreateAccount fetchUser={props.fetchUser} setShowCreate={setShowCreate} />)
+				showCreate && (<CreateAccount setShowCreate={setShowCreate} fetchUser={props.fetchUser} setShowCreate={setShowCreate} />)
 			}
 
 			{
-				showLogin && (<Login fetchUser={props.fetchUser} refetchTodos={refetch}setShowLogin={setShowLogin} />)
+				showLogin && (<Login setShowLogin={setShowLogin} fetchUser={props.fetchUser} refetchTodos={refetch}setShowLogin={setShowLogin} />)
 			}
 
 		</WLayout>

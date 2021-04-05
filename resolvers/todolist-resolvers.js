@@ -16,6 +16,10 @@ module.exports = {
 			if(!_id) { return([])};
 			const todolists = await Todolist.find({owner: _id});
 			const listIds=await User.findOne({_id:_id})
+			if(!listIds){
+				return ([])
+			}
+			
 			let todolistIds=listIds.todolists
 			let todolistordered=[]
 			for(let i=0;i<todolistIds.length;i++){
@@ -44,7 +48,7 @@ module.exports = {
 			@returns {string} the objectID of the item or an error message
 		**/
 		addItem: async(_, args) => {
-			const { _id, item } = args;
+			const { item, _id } = args;
 			const listId = new ObjectId(_id);
 			const objectId = new ObjectId();
 			const found = await Todolist.findOne({_id: listId});
@@ -91,7 +95,7 @@ module.exports = {
 							 array on failure
 		**/
 		deleteItem: async (_, args) => {
-			const  { _id, itemId } = args;
+			const  { itemId, _id } = args;
 			const listId = new ObjectId(_id);
 			const found = await Todolist.findOne({_id: listId});
 			let listItems = found.items;

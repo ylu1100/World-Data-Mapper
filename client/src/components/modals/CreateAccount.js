@@ -51,10 +51,12 @@ const CreateAccount = (props) => {
 			{
 				loading ? <div />
 					: <div>
-						<WRow className="modal-col-gap signup-modal">
+					<WButton style={{marginLeft:"80%",width:'20%'}} onClick={()=>props.setShowCreate(false)} span clickAnimation="ripple-light" hoverAnimation="darken" shape="rounded" color="primary">x</WButton>
+						<WRow >
+						
 							<WCol size="6">
 								<WInput 
-									className="" onBlur={updateInput} name="firstName" labelAnimation="up" 
+									 className="" onBlur={updateInput} name="firstName" labelAnimation="up" 
 									barAnimation="solid" labelText="First Name" wType="outlined" inputType="text" 
 								/>
 							</WCol>

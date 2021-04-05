@@ -45,7 +45,7 @@ const Login = (props) => {
 			{
 				loading ? <div />
 					: <div className="main-login-modal">
-
+						<WButton style={{marginLeft:"80%",width:'20%'}} onClick={()=>props.setShowLogin(false)} span clickAnimation="ripple-light" hoverAnimation="darken" shape="rounded" color="primary">x</WButton>
 						<WInput className="modal-input" onBlur={updateInput} name='email' labelAnimation="up" barAnimation="solid" labelText="Email Address" wType="outlined" inputType='text' />
 						<div className="modal-spacer">&nbsp;</div>
 						<WInput className="modal-input" onBlur={updateInput} name='password' labelAnimation="up" barAnimation="solid" labelText="Password" wType="outlined" inputType='password' />

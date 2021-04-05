@@ -102,7 +102,7 @@ const TableHeader = (props) => {
             </WCol>
             <WCol size="2">
                 <div className="table-header-buttons">
-                    <WButton onClick={props.disabled ? clickDisabled : props.addItem} wType="texted" className={`${buttonStyle}`}>
+                    <WButton onClick={props.disabled||props.addingItem? clickDisabled : props.addItem} wType="texted" className={`${buttonStyle}`}>
                         <i className="material-icons">add_box</i>
                     </WButton>
                     <WButton onClick={props.disabled ? clickDisabled : props.setShowDelete} wType="texted" className={`${buttonStyle}`}>
