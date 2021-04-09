@@ -106,7 +106,7 @@ const TableHeader = (props) => {
              <WCol size="2">
 
                 {
-                !props.activeList.items?
+                    !props.activeList.items ||props.activeList.items.length==0?
                 <WButton  className='table-header-section button-disable' wType="texted" >Task</WButton>
                 :
 
@@ -121,7 +121,7 @@ const TableHeader = (props) => {
             <WCol size="2">
             
                 {
-                    !props.activeList.items?
+                    !props.activeList.items ||props.activeList.items.length==0?
                 <WButton  className='table-header-section button-disable' wType="texted" >Due Date</WButton>
                 :
                     !sortedDate?
@@ -134,7 +134,7 @@ const TableHeader = (props) => {
 
             <WCol size="2">
                 {
-                    !props.activeList.items?
+                    !props.activeList.items ||props.activeList.items.length==0?
                 <WButton  className='table-header-section button-disable' wType="texted" >Status</WButton>
                 :
                     !sortedComplete?
@@ -145,7 +145,7 @@ const TableHeader = (props) => {
             </WCol>
             <WCol size="2">
                 {
-                    !props.activeList.items?
+                    !props.activeList.items ||props.activeList.items.length==0?
                 <WButton  className='table-header-section button-disable' wType="texted" >Assignment</WButton>
                 :
                     !sortedAssignment?

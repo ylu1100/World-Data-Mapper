@@ -14,7 +14,7 @@ const SidebarHeader = (props) => {
                 {
                     props.auth && <div className="sidebar-options">
                         {!props.activeid?
-                        <WButton className="sidebar-buttons" onClick={props.createNewList} clickAnimation="ripple-light" shape="rounded" color="primary">
+                        <WButton className="sidebar-buttons" onClick={props.createNewList} hoverAnimation="darken" clickAnimation="ripple-light" shape="rounded" color="primary">
                             <i className="material-icons">add</i>
                         </WButton>
                         :
