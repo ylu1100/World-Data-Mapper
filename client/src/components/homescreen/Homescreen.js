@@ -82,7 +82,13 @@ const Homescreen = (props) => {
 		setAddingItem(true)
 		let list = activeList;
 		const items = list.items;
-		const lastID = items.length >= 1 ? items[items.length - 1].id + 1 : 0;
+		let lastID=0;
+		for(let i=0;i<items.length;i++){
+			if(items[i].id>lastID){
+				lastID=items[i].id
+			}
+		}
+		lastID++
 		const newItem = {
 			_id: '',
 			id: lastID,
@@ -141,7 +147,14 @@ const Homescreen = (props) => {
 
 	const createNewList = async () => {
 		const length = todolists.length
-		const id = length >= 1 ? todolists[length - 1].id + Math.floor((Math.random() * 100) + 1) : 1;
+		
+		let id=1
+		for(let i=0;i<todolists.length;i++){
+			if(todolists[i].id>id){
+				id=todolists[i].id
+			}
+		}
+		id+= Math.floor((Math.random() * 100) + 1)
 		let list = {
 			_id: '',
 			id: id,
