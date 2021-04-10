@@ -165,7 +165,7 @@ const Homescreen = (props) => {
 		
 		const { data } = await AddTodolist({ variables: { todolist: list }, refetchQueries: [{ query: GET_DB_TODOS }] });
 		props.tps.clearAllTransactions()
-		await new Promise(r => setTimeout(r, 200));
+		await new Promise(r => setTimeout(r, 400));
 		
 		//setActiveList(list)
 	};

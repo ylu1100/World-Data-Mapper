@@ -105,10 +105,10 @@ module.exports = {
 			//console.log(_id)
 			const listId = new ObjectId(_id);
 			const found = await Todolist.findOne({_id: listId});
-			
+			console.log(itemId)
 			let listItems = found.items;
 			listItems = listItems.filter(item => item._id.toString() !== itemId);
-			console.log("deleted"+listItems)
+			
 			const updated = await Todolist.updateOne({_id: listId}, { items: listItems })
 			if(updated) return (listItems);
 			else return (found.items);
