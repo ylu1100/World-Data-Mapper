@@ -1,11 +1,61 @@
-import React            from 'react';
+import React   ,{useState}         from 'react';
 import TableHeader      from './TableHeader';
 import TableContents    from './TableContents';
 
 const MainContents = (props) => {
-    
+    const [state,setState]=useState({
+        ctrlPressed:false,
+        zPressed:false,
+        undoPressed:false,
+        redoPressed:false,
+    })
+    const checkKeyEvent=(event)=>{
+        if(event.key=='Control'){
+          console.log('cpressed')
+          setState({
+            ctrlPressed:true
+          })
+        }
+        if(event.key=='z'){
+          console.log('zpressed')
+          if(state.ctrlPressed){
+            ctrlZEvent()
+          }
+        }
+        else if(event.key=='y'){
+          console.log('ypressed')
+          if(state.ctrlPressed){
+            ctrlYEvent()
+          }
+        }
+      }
+        
+      const  removeKeyEvent=()=>{
+        console.log('fin')
+        setState({
+          ctrlPressed:false,
+          undoPressed:false,
+          redoPressed:false,
+        })
+      }
+    const  ctrlZEvent=()=>{
+          setState({
+            undoPressed:true,
+            ctrlPressed:false,
+          })
+          props.undo()
+          removeKeyEvent()
+      }
+    const  ctrlYEvent=()=>{
+        setState({
+          redoPressed:true,
+          ctrlPressed:false,
+        })
+        props.redo()
+        removeKeyEvent()
+      }
     return (
-        <div className='table ' >
+        <div tabIndex='0'  onKeyDown={checkKeyEvent} className='table ' >
             <TableHeader
                 
                 addingItem={props.addingItem}
