@@ -95,11 +95,11 @@ const TableEntry = (props) => {
                         />
                         : 
                         !data.completed?
-                            <div style={{color:'black'}} onClick={() => toggleAssignmentEdit(!editingAssignment)} className={`${completeStyle} table-text assignment-col`}>
+                            <div style={{color:'red'}} onClick={() => toggleAssignmentEdit(!editingAssignment)} className={`${completeStyle} table-text assignment-col`}>
                             {assignment}
                         </div>
                         :
-                        <div style={{color:'red'}} onClick={() => toggleAssignmentEdit(!editingAssignment)} className={`${completeStyle} table-text assignment-col`}>
+                        <div style={{color:'black'}} onClick={() => toggleAssignmentEdit(!editingAssignment)} className={`${completeStyle} table-text assignment-col`}>
                             {assignment}
                         </div>
                         }

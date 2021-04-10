@@ -146,12 +146,12 @@ const TableHeader = (props) => {
             <WCol size="2">
                 {
                     !props.activeList.items ||props.activeList.items.length==0?
-                <WButton  className='table-header-section button-disable' wType="texted" >Assignment</WButton>
+                <WButton  className='table-header-section button-disable' wType="texted" >Assigned To</WButton>
                 :
                     !sortedAssignment?
-                <WButton onClick={sortListByAscendAssignment} className='table-header-section' wType="texted" >Assignment</WButton>
+                <WButton onClick={sortListByAscendAssignment} className='table-header-section' wType="texted" >Assigned To</WButton>
                  :
-                <WButton onClick={sortListByDescendAssignment} className='table-header-section' wType="texted" >Assignment</WButton>
+                <WButton onClick={sortListByDescendAssignment} className='table-header-section' wType="texted" >Assigned To</WButton>
                 }   
             </WCol>    
             <WCol size="2">
