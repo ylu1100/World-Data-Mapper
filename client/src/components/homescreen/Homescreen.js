@@ -78,7 +78,7 @@ const Homescreen = (props) => {
 	// Creates a default item and passes it to the backend resolver.
 	// The return id is assigned to the item, and the item is appended
 	//  to the local cache copy of the active todolist. 
-	const addItem = async() => {
+	const addItem = async(undo) => {
 		setAddingItem(true)
 		let list = activeList;
 		const items = list.items;
@@ -88,7 +88,9 @@ const Homescreen = (props) => {
 				lastID=items[i].id
 			}
 		}
-		lastID++
+		if(!undo){
+			lastID+=1
+		}
 		const newItem = {
 			_id: '',
 			id: lastID,

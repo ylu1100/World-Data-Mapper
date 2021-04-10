@@ -26,7 +26,7 @@ module.exports = {
 				const todolist= await Todolist.findOne({owner:_id,id:todolistIds[i]})
 				todolistordered.push(todolist)
 			}
-			console.log(todolistordered)
+			//console.log(todolistordered)
 			if(todolists) return (todolistordered);
 
 		},
@@ -50,13 +50,19 @@ module.exports = {
 		addItem: async(_, args) => {
 			const { item, _id } = args;
 			const listId = new ObjectId(_id);
-			const objectId = new ObjectId();
+			let objectId;
+			if(!item._id){ 
+				objectId= new ObjectId();
+			}
+			else{
+				objectId=item._id
+			}
 			const found = await Todolist.findOne({_id: listId});
 			if(!found) return ('Todolist not found');
 			item._id = objectId;
 			let listItems = found.items;
 			listItems.push(item);
-			
+			console.log(item._id)
 			const updated = await Todolist.updateOne({_id: listId}, { items: listItems });
 
 			if(updated) return (objectId);
@@ -96,11 +102,13 @@ module.exports = {
 		**/
 		deleteItem: async (_, args) => {
 			const  { itemId, _id } = args;
-			console.log(_id)
+			//console.log(_id)
 			const listId = new ObjectId(_id);
 			const found = await Todolist.findOne({_id: listId});
+			
 			let listItems = found.items;
 			listItems = listItems.filter(item => item._id.toString() !== itemId);
+			console.log("deleted"+listItems)
 			const updated = await Todolist.updateOne({_id: listId}, { items: listItems })
 			if(updated) return (listItems);
 			else return (found.items);
@@ -123,7 +131,7 @@ module.exports = {
 			let newtodolists=[]
 			newtodolists.push(...todolistsId.todolists)
 			newtodolists.splice(newtodolists.indexOf(deletedTodolist.id),1)
-			console.log(newtodolists)
+			//console.log(newtodolists)
 			await User.updateOne({_id:userId},{todolists:newtodolists})
 			if(deleted) return true;
 			else return false;
@@ -201,7 +209,7 @@ module.exports = {
 			const {_id,newItems}=args;
 			const listId = new ObjectId(_id);
 			const found=await Todolist.findOne({_id:listId});
-			console.log(newItems)
+			//console.log(newItems)
 			let newList=[]
 			for(let i=0;i<newItems.length;i++){
 				let items=found.items
@@ -211,7 +219,7 @@ module.exports = {
 					}
 				}
 			}
-			console.log(newList)
+			//console.log(newList)
 			const updated=await Todolist.updateOne({_id:listId},{items:newList})
 			return "lol"
 			// const updated=await TodoList.updateOne({_id:listId},{items:newItems})
