@@ -16,7 +16,7 @@ const Delete = (props) => {
 			</div>
 
             <div>
-                <WButton className="modal-button cancel-button" onClick={() => props.setShowDelete(false)} wType="texted">
+                <WButton className="modal-button cancel-button" hoverAnimation="darken" onClick={() => props.setShowDelete(false)} wType="texted">
                     Cancel
 				</WButton>
                 <label className="col-spacer">&nbsp;</label>
