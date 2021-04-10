@@ -88,9 +88,7 @@ const Homescreen = (props) => {
 				lastID=items[i].id
 			}
 		}
-		if(!undo){
-			lastID+=1
-		}
+		lastID+=1
 		const newItem = {
 			_id: '',
 			id: lastID,
