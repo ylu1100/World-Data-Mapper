@@ -10,12 +10,12 @@ const Delete = (props) => {
     }
 
     return (
-        <div className="delete-modal">
+        <div style={{backgroundColor:'rgb(64,69,78)'}} className="delete-modal">
             <div className="modal-header" onClose={() => props.setShowDelete(false)}>
                 Delete List?
 			</div>
 
-            <div>
+            <div >
                 <WButton className="modal-button cancel-button" hoverAnimation="darken" onClick={() => props.setShowDelete(false)} wType="texted">
                     Cancel
 				</WButton>
