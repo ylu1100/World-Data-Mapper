@@ -21,7 +21,10 @@ export const GET_DB_TODOS = gql`
 			regions {
 				_id
 				id
-				
+				name
+				capital
+				leader
+				landmarks
 			}
 		}
 	}

@@ -57,6 +57,7 @@ const Homescreen = (props) => {
 				let tempID = activeList._id;
 				let list = todolists.find(list => list._id === tempID);
 				setActiveList(list);
+				
 			}
 			
 		}
@@ -81,7 +82,7 @@ const Homescreen = (props) => {
 	const addItem = async(undo) => {
 		setAddingItem(true)
 		let list = activeList;
-		const items = list.items;
+		const items = list.regions;
 		let lastID=0;
 		for(let i=0;i<items.length;i++){
 			if(items[i].id>lastID){
@@ -92,20 +93,21 @@ const Homescreen = (props) => {
 		const newItem = {
 			_id: '',
 			id: lastID,
-			description: 'No Description',
-			due_date: 'No Date',
-			assigned_to: 'No Assignment',
-			completed: false
+			name:'Untitled',
+			capital:'N/A',
+			leader:'N/A',
+			landmarks:[]
 		};
 		let opcode = 1;
 		let itemID = newItem._id;
 		let listID = activeList._id;
 		let transaction =  await new UpdateListItems_Transaction(listID, itemID, newItem, opcode, AddTodoItem, DeleteTodoItem);
-		
+	
 		props.tps.addTransaction(transaction);
 		
 		tpsRedo();
 		await new Promise(r => setTimeout(r, 200));
+		
 		setAddingItem(false)
 	};
 
@@ -117,10 +119,10 @@ const Homescreen = (props) => {
 		let itemToDelete = {
 			_id: item._id,
 			id: item.id,
-			description: item.description,
-			due_date: item.due_date,
-			assigned_to: item.assigned_to,
-			completed: item.completed
+			name:item.name,
+			capital:item.capital,
+			leader:item.leader,
+			landmarks:item.landmarks
 		}
 		let transaction = await new UpdateListItems_Transaction(listID, itemID, itemToDelete, opcode, AddTodoItem, DeleteTodoItem);
 		props.tps.addTransaction(transaction);
@@ -346,8 +348,9 @@ const Homescreen = (props) => {
 		for(let i=0;i<temp2.length;i++){
 			listids.push(temp2[i].id)
 		}
-		const {data} = await SelectedListFirst({
-			variables:{ownerId:props.user._id,listIds:listids}})
+		
+		// const {data} = await SelectedListFirst({
+		// 	variables:{ownerId:props.user._id,listIds:listids}})
 			
 		
 		setActiveList(todo);

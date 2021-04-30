@@ -27,21 +27,22 @@ export const LOGOUT = gql`
 `;
 
 export const ADD_ITEM = gql`
-	mutation AddItem($item: ItemInput!, $_id: String!) {
-		addItem(item: $item, _id: $_id)
+	mutation AddItem($region: RegionInput!, $_id: String!) {
+		addItem(region:$region, _id: $_id)
 	}
 `;
 
 export const DELETE_ITEM = gql`
-	mutation DeleteItem($itemId: String!, $_id: String!) {
-		deleteItem(itemId: $itemId, _id: $_id) {
+	mutation DeleteItem($region: RegionInput!, $_id: String!) {
+		deleteItem(region: $region, _id: $_id) {
 			_id
 			id
-			description
-			due_date
-			assigned_to
-			completed
+			name
+			capital
+			leader
+			landmarks
 		}
+			
 	}
 `;
 

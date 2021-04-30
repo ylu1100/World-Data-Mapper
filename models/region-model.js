@@ -10,20 +10,20 @@ const regionSchema = new Schema(
 			type: Number,
 			required: true
 		},
-		description: {
+		name: {
 			type: String,
 			required: true
 		},
-		due_date: {
+		capital: {
 			type: String,
 			required: true
 		},
-		assigned_to: {
+		leader: {
 			type: String,
 			required: true
 		},
-		completed: {
-			type: Boolean,
+		landmarks: {
+			type: [String],
 			required: true
 		}
 	}

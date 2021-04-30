@@ -27,6 +27,8 @@ const typeDefs = gql `
 	extend type Mutation {
 		addTodolist(map: MapInput!): String
         deleteTodolist(_id: String!,userId:String!): Boolean
+		addItem(region:RegionInput!,_id:String!):String
+		deleteItem(region:RegionInput!,_id:String!):[Region]
 		}
         
 	input MapInput {
@@ -37,8 +39,12 @@ const typeDefs = gql `
 		regions: [RegionInput]
 	}
 	input RegionInput {
-		_id: String
-		id: Int
+		_id: String!
+		id: Int!
+		name:String!
+		capital:String!
+        leader:String!
+        landmarks:[String]
 	}
 `;
 

@@ -3,7 +3,11 @@ import { WButton, WInput, WRow, WCol } from 'wt-frontend';
 
 const TableEntry = (props) => {
     const { data } = props;
-
+    console.log(data)
+    const capital=data.capital
+    const name=data.name
+    const leader=data.leader
+    const landmarks=data.landmarks
     const completeStyle = data.completed ? ' complete-task' : ' incomplete-task';
     
     const description = data.description;
@@ -53,7 +57,7 @@ const TableEntry = (props) => {
                         />
                         : <div className="table-text"
                             onClick={() => toggleDescrEdit(!editingDescr)}
-                        >{description}
+                        >{name}
                         </div>
                 }
             </WCol>
@@ -67,7 +71,7 @@ const TableEntry = (props) => {
                     />
                         : <div className="table-text"
                             onClick={() => toggleDateEdit(!editingDate)}
-                        >{due_date}
+                        >{capital}
                         </div>
                 }
             </WCol>
@@ -82,7 +86,7 @@ const TableEntry = (props) => {
                         <option value="incomplete">incomplete</option>
                     </select>
                         : <div onClick={() => toggleStatusEdit(!editingStatus)} className={`${completeStyle} table-text`}>
-                            {status}
+                            {leader}
                         </div>
                 }
             </WCol>

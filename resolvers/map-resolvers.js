@@ -9,7 +9,7 @@ module.exports={
 			@returns {array} an array of todolist objects on success, and an empty array on failure
 		**/
 		getAllMaps: async (_, __, { req }) => {
-            console.log(123231)
+    
 			const _id = new ObjectId(req.userId);
 			if(!_id) { return([])};
 			const maplists = await Map.find({owner: _id});
@@ -46,33 +46,35 @@ module.exports={
 		 	@param 	 {object} args - a todolist id and an empty item object
 			@returns {string} the objectID of the item or an error message
 		**/
-		// addItem: async(_, args) => {
-		// 	const { item, _id } = args;
-		// 	const listId = new ObjectId(_id);
-		// 	let objectId;
-		// 	if(!item._id){ 
-		// 		objectId= new ObjectId();
-		// 	}
-		// 	else{
-		// 		objectId=item._id
-		// 	}
-		// 	const found = await Todolist.findOne({_id: listId});
-		// 	if(!found) return ('Todolist not found');
-		// 	item._id = objectId;
-		// 	let listItems = found.items;
-		// 	listItems.push(item);
-		// 	console.log(item._id)
-		// 	const updated = await Todolist.updateOne({_id: listId}, { items: listItems });
+		addItem: async(_, args) => {
+			
+			const { region, _id } = args;
+			const listId = new ObjectId(_id);
+			let objectId;
+			console.log(region)
+			if(!region._id){ 
+				objectId= new ObjectId();
+			}
+			else{
+				objectId=region._id
+			}
+			const found = await Map.findOne({_id: listId});
+			if(!found) return ('Map not found');
+			region._id = objectId;
+			let listRegions = found.regions;
+			listRegions.push(region);
+			console.log(region._id)
+			const updated = await Map.updateOne({_id: listId}, { regions: listRegions });
 
-		// 	if(updated) return (objectId);
-		// 	else return ('Could not add item');
-		// },
+			if(updated) return (objectId);
+			else return ('Could not add Region');
+		},
 		/** 
 		 	@param 	 {object} args - an empty todolist object
 			@returns {string} the objectID of the todolist or an error message
 		**/
 		addTodolist: async (_, args) => {
-            console.log(12)
+            
 			const { map } = args;
 			const objectId = new ObjectId();
 			const { id, name, owner, regions } = map;
@@ -100,24 +102,25 @@ module.exports={
 			@returns {array} the updated item array on success or the initial 
 							 array on failure
 		**/
-		// deleteItem: async (_, args) => {
-		// 	const  { itemId, _id } = args;
-		// 	//console.log(_id)
-		// 	const listId = new ObjectId(_id);
-		// 	const found = await Todolist.findOne({_id: listId});
-		// 	console.log(itemId)
-		// 	let listItems = found.items;
-		// 	listItems = listItems.filter(item => item._id.toString() !== itemId);
+		deleteItem: async (_, args) => {
+			console.log(12312321)
+			const  { region, _id } = args;
+			console.log(region)
+			const listId = new ObjectId(_id);
+			const found = await Map.findOne({_id: listId});
+			console.log(region._id)
+			let listItems = found.regions;
+			listItems = listItems.filter(item => item._id.toString() !== region._id);
 			
-		// 	const updated = await Todolist.updateOne({_id: listId}, { items: listItems })
-		// 	if(updated) return (listItems);
-		// 	else return (found.items);
+			const updated = await Map.updateOne({_id: listId}, { regions: listItems })
+			if(updated) return (listItems);
+			else return (found.regions);
 
-		// },
-		// /** 
-		//  	@param 	 {object} args - a todolist objectID 
-		// 	@returns {boolean} true on successful delete, false on failure
-		// **/
+		},
+		/** 
+		 	@param 	 {object} args - a todolist objectID 
+			@returns {boolean} true on successful delete, false on failure
+		**/
 		deleteTodolist: async (_, args) => {
 			const { _id ,userId} = args;
 			const objectId = new ObjectId(_id);
