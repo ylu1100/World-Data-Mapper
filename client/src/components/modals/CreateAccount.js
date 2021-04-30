@@ -5,7 +5,7 @@ import { useMutation }    	from '@apollo/client';
 import { WModal, WMHeader, WMMain, WMFooter, WButton, WInput, WRow, WCol } from 'wt-frontend';
 
 const CreateAccount = (props) => {
-	const [input, setInput] = useState({ email: '', password: '', firstName: '', lastName: '' });
+	const [input, setInput] = useState({ email: '', password: '', fullName:'' });
 	const [loading, toggleLoading] = useState(false);
 	const [Register] = useMutation(REGISTER);
 
@@ -56,14 +56,8 @@ const CreateAccount = (props) => {
 						
 							<WCol size="6">
 								<WInput 
-									 className="" onBlur={updateInput} name="firstName" labelAnimation="up" 
-									barAnimation="solid" labelText="First Name" wType="outlined" inputType="text" 
-								/>
-							</WCol>
-							<WCol size="6">
-								<WInput 
-									className="" onBlur={updateInput} name="lastName" labelAnimation="up" 
-									barAnimation="solid" labelText="Last Name" wType="outlined" inputType="text" 
+									className="" onBlur={updateInput} name="fullName" labelAnimation="up" 
+									barAnimation="solid" labelText="Full Name" wType="outlined" inputType="text" 
 								/>
 							</WCol>
 						</WRow>

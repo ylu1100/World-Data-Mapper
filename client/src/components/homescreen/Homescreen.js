@@ -44,14 +44,14 @@ const Homescreen = (props) => {
 	console.log(refetch)
 	if(loading) { console.log(loading, 'loading'); }
 	if(error) { console.log(error, 'error'); }
-	if(data) { todolists = data.getAllTodos; }
+	if(data) { todolists = data.getAllMaps; }
 	//if(data) { setTodolists(data.getAllTodos); }
 	const auth = props.user === null ? false : true;
 
 	const refetchTodos = async (refetch) => {
 		const { loading, error, data } = await refetch();
 		if (data) {
-			todolists = data.getAllTodos;
+			todolists = data.getAllMaps;
 			
 			if (activeList._id) {
 				let tempID = activeList._id;
@@ -147,7 +147,6 @@ const Homescreen = (props) => {
 
 	const createNewList = async () => {
 		const length = todolists.length
-		
 		let id=1
 		for(let i=0;i<todolists.length;i++){
 			if(todolists[i].id>id){
@@ -160,10 +159,10 @@ const Homescreen = (props) => {
 			id: id,
 			name: 'Untitled',
 			owner: props.user._id,
-			items: [],
+			regions: [],
 		}
 		
-		const { data } = await AddTodolist({ variables: { todolist: list }, refetchQueries: [{ query: GET_DB_TODOS }] });
+		const { data } = await AddTodolist({ variables: { map: list }, refetchQueries: [{ query: GET_DB_TODOS }] });
 		props.tps.clearAllTransactions()
 		await new Promise(r => setTimeout(r, 400));
 		

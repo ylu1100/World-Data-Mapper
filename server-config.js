@@ -1,6 +1,6 @@
 const express = require('express');
 const cookieParser = require('cookie-parser')
-const User = require('./models/user-model');
+const User = require('./models/user-model2');
 const tokens = require('./utils/tokens');
 const mongoose = require('mongoose');
 const helmet = require('helmet');

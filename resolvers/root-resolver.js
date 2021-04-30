@@ -1,4 +1,4 @@
-const userResolvers = require('./user-resolvers');
-const todolistResolvers = require('./todolist-resolvers');
+const userResolvers = require('./user2-resolvers');
+const mapResolvers=require('./map-resolvers');
 
-module.exports = [userResolvers, todolistResolvers];
+module.exports = [userResolvers,mapResolvers];

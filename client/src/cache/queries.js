@@ -4,8 +4,7 @@ export const GET_DB_USER = gql`
 	query GetDBUser {
 		getCurrentUser {
 			_id
-			firstName
-			lastName
+			fullName
 			email
 			
 		}
@@ -14,18 +13,15 @@ export const GET_DB_USER = gql`
 
 export const GET_DB_TODOS = gql`
 	query GetDBTodos {
-		getAllTodos {
+		getAllMaps {
 			_id
 			id
 			name
 			owner
-			items {
+			regions {
 				_id
 				id
-				description
-				due_date
-				assigned_to
-				completed
+				
 			}
 		}
 	}

@@ -5,21 +5,18 @@ export const LOGIN = gql`
 		login(email: $email, password: $password) {
 			email 
 			_id
-			firstName
-			lastName
+			fullName
 			password
-			initials
 		}
 	}
 `;
 
 export const REGISTER = gql`
-	mutation Register($email: String!, $password: String!, $firstName: String!, $lastName: String!) {
-		register(email: $email, password: $password, firstName: $firstName, lastName: $lastName) {
+	mutation Register($email: String!, $password: String!, $fullName:String!) {
+		register(email: $email, password: $password, fullName:$fullName) {
 			email
 			password
-			firstName
-			lastName
+			fullName
 		}
 	}
 `;
@@ -75,8 +72,8 @@ export const REORDER_ITEMS = gql`
 `;
 
 export const ADD_TODOLIST = gql`
-	mutation AddTodolist($todolist: TodoInput!) {
-		addTodolist(todolist: $todolist) 
+	mutation AddTodolist($map: MapInput!) {
+		addTodolist(map: $map) 
 	}
 `;
 
