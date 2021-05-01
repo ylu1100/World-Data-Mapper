@@ -4,23 +4,23 @@ const User=require('../models/user-model2')
 const Region=require('../models/region-model')
 module.exports={
     Query: {
-        getAllRegions: async (_, args) => {
+        getAllRegions: async (_,args) => {
             console.log("loading regions")
-            console.log(args)
-            const {_id}=args._id
-			const parentId = new ObjectId(_id);
-			if(!_id) { return([])};
+            console.log(args.parentId)
+            const parentId=new ObjectId(args.parentId)
+			
+			if(!parentId) { return([])};
 			const regionlists = await Region.find({parentId: parentId});
 			//const listIds=await User.findOne({_id:_id})
             console.log(regionlists)
-			let mapIds=listIds.maps
-			let maplistordered=[]
-			for(let i=0;i<mapIds.length;i++){
-				const map= await Map.findOne({owner:_id,id:mapIds[i]})
-				maplistordered.push(map)
-			}
+			// let mapIds=listIds.maps
+			// let maplistordered=[]
+			// for(let i=0;i<mapIds.length;i++){
+			// 	const map= await Map.findOne({owner:_id,id:mapIds[i]})
+			// 	maplistordered.push(map)
+			// }
 			//console.log(todolistordered)
-			if(maplists) return (maplistordered);
+			if(regionlists) return (regionlists);
 
 		},
 		/** 
@@ -48,6 +48,7 @@ module.exports={
 		addSubregion: async(_, args) => {
 			
 			const { region, _id } = args;
+			console.log(args)
 			const listId = new ObjectId(_id);
 			let objectId;
 			
@@ -66,7 +67,14 @@ module.exports={
             }
             
 			region._id = objectId;
-			let listRegions = found.regions;
+			let listRegions
+			if(foundInRegion){
+				listRegions = found.subregions;
+			}
+			else{
+				listRegions = found.regions;
+			}
+			
 			listRegions.push(region);
 			console.log(objectId)
             console.log(listRegions)

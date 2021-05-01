@@ -7,7 +7,7 @@ import Login 							from '../modals/Login';
 import Delete 							from '../modals/Delete';
 import CreateAccount 					from '../modals/CreateAccount';
 import { GET_DB_TODOS } 				from '../../cache/queries';
-import {GET_DB_REGIONS} 				from '../../cache/queries';
+
 import * as mutations 					from '../../cache/mutations';
 import * as query						from '../../cache/queries';
 import { useMutation, useQuery } 		from '@apollo/client';
@@ -48,33 +48,44 @@ const Homescreen = (props) => {
 	// const { loading, error, data, refetch } = useQuery(GET_DB_TODOS);
 	// const { loading, error, data, refetch } = useQuery(GET_DB_REGIONS);
 	const mapsquery=useQuery(GET_DB_TODOS);
-	const regionsquery=useQuery(GET_DB_REGIONS);
+	console.log(activeList)
+	const regionsquery =  useQuery(query.GET_DB_REGIONS,{
+		variables:{parentId:activeList._id}
+	})
+	regionslist=regionsquery.data
+	console.log("activeList:")
+	console.log(21321321321321321321321321321313)
+	console.log(activeList)
+	
 
 	if(mapsquery.loading) { console.log(mapsquery.loading, 'loading'); }
 	if(mapsquery.error) { console.log(mapsquery.error, 'error'); }
 	if(mapsquery.data) { todolists = mapsquery.data.getAllMaps; }
-
-	if(regionsquery.loading) { console.log(regionsquery.loading, 'loading'); }
-	if(regionsquery.error) { console.log(regionsquery.error, 'error'); }
-	if(regionsquery.data) { regionslist = regionsquery.data.getAllRegions; }
+	
+	// if(regionsquery.loading) { console.log(regionsquery.loading, 'loading'); }
+	// if(regionsquery.error) { console.log(regionsquery.error, 'error'); }
+	// if(regionsquery.data) { regionslist = regionsquery.data.getAllRegions({variables:{parentId:"lol"}}); }
+	
 	//if(data) { setTodolists(data.getAllTodos); }
 	const auth = props.user === null ? false : true;
-
+	
 	const refetchTodos = async (refetch) => {
 		const { loading, error, data } = await refetch();
 		if (data) {
 			todolists = data.getAllMaps;
 			
 			if (activeList._id) {
+				
 				let tempID = activeList._id;
 				let list = todolists.find(list => list._id === tempID);
+				if(list){
 				setActiveList(list);
+				}
 				
 			}
 			
 		}
 	}
-
 	const tpsUndo = async () => {
 		const retVal = await props.tps.undoTransaction();
 		refetchTodos(mapsquery.refetch);
@@ -94,7 +105,10 @@ const Homescreen = (props) => {
 	const addItem = async(undo) => {
 		setAddingItem(true)
 		let list = activeList;
-		const items = list.regions;
+		let items = list.regions;
+		if(!items){
+			items=list.subregions
+		}
 		let lastID=0;
 		for(let i=0;i<items.length;i++){
 			if(items[i].id>lastID){
@@ -117,17 +131,20 @@ const Homescreen = (props) => {
 		};
 		//let transaction =  await new UpdateListItems_Transaction(listID, itemID, newItem, opcode, AddTodoItem, DeleteTodoItem);
 		const {data}=await createNewRegion({variables:{region:newItem}})
-		console.log(data.createNewRegion)
-		await createSubregion({variables:{regionId:data.createNewRegion,_id:listID}})
+	
+		const newRegionId=await createSubregion({variables:{regionId:data.createNewRegion,_id:listID}})
 		//props.tps.addTransaction(transaction);
 		
 		tpsRedo();
 		await new Promise(r => setTimeout(r, 200));
 		
+		regionsquery.refetch()
 		setAddingItem(false)
 	};
 
-
+	const goToSubregion =(region)=>{
+		setActiveList(region)
+	}
 	const deleteItem = async (item) => {
 		let listID = activeList._id;
 		let itemID = item._id;
@@ -183,7 +200,7 @@ const Homescreen = (props) => {
 		const { data } = await AddTodolist({ variables: { map: list }, refetchQueries: [{ query: GET_DB_TODOS }] });
 		props.tps.clearAllTransactions()
 		await new Promise(r => setTimeout(r, 400));
-		
+		mapsquery.refetch()
 		//setActiveList(list)
 	};
 	
@@ -351,8 +368,7 @@ const Homescreen = (props) => {
 	const handleSetActive = async (id) => {
 		const todo = todolists.find(todo => todo.id === id || todo._id === id);
 		
-		
-		console.log(regionslist)
+	
 		let temp=[]
 		temp.push(...todolists)
 		let index=todolists.indexOf(todo)
@@ -366,9 +382,9 @@ const Homescreen = (props) => {
 			listids.push(temp2[i].id)
 		}
 		
+		document.cookie="listId="+todo._id
 		// const {data} = await SelectedListFirst({
 		// 	variables:{ownerId:props.user._id,listIds:listids}})
-		await 	
 		
 		setActiveList(todo);
 		props.tps.clearAllTransactions()
@@ -443,6 +459,7 @@ const Homescreen = (props) => {
 							<div className="container-secondary">
 								<MainContents
 									addingItem={addingItem}
+									goToSubregion={goToSubregion}
 									undo={tpsUndo} redo={tpsRedo}
 									sortByTaskName={sortListByAscendingDesc}
 									sortByDescTaskName={sortListByDescendingDesc}
@@ -456,6 +473,7 @@ const Homescreen = (props) => {
 									editItem={editItem} reorderItem={reorderItem}
 									setShowDelete={setShowDelete}
 									tps={props.tps}
+									regionslist={regionslist}
 									activeList={activeList} setActiveList={setActiveList}
 								/>
 							</div>

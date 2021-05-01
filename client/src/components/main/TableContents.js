@@ -2,14 +2,15 @@ import React        from 'react';
 import TableEntry   from './TableEntry';
 
 const TableContents = (props) => {
-
-    const entries = props.activeList ? props.activeList.regions : null;
+ 
     
+    const entries = props.activeList && props.regionslist ? props.regionslist.getAllRegions : null;
     return (
         entries ? <div className=' table-entries container-primary'>
             {
                 entries.map((entry, index) => (
                     <TableEntry
+                        goToSubregion={props.goToSubregion}
                         size={entries.length}
                         activeList={props.activeList}
                         index={index}

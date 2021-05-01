@@ -39,6 +39,7 @@ const validateTokens = async(req, res, next) => {
 	try {
 		const validAccess = tokens.verifyAccessToken(accessToken);
 		req.userId = validAccess.id;
+		
 		return next();
 	} 
 	catch(e) { 
@@ -68,6 +69,7 @@ const validateTokens = async(req, res, next) => {
 		res.cookie('access-token', access, { httpOnly: true , sameSite: 'None', secure: true}); 
 		req.userId = user.id;
 		req.user = user;
+		
 	} 
 	catch(e) { return next(); }
 	next();

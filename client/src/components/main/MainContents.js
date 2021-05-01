@@ -74,6 +74,8 @@ const MainContents = (props) => {
                 setShowDelete={props.setShowDelete} setActiveList={props.setActiveList}
             />
             <TableContents
+                goToSubregion={props.goToSubregion}
+                regionslist={props.regionslist}
                 key={props.activeList.id} activeList={props.activeList}
                 deleteItem={props.deleteItem} reorderItem={props.reorderItem}
                 editItem={props.editItem}

@@ -23,14 +23,16 @@ export const GET_DB_TODOS = gql`
 	}
 `;
 export const GET_DB_REGIONS = gql`
-	query getDBRegions{
-		getAllRegions{
-			landmarks
+	query getDBRegions($parentId:String!){
+		getAllRegions(parentId:$parentId){
+			_id
 			id
 			parentId
 			name
 			capital
 			leader
+			subregions
+			landmarks
 		}
 	}
 `;

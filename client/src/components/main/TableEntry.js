@@ -134,6 +134,9 @@ const TableEntry = (props) => {
                     <WButton className="table-entry-buttons" onClick={() => props.deleteItem(data)} wType="texted">
                         <i className="material-icons">close</i>
                     </WButton>
+                    
+                    <a onClick={()=>props.goToSubregion(props.data)}>Go Sub</a>
+                   
                 </div>
             </WCol>
         </WRow>
