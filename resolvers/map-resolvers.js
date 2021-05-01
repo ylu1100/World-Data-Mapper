@@ -1,7 +1,7 @@
 const ObjectId = require('mongoose').Types.ObjectId;
 const Map=require('../models/map-model');
 const User=require('../models/user-model2')
-
+const Region=require('../models/region-model')
 module.exports={
     Query: {
 		/** 

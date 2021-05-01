@@ -13,5 +13,5 @@ const rootDef = gql`
 `;
 
 module.exports = {
-	typeDefs: [rootDef, userDef,mapDef] 
+	typeDefs: [rootDef, userDef,mapDef,regionDef] 
 }; 

@@ -7,7 +7,9 @@ import Login 							from '../modals/Login';
 import Delete 							from '../modals/Delete';
 import CreateAccount 					from '../modals/CreateAccount';
 import { GET_DB_TODOS } 				from '../../cache/queries';
+import {GET_DB_REGIONS} 				from '../../cache/queries';
 import * as mutations 					from '../../cache/mutations';
+import * as query						from '../../cache/queries';
 import { useMutation, useQuery } 		from '@apollo/client';
 import { WNavbar, WSidebar, WNavItem } 	from 'wt-frontend';
 import { WLayout, WLHeader, WLMain, WLSide } from 'wt-frontend';
@@ -23,7 +25,9 @@ import WInput from 'wt-frontend/build/components/winput/WInput';
 const Homescreen = (props) => {
 	
 	let todolists 							= [];
+	let regionslist							=[];
 	const [todolistlist,setTodolists] = useState([])
+	const [regionlist,setRegionlist] = useState([])
 	const [activeList, setActiveList] 		= useState({});
 	const [showDelete, toggleShowDelete] 	= useState(false);
 	const [showLogin, toggleShowLogin] 		= useState(false);
@@ -39,12 +43,20 @@ const Homescreen = (props) => {
 	const [AddTodoItem] 			= useMutation(mutations.ADD_ITEM);
 	const [SortByTaskName] 			= useMutation(mutations.SORT_BY_TASK);
 	const [SelectedListFirst]		= useMutation(mutations.SELECT_LIST_FIRST)
+	const[createSubregion]			= useMutation(mutations.ADD_NEW_REGION);
+	const[createNewRegion]			= useMutation(mutations.CREATE_NEW_REGION);
+	// const { loading, error, data, refetch } = useQuery(GET_DB_TODOS);
+	// const { loading, error, data, refetch } = useQuery(GET_DB_REGIONS);
+	const mapsquery=useQuery(GET_DB_TODOS);
+	const regionsquery=useQuery(GET_DB_REGIONS);
 
-	const { loading, error, data, refetch } = useQuery(GET_DB_TODOS);
-	console.log(refetch)
-	if(loading) { console.log(loading, 'loading'); }
-	if(error) { console.log(error, 'error'); }
-	if(data) { todolists = data.getAllMaps; }
+	if(mapsquery.loading) { console.log(mapsquery.loading, 'loading'); }
+	if(mapsquery.error) { console.log(mapsquery.error, 'error'); }
+	if(mapsquery.data) { todolists = mapsquery.data.getAllMaps; }
+
+	if(regionsquery.loading) { console.log(regionsquery.loading, 'loading'); }
+	if(regionsquery.error) { console.log(regionsquery.error, 'error'); }
+	if(regionsquery.data) { regionslist = regionsquery.data.getAllRegions; }
 	//if(data) { setTodolists(data.getAllTodos); }
 	const auth = props.user === null ? false : true;
 
@@ -65,13 +77,13 @@ const Homescreen = (props) => {
 
 	const tpsUndo = async () => {
 		const retVal = await props.tps.undoTransaction();
-		refetchTodos(refetch);
+		refetchTodos(mapsquery.refetch);
 		return retVal;
 	}
 
 	const tpsRedo = async () => {
 		const retVal = await props.tps.doTransaction();
-		refetchTodos(refetch);
+		refetchTodos(mapsquery.refetch);
 		return retVal;
 	}
 
@@ -90,20 +102,24 @@ const Homescreen = (props) => {
 			}
 		}
 		lastID+=1
+		
+		let opcode = 1;
+		// let itemID = newItem._id;
+		let listID = activeList._id;
 		const newItem = {
-			_id: '',
 			id: lastID,
+			parentId:activeList._id,
 			name:'Untitled',
 			capital:'N/A',
 			leader:'N/A',
+			subregions:[],
 			landmarks:[]
 		};
-		let opcode = 1;
-		let itemID = newItem._id;
-		let listID = activeList._id;
-		let transaction =  await new UpdateListItems_Transaction(listID, itemID, newItem, opcode, AddTodoItem, DeleteTodoItem);
-	
-		props.tps.addTransaction(transaction);
+		//let transaction =  await new UpdateListItems_Transaction(listID, itemID, newItem, opcode, AddTodoItem, DeleteTodoItem);
+		const {data}=await createNewRegion({variables:{region:newItem}})
+		console.log(data.createNewRegion)
+		await createSubregion({variables:{regionId:data.createNewRegion,_id:listID}})
+		//props.tps.addTransaction(transaction);
 		
 		tpsRedo();
 		await new Promise(r => setTimeout(r, 200));
@@ -336,6 +352,7 @@ const Homescreen = (props) => {
 		const todo = todolists.find(todo => todo.id === id || todo._id === id);
 		
 		
+		console.log(regionslist)
 		let temp=[]
 		temp.push(...todolists)
 		let index=todolists.indexOf(todo)
@@ -351,11 +368,11 @@ const Homescreen = (props) => {
 		
 		// const {data} = await SelectedListFirst({
 		// 	variables:{ownerId:props.user._id,listIds:listids}})
-			
+		await 	
 		
 		setActiveList(todo);
 		props.tps.clearAllTransactions()
-		refetch()
+		mapsquery.refetch()
 		
 	};
 
@@ -397,7 +414,7 @@ const Homescreen = (props) => {
 						<NavbarOptions
 							fetchUser={props.fetchUser} auth={auth} 
 							setShowCreate={setShowCreate} setShowLogin={setShowLogin}
-							refetchTodos={refetch} setActiveList={setActiveList}
+							refetchTodos={mapsquery.refetch} setActiveList={setActiveList}
 						/>
 					</ul>
 				</WNavbar>
@@ -462,7 +479,7 @@ const Homescreen = (props) => {
 			}
 
 			{
-				showLogin && (<Login setShowLogin={setShowLogin} fetchUser={props.fetchUser} refetchTodos={refetch}setShowLogin={setShowLogin} />)
+				showLogin && (<Login setShowLogin={setShowLogin} fetchUser={props.fetchUser} refetchTodos={mapsquery.refetch}setShowLogin={setShowLogin} />)
 			}
 
 		</WLayout>

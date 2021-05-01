@@ -1,4 +1,4 @@
 const userResolvers = require('./user2-resolvers');
 const mapResolvers=require('./map-resolvers');
-
-module.exports = [userResolvers,mapResolvers];
+const regionResolvers=require('./region-resolvers');
+module.exports = [userResolvers,mapResolvers,regionResolvers];

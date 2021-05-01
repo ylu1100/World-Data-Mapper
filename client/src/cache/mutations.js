@@ -27,7 +27,7 @@ export const LOGOUT = gql`
 `;
 
 export const ADD_ITEM = gql`
-	mutation AddItem($region: RegionInput!, $_id: String!) {
+	mutation AddItem($region: String!, $_id: String!) {
 		addItem(region:$region, _id: $_id)
 	}
 `;
@@ -104,3 +104,13 @@ export const SELECT_LIST_FIRST=gql`
 		selectedListFirst(ownerId:$ownerId,listIds:$listIds)
 	}
 	`;
+export const ADD_NEW_REGION=gql`
+	mutation AddNewRegion($regionId:String!,$_id:String!){
+		addSubregion(region:$regionId,_id:$_id)
+	}
+`;
+export const CREATE_NEW_REGION=gql`
+	mutation CreateNewRegion($region:SubregionInput!){
+		createNewRegion(region:$region)
+	}
+`;

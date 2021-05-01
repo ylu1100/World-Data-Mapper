@@ -18,14 +18,19 @@ export const GET_DB_TODOS = gql`
 			id
 			name
 			owner
-			regions {
-				_id
-				id
-				name
-				capital
-				leader
-				landmarks
-			}
+			regions
+		}
+	}
+`;
+export const GET_DB_REGIONS = gql`
+	query getDBRegions{
+		getAllRegions{
+			landmarks
+			id
+			parentId
+			name
+			capital
+			leader
 		}
 	}
 `;

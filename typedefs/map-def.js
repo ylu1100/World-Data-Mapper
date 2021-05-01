@@ -7,7 +7,7 @@ const typeDefs = gql `
 		id: Int!
 		name: String!
 		owner: String!
-		regions:[Region]
+		regions:[String]
 	}
 	type Region {
 		_id: String!
@@ -27,7 +27,7 @@ const typeDefs = gql `
 	extend type Mutation {
 		addTodolist(map: MapInput!): String
         deleteTodolist(_id: String!,userId:String!): Boolean
-		addItem(region:RegionInput!,_id:String!):String
+		addItem(regionid:RegionId!,_id:String!):String
 		deleteItem(region:RegionInput!,_id:String!):[Region]
 		}
         
@@ -36,15 +36,20 @@ const typeDefs = gql `
 		id: Int
 		name: String
 		owner: String
-		regions: [RegionInput]
+		regions: [String]
 	}
 	input RegionInput {
 		_id: String!
 		id: Int!
+		parentId:String!
 		name:String!
 		capital:String!
         leader:String!
+		subregions:[String]
         landmarks:[String]
+	}
+	input RegionId{
+		region_id:String!
 	}
 `;
 
