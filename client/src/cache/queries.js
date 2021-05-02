@@ -36,3 +36,17 @@ export const GET_DB_REGIONS = gql`
 		}
 	}
 `;
+export const GET_DB_REGION_BY_ID = gql`
+	query getDBRegionById($parentId:String!){
+		getRegionById(parentId:$parentId){
+			_id
+			id
+			parentId
+			name
+			capital
+			leader
+			subregions
+			landmarks
+		}
+	}
+`;

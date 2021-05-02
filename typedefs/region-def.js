@@ -15,7 +15,7 @@ const typeDefs = gql `
 	
 	extend type Query {
 		getAllRegions(parentId:String!): [Subregion]
-        getRegionById(_id:String!):Subregion
+        getRegionById(parentId:String!):Subregion
 	}
 	extend type Mutation {
 		addSubregion(region:String!, _id: String!): String

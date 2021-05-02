@@ -33,9 +33,11 @@ module.exports={
 			@returns {object} a todolist on success and an empty object on failure
 		**/
 		getRegionById: async (_, args) => {
-			const { _id } = args;
-			const objectId = new ObjectId(_id);
-			const map = await Map.findOne({_id: objectId});
+			const { parentId} = args;
+			
+			const objectId = new ObjectId(parentId);
+			const map = await Region.findOne({_id: objectId});
+			
 			if(map) return map;
 			else return ({});
 		},

@@ -3,7 +3,7 @@ import { WButton, WInput, WRow, WCol } from 'wt-frontend';
 
 const TableEntry = (props) => {
     const { data } = props;
-    console.log(data)
+
     const capital=data.capital
     const name=data.name
     const leader=data.leader
@@ -136,7 +136,7 @@ const TableEntry = (props) => {
                     </WButton>
                     
                     <a onClick={()=>props.goToSubregion(props.data)}>Go Sub</a>
-                   
+                    <a onClick={()=>props.openRegionViewer(props.data)}>Go To Region Viewer</a>
                 </div>
             </WCol>
         </WRow>

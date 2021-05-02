@@ -1,4 +1,4 @@
-import React 			from 'react';
+import React , { useState }			from 'react';
 import Homescreen 		from './components/homescreen/Homescreen';
 import Regionspreadsheet from './components/main/regionspreadsheet'
 import { useQuery } 	from '@apollo/client';
@@ -23,6 +23,8 @@ function getCookie(cname) {
 	return "";
   }
 const App = () => {
+	const [showRegionViewer,setShowRegionViewer]=useState(false)
+	const [regionViewerData,setRegionViewerData]=useState({})
 	let user = null;
     let transactionStack = new jsTPS();
 	console.log(getCookie("listId"))
@@ -34,33 +36,43 @@ const App = () => {
 		let { getCurrentUser } = data;
 		if(getCurrentUser !== null) { user = getCurrentUser; }
     }
-
+	const openRegionViewer=(data)=>{
+		setShowRegionViewer(true)
+		setRegionViewerData(data)
+	}
+	console.log('regionv')
+	console.log((showRegionViewer))
+	//console.log(regionViewerData)
 	return(
 		<BrowserRouter>
 		
-			<Switch>
-
+			
+		{!showRegionViewer?
 				<Redirect exact from="/" to={ {pathname: "/home"} } /> 
-				
+				:
+				<Redirect  from="/" to={ {pathname: "/regionviewer/"+regionViewerData._id} } /> 
+		}
+		{!showRegionViewer?		
 				<Route 
 					path="/home" 
 					name="home" 
 					render={() => 
-						<Homescreen tps={transactionStack} fetchUser={refetch} user={user} />
+						<Homescreen setShowRegionViewer={setShowRegionViewer} setRegionViewerData={setRegionViewerData} regionViewerData={regionViewerData} openRegionViewer={openRegionViewer} tps={transactionStack} fetchUser={refetch} user={user} />
 					} 
 				/> 
-				
+				:
 				<Route
-					path="/mapselect/id=:id"
+					path="/regionviewer/:id"
 					name="mapselect"
-					id={getCookie("listId")}
+					
+				
 					render={()=>
 						
-						<Regionspreadsheet/>
+						<Regionspreadsheet  setShowRegionViewer={setShowRegionViewer} data={regionViewerData}/>
 					}
 				/>
 				
-			</Switch>
+		}
 		</BrowserRouter>
 	);
 }

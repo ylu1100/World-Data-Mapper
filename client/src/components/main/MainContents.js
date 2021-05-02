@@ -74,6 +74,7 @@ const MainContents = (props) => {
                 setShowDelete={props.setShowDelete} setActiveList={props.setActiveList}
             />
             <TableContents
+                openRegionViewer={props.openRegionViewer}
                 goToSubregion={props.goToSubregion}
                 regionslist={props.regionslist}
                 key={props.activeList.id} activeList={props.activeList}

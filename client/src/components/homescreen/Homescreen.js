@@ -48,14 +48,27 @@ const Homescreen = (props) => {
 	// const { loading, error, data, refetch } = useQuery(GET_DB_TODOS);
 	// const { loading, error, data, refetch } = useQuery(GET_DB_REGIONS);
 	const mapsquery=useQuery(GET_DB_TODOS);
-	console.log(activeList)
-	const regionsquery =  useQuery(query.GET_DB_REGIONS,{
-		variables:{parentId:activeList._id}
+	console.log(props.regionViewerData.parentId)
+	const parentregionsquery = useQuery(query.GET_DB_REGION_BY_ID,{
+		variables:{parentId:props.regionViewerData.parentId},
+		
 	})
+	console.log(parentregionsquery)
+	if((activeList==undefined || Object.keys(activeList).length==0)&&parentregionsquery.data!==undefined){
+		console.log("set active list")
+		setActiveList(parentregionsquery.data.getRegionById)
+	}
+	
+	
+	const regionsquery =  useQuery(query.GET_DB_REGIONS,{
+		variables:{parentId:activeList._id},
+		
+	})
+
+	
+	
 	regionslist=regionsquery.data
-	console.log("activeList:")
-	console.log(21321321321321321321321321321313)
-	console.log(activeList)
+
 	
 
 	if(mapsquery.loading) { console.log(mapsquery.loading, 'loading'); }
@@ -458,6 +471,7 @@ const Homescreen = (props) => {
 					activeList ? 
 							<div className="container-secondary">
 								<MainContents
+									openRegionViewer={props.openRegionViewer}
 									addingItem={addingItem}
 									goToSubregion={goToSubregion}
 									undo={tpsUndo} redo={tpsRedo}
