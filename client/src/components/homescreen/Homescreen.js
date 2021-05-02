@@ -35,8 +35,8 @@ const Homescreen = (props) => {
 	const [addingItem,setAddingItem] =useState(false)
 
 	const [ReorderTodoItems] 		= useMutation(mutations.REORDER_ITEMS);
-	const [UpdateTodoItemField] 	= useMutation(mutations.UPDATE_ITEM_FIELD);
-	const [UpdateTodolistField] 	= useMutation(mutations.UPDATE_TODOLIST_FIELD);
+	const [UpdateTodoItemField] 	= useMutation(mutations.UPDATE_ITEM_FIELD); //update field of subregion
+	const [UpdateTodolistField] 	= useMutation(mutations.UPDATE_TODOLIST_FIELD); //update map
 	const [DeleteTodolist] 			= useMutation(mutations.DELETE_TODOLIST);
 	const [DeleteTodoItem] 			= useMutation(mutations.DELETE_ITEM);
 	const [AddTodolist] 			= useMutation(mutations.ADD_TODOLIST);
@@ -174,10 +174,7 @@ const Homescreen = (props) => {
 	};
 
 	const editItem = async (itemID, field, value, prev) => {
-		let flag = 0;
-		if (field === 'completed') flag = 1;
-		let listID = activeList._id;
-		let transaction = await new EditItem_Transaction(listID, itemID, field, prev, value, flag, UpdateTodoItemField);
+		let transaction = await new EditItem_Transaction(itemID, field, prev, value, UpdateTodoItemField);
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 
@@ -369,8 +366,8 @@ const Homescreen = (props) => {
 		props.tps.clearAllTransactions()
 	};
 
-	const updateListField = async (_id, field, value, prev) => {
-		let transaction =await  new UpdateListField_Transaction(_id, field, prev, value, UpdateTodolistField);
+	const updateListField = async (_id, newName, prev) => {
+		let transaction =await  new UpdateListField_Transaction(_id, newName, prev, UpdateTodolistField);
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 

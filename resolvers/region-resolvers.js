@@ -201,27 +201,19 @@ module.exports={
 		// 							 field,as it uses a boolean instead of a string
 		// 	@returns {array} the updated item array on success, or the initial item array on failure
 		// **/
-		// updateItemField: async (_, args) => {
-		// 	const { _id, itemId, field,  flag } = args;
-		// 	let { value } = args
-		// 	const listId = new ObjectId(_id);
-		// 	const found = await Todolist.findOne({_id: listId});
-		// 	let listItems = found.items;
-		// 	if(flag === 1) {
-		// 		if(value === 'complete') { value = true; }
-		// 		if(value === 'incomplete') { value = false; }
-		// 	}
-		// 	listItems.map(item => {
-		// 		if(item._id.toString() === itemId) {	
-					
-		// 			item[field] = value;
-		// 		}
-		// 	});
-		// 	const updated = await Todolist.updateOne({_id: listId}, { items: listItems })
-		// 	if(updated) return (listItems);
-		// 	else return (found.items);
-		// },
-		// /**
+		updateItemField: async (_, args) => {
+			const { _id,  field,  value} = args;
+			const itemId = new ObjectId(_id);
+			const found = await Region.findOne({_id: itemId});
+			console.log(found)
+			let region= found;
+			region[field]=value
+			const updated = await Region.updateOne({_id: itemId}, region)
+			console.log(region)
+			if(updated) return (region);
+			else return (found);
+		},
+		/**
 		// 	@param 	 {object} args - contains list id, item to swap, and swap direction
 		// 	@returns {array} the reordered item array on success, or initial ordering on failure
 		// **/

@@ -5,20 +5,19 @@ export class jsTPS_Transaction {
 }
 /*  Handles list name changes, or any other top level details of a todolist that may be added   */
 export class UpdateListField_Transaction extends jsTPS_Transaction {
-    constructor(_id, field, prev, update, callback) {
+    constructor(_id, newName, prev,callback) {
         super();
         this.prev = prev;
-        this.update = update;
-        this.field = field;
+        this.update = newName;
         this._id = _id;
         this.updateFunction = callback;
     }
     async doTransaction() {
-		const { data } = await this.updateFunction({ variables: { _id: this._id, field: this.field, value: this.update }});
+		const { data } = await this.updateFunction({ variables: { _id: this._id,newName:this.update }});
 		return data;
     }
     async undoTransaction() {
-        const { data } = await this.updateFunction({ variables: { _id: this._id, field: this.field, value: this.prev }});
+        const { data } = await this.updateFunction({ variables: { _id: this._id,newName:this.prev }});
 		return data;
     }
 }
@@ -78,22 +77,19 @@ export class SortItemsByTaskName_Transaction extends jsTPS_Transaction{
     }
 }
 export class EditItem_Transaction extends jsTPS_Transaction {
-	constructor(listID, itemID, field, prev, update, flag, callback) {
+	constructor(itemID, field, prev, update, callback) {
 		super();
-		this.listID = listID;
 		this.itemID = itemID;
 		this.field = field;
 		this.prev = prev;
 		this.update = update;
-		this.flag = flag;
 		this.updateFunction = callback;
 	}	
 
 	async doTransaction() {
-		const { data } = await this.updateFunction({ 
-				variables:{  itemId: this.itemID, _id: this.listID, 
+		const {data } = await this.updateFunction({ 
+				variables:{  _id: this.itemID,
 							 field: this.field, value: this.update, 
-							 flag: this.flag 
 						  }
 			});
 		return data;
@@ -101,11 +97,10 @@ export class EditItem_Transaction extends jsTPS_Transaction {
 
     async undoTransaction() {
 		const { data } = await this.updateFunction({ 
-				variables:{ itemId: this.itemID, _id: this.listID, 
-							field: this.field, value: this.prev, 
-							flag: this.flag 
-						  }
-			});
+            variables:{  _id: this.itemID,
+                field: this.field, value: this.update, 
+             }
+});
 		return data;
 
     }

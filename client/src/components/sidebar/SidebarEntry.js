@@ -13,8 +13,8 @@ const SidebarEntry = (props) => {
 
     const handleSubmit = (e) => {
         handleEditing(e);
-        const { name, value } = e.target;
-        props.updateListField(props._id, name, value, preEdit);
+        const { value} = e.target;
+        props.updateListField(props._id,value, preEdit);
     };
 
     const entryStyle = props.id === props.activeid ? 'list-item list-item-active' : 'list-item ';

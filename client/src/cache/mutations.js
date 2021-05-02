@@ -47,14 +47,16 @@ export const DELETE_ITEM = gql`
 `;
 
 export const UPDATE_ITEM_FIELD = gql`
-	mutation UpdateItemField($_id: String!, $itemId: String!, $field: String!, $value: String!, $flag: Int!) {
-		updateItemField(_id: $_id, itemId: $itemId, field: $field, value: $value, flag: $flag) {
+	mutation UpdateItemField($_id: String!, $field: String!, $value: String!) {
+		updateItemField(_id: $_id, field: $field, value: $value) {
 			_id
 			id
-			description
-			due_date
-			assigned_to
-			completed
+			parentId
+			name
+			capital
+			leader
+			subregions
+			landmarks
 		}
 	}
 `;
@@ -85,8 +87,8 @@ export const DELETE_TODOLIST = gql`
 `;
 
 export const UPDATE_TODOLIST_FIELD = gql`
-	mutation UpdateTodolistField($_id: String!, $field: String!, $value: String!) {
-		updateTodolistField(_id: $_id, field: $field, value: $value)
+	mutation UpdateTodolistField($_id: String!, $newName:String!) {
+		updateTodolistField(_id: $_id, newName:$newName)
 	}
 `;
 // export const SORT_BY_TASK = gql`

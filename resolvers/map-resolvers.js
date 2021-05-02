@@ -139,47 +139,24 @@ module.exports={
 			if(deleted) return true;
 			else return false;
 		},
-		// /** 
-		//  	@param 	 {object} args - a todolist objectID, field, and the update value
-		// 	@returns {boolean} true on successful update, false on failure
-		// **/
-		// updateTodolistField: async (_, args) => {
-		// 	const { field, value, _id } = args;
-		// 	const objectId = new ObjectId(_id);
-		// 	const updated = await Todolist.updateOne({_id: objectId}, {[field]: value});
-		// 	if(updated) return value;
-		// 	else return "";
-		// },
-		// /** 
-		// 	@param	 {object} args - a todolist objectID, an item objectID, field, and
-		// 							 update value. Flag is used to interpret the completed 
-		// 							 field,as it uses a boolean instead of a string
-		// 	@returns {array} the updated item array on success, or the initial item array on failure
-		// **/
-		// updateItemField: async (_, args) => {
-		// 	const { _id, itemId, field,  flag } = args;
-		// 	let { value } = args
-		// 	const listId = new ObjectId(_id);
-		// 	const found = await Todolist.findOne({_id: listId});
-		// 	let listItems = found.items;
-		// 	if(flag === 1) {
-		// 		if(value === 'complete') { value = true; }
-		// 		if(value === 'incomplete') { value = false; }
-		// 	}
-		// 	listItems.map(item => {
-		// 		if(item._id.toString() === itemId) {	
-					
-		// 			item[field] = value;
-		// 		}
-		// 	});
-		// 	const updated = await Todolist.updateOne({_id: listId}, { items: listItems })
-		// 	if(updated) return (listItems);
-		// 	else return (found.items);
-		// },
-		// /**
-		// 	@param 	 {object} args - contains list id, item to swap, and swap direction
-		// 	@returns {array} the reordered item array on success, or initial ordering on failure
-		// **/
+		/** 
+		 	@param 	 {object} args - a todolist objectID, field, and the update value
+			@returns {boolean} true on successful update, false on failure
+		**/
+		updateTodolistField: async (_, args) => {
+			const {_id,newName } = args;
+			const objectId = new ObjectId(_id);
+			const updated = await Map.updateOne({_id: objectId}, {name: newName});
+			if(updated) return newName;
+			else return "";
+		},
+		/** 
+			@param	 {object} args - a todolist objectID, an item objectID, field, and
+									 update value. Flag is used to interpret the completed 
+									 field,as it uses a boolean instead of a string
+			@returns {array} the updated item array on success, or the initial item array on failure
+		**/
+		
 		// reorderItems: async (_, args) => {
 		// 	const { _id, itemId, direction } = args;
 		// 	const listId = new ObjectId(_id);
