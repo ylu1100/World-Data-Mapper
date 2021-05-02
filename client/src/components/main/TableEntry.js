@@ -8,55 +8,46 @@ const TableEntry = (props) => {
     const name=data.name
     const leader=data.leader
     const landmarks=data.landmarks
-    const completeStyle = data.completed ? ' complete-task' : ' incomplete-task';
+   
     
-    const description = data.description;
-    const due_date = data.due_date;
-    const status = data.completed ? 'complete' : 'incomplete';
-    const assignment=data.assigned_to
-    const [editingDate, toggleDateEdit] = useState(false);
-    const [editingDescr, toggleDescrEdit] = useState(false);
-    const [editingStatus, toggleStatusEdit] = useState(false);
-    const [editingAssignment, toggleAssignmentEdit] = useState(false);
 
-    const handleDateEdit = (e) => {
-        toggleDateEdit(false);
-        const newDate = e.target.value ? e.target.value : 'No Date';
-        const prevDate = due_date;
-        props.editItem(data._id, 'due_date', newDate, prevDate);
+    const [editingName, toggleNameEdit] = useState(false);
+    const [editingCapital, toggleCapitalEdit] = useState(false);
+    const [editingLeader, toggleLeaderEdit] = useState(false);
+    
+    const handleNameEdit = (e) => {
+        toggleNameEdit(false);
+        const newName = e.target.value ? e.target.value : 'No Name';
+        const prevName = name;
+        props.editItem(data._id, 'name', newName, prevName);
     };
 
-    const handleDescrEdit = (e) => {
-        toggleDescrEdit(false);
-        const newDescr = e.target.value ? e.target.value : 'No Description';
-        const prevDescr = description;
-        props.editItem(data._id, 'description', newDescr, prevDescr);
+    const handleCapitalEdit = (e) => {
+        toggleCapitalEdit(false);
+        const newCapital = e.target.value ? e.target.value : 'No Capital';
+        const prevCapital = capital;
+        props.editItem(data._id, 'capital', newCapital, prevCapital);
     };
 
-    const handleStatusEdit = (e) => {
-        toggleStatusEdit(false);
-        const newStatus = e.target.value ? e.target.value : false;
-        const prevStatus = status;
-        props.editItem(data._id, 'completed', newStatus, prevStatus);
+    const handleLeaderEdit = (e) => {
+        toggleLeaderEdit(false);
+        const newLeader = e.target.value ? e.target.value : "No Leader";
+        const prevLeader = leader;
+        props.editItem(data._id, 'leader', newLeader, prevLeader);
     };
-    const handleAssignmentEdit=(e)=>{
-        toggleAssignmentEdit(false);
-        const newAssignment=e.target.value?e.target.value : 'No Assignment';
-        const prevAssignment=assignment;
-        props.editItem(data._id,'assigned_to',newAssignment,prevAssignment)
-    }
+    
     return (
         <WRow className='table-entry'>
             <WCol size="2">
                 {
-                    editingDescr || description === ''
+                    editingName || name === ''
                         ? <WInput
-                            className='table-input' onBlur={handleDescrEdit}
-                            autoFocus={true} defaultValue={description} type='text'
+                            className='table-input' onBlur={handleNameEdit}
+                            autoFocus={true} defaultValue={name} type='text'
                             wType="outlined" barAnimation="solid" inputClass="table-input-class"
                         />
                         : <div className="table-text"
-                            onClick={() => toggleDescrEdit(!editingDescr)}
+                            onClick={() => toggleNameEdit(!editingName)}
                         >{name}
                         </div>
                 }
@@ -64,13 +55,13 @@ const TableEntry = (props) => {
 
             <WCol size="2">
                 {
-                    editingDate ? <input
-                        className='table-input' onBlur={handleDateEdit}
-                        autoFocus={true} defaultValue={due_date} type='date'
+                    editingCapital ? <input
+                        className='table-input' onBlur={handleCapitalEdit}
+                        autoFocus={true} defaultValue={capital} type='text'
                         wType="outlined" barAnimation="solid" inputClass="table-input-class"
                     />
                         : <div className="table-text"
-                            onClick={() => toggleDateEdit(!editingDate)}
+                            onClick={() => toggleCapitalEdit(!editingCapital)}
                         >{capital}
                         </div>
                 }
@@ -78,19 +69,17 @@ const TableEntry = (props) => {
 
             <WCol size="2">
                 {
-                    editingStatus ? <select
-                        className='table-select' onBlur={handleStatusEdit}
-                        autoFocus={true} defaultValue={status}
-                    >
-                        <option value="complete">complete</option>
-                        <option value="incomplete">incomplete</option>
-                    </select>
-                        : <div onClick={() => toggleStatusEdit(!editingStatus)} className={`${completeStyle} table-text`}>
+                    editingLeader ?<input
+                        className='table-input' onBlur={handleLeaderEdit}
+                        autoFocus={true} defaultValue={leader} type='text'
+                        wType="outlined" barAnimation="solid" inputClass="table-input-class"
+                    />
+                        : <div onClick={() => toggleLeaderEdit(!editingLeader)} className={` table-text`}>
                             {leader}
                         </div>
                 }
             </WCol>
-            <WCol size="2">
+            {/* <WCol size="2">
                 {
                     editingAssignment ? <WInput
                             className='table-input' onBlur={handleAssignmentEdit}
@@ -108,7 +97,7 @@ const TableEntry = (props) => {
                         </div>
                         }
                 
-            </WCol>    
+            </WCol>     */}
             <WCol size="2">
                 <div className='button-group'>
                     {

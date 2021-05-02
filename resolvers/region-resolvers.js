@@ -36,10 +36,24 @@ module.exports={
 			const { parentId} = args;
 			
 			const objectId = new ObjectId(parentId);
-			const map = await Region.findOne({_id: objectId});
 			
-			if(map) return map;
-			else return ({});
+			let map = await Region.findOne({_id: objectId});
+			
+			if(!map){
+				console.log('find in map')
+				map=await Map.findOne({_id: objectId});
+				map=({_id:map._id,id:map.id,parentId:-1,name:map.name,capital:"",leader:"",subregions:map.regions,landmarks:[]})
+			}
+			console.log(map)
+			if(map) {
+				console.log('pog')
+				return map
+			}
+			
+			else {
+				console.log("lmfao")
+				return ({})
+			};
 		},
 	},
 	Mutation: {

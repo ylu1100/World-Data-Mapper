@@ -107,13 +107,13 @@ const TableHeader = (props) => {
 
                 {
                     !props.activeList.items ||props.activeList.items.length==0?
-                <WButton  className='table-header-section button-disable' wType="texted" >Task</WButton>
+                <WButton  className='table-header-section button-disable' wType="texted" >Name</WButton>
                 :
 
                 !sortedAscend?
-                <WButton onClick={sortAscendTask} className='table-header-section' wType="texted" >Task</WButton>
+                <WButton onClick={sortAscendTask} className='table-header-section' wType="texted" >Name</WButton>
                 :
-                <WButton onClick={sortDescendTask} className='table-header-section' wType="texted" >Task</WButton>
+                <WButton onClick={sortDescendTask} className='table-header-section' wType="texted" >Name</WButton>
                 
                 }   
             </WCol>
@@ -122,12 +122,12 @@ const TableHeader = (props) => {
             
                 {
                     !props.activeList.items ||props.activeList.items.length==0?
-                <WButton  className='table-header-section button-disable' wType="texted" >Due Date</WButton>
+                <WButton  className='table-header-section button-disable' wType="texted" >Capital</WButton>
                 :
                     !sortedDate?
-                <WButton onClick={sortAscendDate} className='table-header-section' wType="texted">Due Date</WButton>
+                <WButton onClick={sortAscendDate} className='table-header-section' wType="texted">Capital</WButton>
                 :
-                <WButton onClick={sortDescendDate} className='table-header-section' wType="texted">Due Date</WButton>
+                <WButton onClick={sortDescendDate} className='table-header-section' wType="texted">Capital</WButton>
                
                 }   
             </WCol>
@@ -135,15 +135,15 @@ const TableHeader = (props) => {
             <WCol size="2">
                 {
                     !props.activeList.items ||props.activeList.items.length==0?
-                <WButton  className='table-header-section button-disable' wType="texted" >Status</WButton>
+                <WButton  className='table-header-section button-disable' wType="texted" >Leader</WButton>
                 :
                     !sortedComplete?
-                <WButton onClick={sortListByComplete} className='table-header-section' wType="texted" >Status</WButton>
+                <WButton onClick={sortListByComplete} className='table-header-section' wType="texted" >Leader</WButton>
                  :
-                <WButton onClick={sortListByIncomplete} className='table-header-section' wType="texted" >Status</WButton>
+                <WButton onClick={sortListByIncomplete} className='table-header-section' wType="texted" >Leader</WButton>
                 }   
             </WCol>
-            <WCol size="2">
+            {/* <WCol size="2">
                 {
                     !props.activeList.items ||props.activeList.items.length==0?
                 <WButton  className='table-header-section button-disable' wType="texted" >Assigned To</WButton>
@@ -153,7 +153,7 @@ const TableHeader = (props) => {
                  :
                 <WButton onClick={sortListByDescendAssignment} className='table-header-section' wType="texted" >Assigned To</WButton>
                 }   
-            </WCol>    
+            </WCol>     */}
             <WCol size="2">
             <div className='button-group'>
             {   

@@ -48,12 +48,10 @@ const Homescreen = (props) => {
 	// const { loading, error, data, refetch } = useQuery(GET_DB_TODOS);
 	// const { loading, error, data, refetch } = useQuery(GET_DB_REGIONS);
 	const mapsquery=useQuery(GET_DB_TODOS);
-	console.log(props.regionViewerData.parentId)
 	const parentregionsquery = useQuery(query.GET_DB_REGION_BY_ID,{
 		variables:{parentId:props.regionViewerData.parentId},
 		
 	})
-	console.log(parentregionsquery)
 	if((activeList==undefined || Object.keys(activeList).length==0)&&parentregionsquery.data!==undefined){
 		console.log("set active list")
 		setActiveList(parentregionsquery.data.getRegionById)
