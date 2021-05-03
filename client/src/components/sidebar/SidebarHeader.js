@@ -14,11 +14,11 @@ const SidebarHeader = (props) => {
                 {
                     props.auth && <div className="sidebar-options">
                         {!props.activeid?
-                        <WButton className="sidebar-buttons" onClick={props.createNewList} hoverAnimation="darken" clickAnimation="ripple-light" shape="rounded" color="primary">
+                        <WButton className="sidebar-buttons" onClick={()=>props.toggleMapName(true)} hoverAnimation="darken" clickAnimation="ripple-light" shape="rounded" color="primary">
                             <i className="material-icons">add</i>
                         </WButton>
                         :
-                        <WButton  style={{backgroundColor:"gray"}} className="sidebar-buttons button-disable" onClick={props.createNewList} clickAnimation="ripple-light" shape="rounded" >
+                        <WButton  style={{backgroundColor:"gray"}} className="sidebar-buttons button-disable"  clickAnimation="ripple-light" shape="rounded" >
                             <i className="material-icons">add</i>
                         </WButton>
                         }

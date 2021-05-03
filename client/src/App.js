@@ -1,6 +1,7 @@
 import React , { useState }			from 'react';
 import Homescreen 		from './components/homescreen/Homescreen';
 import Regionspreadsheet from './components/main/regionspreadsheet'
+import Home from './components/main/home'
 import { useQuery } 	from '@apollo/client';
 import * as queries 	from './cache/queries';
 import { jsTPS } 		from './utils/jsTPS';
@@ -28,10 +29,12 @@ const App = () => {
 	
 	let user = null;
     let transactionStack = new jsTPS();
-	console.log(getCookie("listId"))
+	
     const { loading, error, data, refetch } = useQuery(queries.GET_DB_USER);
 	console.log(refetch)
-    if(error) { console.log(error); }
+    if(error) { 
+		
+	console.log(error); }
 	if(loading) { console.log(loading); }
 	if(data) { 
 		let { getCurrentUser } = data;
@@ -46,14 +49,16 @@ const App = () => {
 	//console.log(regionViewerData)
 	return(
 		<BrowserRouter>
-		
+
 			
 		{!showRegionViewer?
 				<Redirect exact from="/" to={ {pathname: "/home"} } /> 
 				:
 				<Redirect  from="/" to={ {pathname: "/regionviewer/"+regionViewerData._id} } /> 
 		}
+		
 		{!showRegionViewer?		
+
 				<Route 
 					path="/home" 
 					name="home" 

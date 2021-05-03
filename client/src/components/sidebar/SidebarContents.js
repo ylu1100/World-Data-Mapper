@@ -8,6 +8,7 @@ const SidebarContents = (props) => {
             <SidebarHeader 
                 tps={props.tps}
                 activeid={props.activeid}
+                toggleMapName={props.toggleMapName}
                 auth={props.auth} createNewList={props.createNewList} 
                 undo={props.undo} redo={props.redo} 
             />

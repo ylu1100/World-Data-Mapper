@@ -26,6 +26,18 @@ export const LOGOUT = gql`
 	}
 `;
 
+export const UPDATE_ACCOUNT = gql`
+	mutation UpdateAccount($_id:String!,$email:String!,$password:String!,$fullName:String!) {
+		updateAccount(_id:$_id,email: $email, password: $password, fullName:$fullName) {
+			email 
+			_id
+			fullName
+			password
+		}
+	}
+`;
+
+
 export const ADD_ITEM = gql`
 	mutation AddItem($region: String!, $_id: String!) {
 		addItem(region:$region, _id: $_id)

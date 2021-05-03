@@ -6,6 +6,9 @@ import SidebarContents 					from '../sidebar/SidebarContents';
 import Login 							from '../modals/Login';
 import Delete 							from '../modals/Delete';
 import CreateAccount 					from '../modals/CreateAccount';
+import Update					from '../modals/Update';
+import Home from '../main/home'
+import MapName					from '../modals/MapName';
 import { GET_DB_TODOS } 				from '../../cache/queries';
 
 import * as mutations 					from '../../cache/mutations';
@@ -33,6 +36,8 @@ const Homescreen = (props) => {
 	const [showDelete, toggleShowDelete] 	= useState(false);
 	const [showLogin, toggleShowLogin] 		= useState(false);
 	const [showCreate, toggleShowCreate] 	= useState(false);
+	const [showUpdate,toggleShowUpdate]=useState(false);
+	const [showMapName,toggleMapName]=useState(false)
 	const [addingItem,setAddingItem] =useState(false)
 
 	const [ReorderTodoItems] 		= useMutation(mutations.REORDER_ITEMS);
@@ -49,12 +54,14 @@ const Homescreen = (props) => {
 	// const { loading, error, data, refetch } = useQuery(GET_DB_TODOS);
 	// const { loading, error, data, refetch } = useQuery(GET_DB_REGIONS);
 	const mapsquery=useQuery(GET_DB_TODOS);
+	
 	const parentregionsquery = useQuery(query.GET_DB_REGION_BY_ID,{
 		variables:{parentId:props.regionViewerData.parentId},
-		
+		skip:props.regionViewerData.parentId==undefined
 	})
 	const getparentsquery=useQuery(query.GET_ALL_PARENTS,{
-		variables:{_id:activeList._id}
+		variables:{_id:activeList._id},
+		skip:activeList._id==undefined
 	})
 	
 	//if navigated from regionviewer, show parents
@@ -66,7 +73,7 @@ const Homescreen = (props) => {
 	
 	const regionsquery =  useQuery(query.GET_DB_REGIONS,{
 		variables:{parentId:activeList._id},
-		
+		skip:activeList._id==undefined
 	})
 	
 	if(getparentsquery.data!==undefined){
@@ -198,7 +205,7 @@ const Homescreen = (props) => {
 
 	};
 
-	const createNewList = async () => {
+	const createNewList = async (name) => {
 		const length = todolists.length
 		let id=1
 		for(let i=0;i<todolists.length;i++){
@@ -210,7 +217,7 @@ const Homescreen = (props) => {
 		let list = {
 			_id: '',
 			id: id,
-			name: 'Untitled',
+			name: name,
 			owner: props.user._id,
 			regions: [],
 		}
@@ -433,23 +440,33 @@ const Homescreen = (props) => {
 		toggleShowLogin(false);
 		toggleShowDelete(!showDelete)
 	}
-	
-	return (
+	const setShowUpdate = () => {
 		
+		toggleShowUpdate(!showUpdate);
+	}
+
+	if(auth){
+	return (
+	
 		<WLayout wLayout="header-lside">
 			<WLHeader>
 				<WNavbar color="colored">
 					<ul>
 						<WNavItem>
-							<Logo className='logo' />
+							Map
 						</WNavItem>
 					</ul>
 					<ul>
+					{	
 						<NavbarOptions
 							fetchUser={props.fetchUser} auth={auth} 
+							user={props.user}
 							setShowCreate={setShowCreate} setShowLogin={setShowLogin}
+							setShowUpdate={setShowUpdate}
 							refetchTodos={mapsquery.refetch} setActiveList={setActiveList}
 						/>
+						
+					}
 					</ul>
 				</WNavbar>
 			</WLHeader>
@@ -458,6 +475,7 @@ const Homescreen = (props) => {
 			<WLSide side="left">
 				<WSidebar>					
 							<SidebarContents
+								toggleMapName={toggleMapName}
 								activeList={activeList}
 								todolists={todolists} activeid={activeList.id} auth={auth}
 								handleSetActive={handleSetActive} createNewList={createNewList}
@@ -510,7 +528,7 @@ const Homescreen = (props) => {
 				}
 
 			</WLMain>
-			{showDelete||showCreate||showLogin?
+			{showDelete||showCreate||showLogin||showUpdate?
 				<div className="blurBackground"></div>
 			:
 			null
@@ -525,11 +543,59 @@ const Homescreen = (props) => {
 			}
 
 			{
-				showLogin && (<Login setShowLogin={setShowLogin} fetchUser={props.fetchUser} refetchTodos={mapsquery.refetch}setShowLogin={setShowLogin} />)
+				showLogin && (<Login setShowLogin={setShowLogin} fetchUser={props.fetchUser} refetchTodos={mapsquery.refetch} setShowLogin={setShowLogin} />)
+			}
+			{
+				showUpdate && (<Update  user={props.user} setShowLogin={setShowLogin} fetchUser={props.fetchUser} refetchTodos={mapsquery.refetch} setShowUpdate={setShowUpdate} />)
+			}
+			{
+				showMapName &&(<MapName createNewList={createNewList} refetchTodos={mapsquery.refetch}  toggleMapName={toggleMapName}></MapName>)
+			}
+		</WLayout>
+	
+	)
+		}
+		else{
+	return(
+		<div>
+		<WLHeader>
+				<WNavbar color="colored">
+					<ul>
+						<WNavItem>
+							Map
+						</WNavItem>
+					</ul>
+					<ul>
+					{	
+						<NavbarOptions
+							fetchUser={props.fetchUser} auth={auth} 
+							user={props.user}
+							setShowCreate={setShowCreate} setShowLogin={setShowLogin}
+							setShowUpdate={setShowUpdate}
+							refetchTodos={mapsquery.refetch} setActiveList={setActiveList}
+						/>
+						
+					}
+					</ul>
+				</WNavbar>
+			</WLHeader>
+			{showCreate||showLogin?
+				<div className="blurBackground"></div>
+			:
+			null
+			}	
+			
+	
+			{
+				showCreate && (<CreateAccount setShowCreate={setShowCreate} fetchUser={props.fetchUser} setShowCreate={setShowCreate} />)
 			}
 
-		</WLayout>
-	);
+			{
+				showLogin && (<Login setShowLogin={setShowLogin} fetchUser={props.fetchUser} refetchTodos={mapsquery.refetch} setShowLogin={setShowLogin} />)
+			}
+	<Home/>
+	</div>)
+		}
 };
 
 export default Homescreen;

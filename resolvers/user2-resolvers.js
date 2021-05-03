@@ -76,11 +76,39 @@ module.exports = {
 			res.cookie('access-token', accessToken, { httpOnly: true , sameSite: 'None', secure: true}); 
 			return user;
 		},
+		updateAccount:async (_,args,{res})=>{
+			const { _id,email, password, fullName } = args;
+			console.log(email)
+			const alreadyRegistered = await User.findOne({email: email});
+			if(alreadyRegistered) {
+				console.log('User with that email already registered.');
+				return(new User({
+					_id: '',
+					fullName: '',
+					email: 'already exists', 
+					password: '',
+					}));
+			}
+			const user= await User.findOne({_id:_id})
+			if(email!==""){
+				await User.updateOne({_id:_id},{email:email})
+			}
+			if(fullName!==""){
+				await User.updateOne({_id:_id},{fullName:fullName})
+			}
+			if(password!==""){
+				const hashed = await bcrypt.hash(password, 10);
+				await User.updateOne({_id:_id},{password:hashed})
+			}
+			return user
+			
+		},
 		/** 
 			@param 	 {object} res - response object containing the current access/refresh tokens  
 			@returns {boolean} true 
 		**/
 		logout:(_, __, { res }) => {
+			console.log('logging out')
 			res.clearCookie('refresh-token');
 			res.clearCookie('access-token');
 			return true;
