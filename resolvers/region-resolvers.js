@@ -6,13 +6,13 @@ module.exports={
     Query: {
         getAllRegions: async (_,args) => {
             console.log("loading regions")
-            console.log(args.parentId)
+        
             const parentId=new ObjectId(args.parentId)
 			
 			if(!parentId) { return([])};
 			const regionlists = await Region.find({parentId: parentId});
 			//const listIds=await User.findOne({_id:_id})
-            console.log(regionlists)
+       
 			// let mapIds=listIds.maps
 			// let maplistordered=[]
 			// for(let i=0;i<mapIds.length;i++){
@@ -34,27 +34,63 @@ module.exports={
 		**/
 		getRegionById: async (_, args) => {
 			const { parentId} = args;
-			
+			console.log("lol")
 			const objectId = new ObjectId(parentId);
 			
 			let map = await Region.findOne({_id: objectId});
 			
-			if(!map){
-				console.log('find in map')
+			if(map==null){
+			
 				map=await Map.findOne({_id: objectId});
 				map=({_id:map._id,id:map.id,parentId:-1,name:map.name,capital:"",leader:"",subregions:map.regions,landmarks:[]})
 			}
-			console.log(map)
+			
 			if(map) {
-				console.log('pog')
+				console.log(map)
 				return map
 			}
 			
 			else {
-				console.log("lmfao")
+				
 				return ({})
 			};
 		},
+		getAllParents:async(_,args)=>{
+			let {_id}= args
+			let objectId=new ObjectId(_id)
+			let region=await Region.findOne({_id:objectId});
+			let parentList=[]
+			let tempparent=region
+			while(region!==null){
+				tempparent=region
+				parentList.push(region) //push id of region to list each time
+				region=await Region.findOne({_id:new ObjectId(region.parentId)})
+				if(region==null){ //if cant find parent as region, then we're at map level. so add map to list
+					
+					region=await Map.findOne({_id:new ObjectId(tempparent.parentId)})
+				
+					region={_id:region._id,id:region.id,name:region.name,parentId:"",subregions:region.regions,landmarks:[],leader:"",capital:""}
+				
+					delete region.owner
+					delete region.regions
+					parentList.push(region)
+					break
+				}
+			}
+			if(parentList.length==0){
+				
+				region=await Map.findOne({_id:new ObjectId(_id)})
+				
+				region={_id:region._id,id:region.id,name:region.name,parentId:"",subregions:region.regions,landmarks:[],leader:"",capital:""}
+				
+				delete region.owner
+				delete region.regions
+				parentList.push(region)
+				
+			}
+			
+			return parentList
+		}
 	},
 	Mutation: {
 		/** 
@@ -64,7 +100,7 @@ module.exports={
 		addSubregion: async(_, args) => {
 			
 			const { region, _id } = args;
-			console.log(args)
+	
 			const listId = new ObjectId(_id);
 			let objectId;
 			
@@ -77,7 +113,7 @@ module.exports={
             let foundInRegion=true;
 			let found = await Region.findOne({_id: listId});
 			if(!found){
-                console.log('region not found 1')
+               
                 found=await Map.findOne({_id:listId})
                 foundInRegion=false
             }
@@ -92,9 +128,7 @@ module.exports={
 			}
 			
 			listRegions.push(region);
-			console.log(objectId)
-            console.log(listRegions)
-            console.log(listId)
+			
 			let updated;  
             
 			if(!foundInRegion){
@@ -205,14 +239,27 @@ module.exports={
 			const { _id,  field,  value} = args;
 			const itemId = new ObjectId(_id);
 			const found = await Region.findOne({_id: itemId});
-			console.log(found)
+			
 			let region= found;
 			region[field]=value
 			const updated = await Region.updateOne({_id: itemId}, region)
-			console.log(region)
+	
 			if(updated) return (region);
 			else return (found);
 		},
+		addLandmark:async(_,args)=>{
+			const {_id,landmark}= args
+			const region= await Region.findOne({_id:_id})
+			let landmarklist=[...region.landmarks]
+			landmarklist.push(landmark)
+			const update= await Region.updateOne({_id:_id},{landmarks:landmarklist})
+			if(update){return landmarklist}
+			else{
+				return []
+			}
+
+		},
+		
 		/**
 		// 	@param 	 {object} args - contains list id, item to swap, and swap direction
 		// 	@returns {array} the reordered item array on success, or initial ordering on failure

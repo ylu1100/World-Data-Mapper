@@ -50,3 +50,17 @@ export const GET_DB_REGION_BY_ID = gql`
 		}
 	}
 `;
+export const GET_ALL_PARENTS = gql`
+	query getAllParents($_id:String!){
+		getAllParents(_id:$_id){
+			_id
+			id
+			parentId
+			name
+			capital
+			leader
+			subregions
+			landmarks
+		}
+	}
+`;

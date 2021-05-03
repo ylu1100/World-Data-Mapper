@@ -116,3 +116,8 @@ export const CREATE_NEW_REGION=gql`
 		createNewRegion(region:$region)
 	}
 `;
+export const ADD_LANDMARK=gql`
+	mutation addLandmark($_id:String!,$landmark:String!){
+		addLandmark(_id:$_id,landmark:$landmark)
+	}
+`;

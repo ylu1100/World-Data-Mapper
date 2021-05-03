@@ -26,6 +26,7 @@ const Homescreen = (props) => {
 	
 	let todolists 							= [];
 	let regionslist							=[];
+	let ancestorList				=[];
 	const [todolistlist,setTodolists] = useState([])
 	const [regionlist,setRegionlist] = useState([])
 	const [activeList, setActiveList] 		= useState({});
@@ -52,6 +53,11 @@ const Homescreen = (props) => {
 		variables:{parentId:props.regionViewerData.parentId},
 		
 	})
+	const getparentsquery=useQuery(query.GET_ALL_PARENTS,{
+		variables:{_id:activeList._id}
+	})
+	
+	//if navigated from regionviewer, show parents
 	if((activeList==undefined || Object.keys(activeList).length==0)&&parentregionsquery.data!==undefined){
 		console.log("set active list")
 		setActiveList(parentregionsquery.data.getRegionById)
@@ -62,8 +68,12 @@ const Homescreen = (props) => {
 		variables:{parentId:activeList._id},
 		
 	})
-
 	
+	if(getparentsquery.data!==undefined){
+		ancestorList=[...getparentsquery.data.getAllParents]
+		ancestorList.reverse()
+		console.log(ancestorList)
+	}
 	
 	regionslist=regionsquery.data
 
@@ -443,11 +453,10 @@ const Homescreen = (props) => {
 					</ul>
 				</WNavbar>
 			</WLHeader>
-
+			{
+			activeList._id==undefined?
 			<WLSide side="left">
-				<WSidebar>
-					{
-						activeList ?
+				<WSidebar>					
 							<SidebarContents
 								activeList={activeList}
 								todolists={todolists} activeid={activeList.id} auth={auth}
@@ -456,11 +465,21 @@ const Homescreen = (props) => {
 								updateListField={updateListField}
 								tps={props.tps}
 							/>
-							:
-							<></>
-					}
 				</WSidebar>
 			</WLSide>
+			:
+			<WLSide side="left">
+			<WSidebar>
+				{ancestorList.map((region)=>(
+					<div>
+					<a onClick={()=>setActiveList(region)}>{region.name}</a>
+					<br></br>
+					</div>
+				))
+				}
+			</WSidebar>
+			</WLSide>
+			}
 			<WLMain>
 				{
 					activeList ? 

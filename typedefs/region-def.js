@@ -16,12 +16,14 @@ const typeDefs = gql `
 	extend type Query {
 		getAllRegions(parentId:String!): [Subregion]
         getRegionById(parentId:String!):Subregion
-		
+		getAllParents(_id:String!):[Subregion]
 	}
 	extend type Mutation {
 		addSubregion(region:String!, _id: String!): String
 		createNewRegion(region:SubregionInput!):String
 		updateItemField(_id:String!,field:String!,value:String!):Subregion
+		addLandmark(_id:String!,landmark:String!):[String]
+	
 	}
 	input FieldInput {
 		_id: String

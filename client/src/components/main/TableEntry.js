@@ -124,8 +124,14 @@ const TableEntry = (props) => {
                         <i className="material-icons">close</i>
                     </WButton>
                     
-                    <a onClick={()=>props.goToSubregion(props.data)}>Go Sub</a>
-                    <a onClick={()=>props.openRegionViewer(props.data)}>Go To Region Viewer</a>
+                    <a onClick={()=>props.goToSubregion(props.data)}>Go to sub</a>
+                    {
+                    props.data.landmarks.length!==0?
+                    <a onClick={()=>props.openRegionViewer(props.data)}>{props.data.landmarks}</a>
+                    :
+                    <a onClick={()=>props.openRegionViewer(props.data)}>N/A</a>
+                    
+                    }
                 </div>
             </WCol>
         </WRow>
