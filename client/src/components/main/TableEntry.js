@@ -100,7 +100,7 @@ const TableEntry = (props) => {
             </WCol>     */}
             <WCol size="2">
                 <div className='button-group'>
-                    {
+                    {/* {
                     props.index==0?
                     <WButton className="table-entry-buttons button-disable" onClick={() => props.reorderItem(data._id, -1)} wType="texted">
                         <i className="material-icons">expand_less</i>
@@ -109,8 +109,8 @@ const TableEntry = (props) => {
                     <WButton className="table-entry-buttons " onClick={() => props.reorderItem(data._id, -1)} wType="texted">
                         <i className="material-icons">expand_less</i>
                     </WButton>
-                    }
-                    {
+                    } */}
+                    {/* {
                     props.index==props.size-1?
                     <WButton className="table-entry-buttons button-disable" onClick={() => props.reorderItem(data._id, 1)} wType="texted">
                         <i className="material-icons">expand_more</i>
@@ -119,21 +119,24 @@ const TableEntry = (props) => {
                     <WButton className="table-entry-buttons" onClick={() => props.reorderItem(data._id, 1)} wType="texted">
                         <i className="material-icons">expand_more</i>
                     </WButton>
-                    }
+                    } */}
                     <WButton className="table-entry-buttons" onClick={() => props.deleteItem(data)} wType="texted">
                         <i className="material-icons">close</i>
                     </WButton>
+                    <a className="hoverEffect" onClick={()=>props.goToSubregion(props.data)}>Go to sub</a>
                     
-                    <a onClick={()=>props.goToSubregion(props.data)}>Go to sub</a>
+                </div>
+                </WCol>
+                <WCol size="2">
+               
                     {
                     props.data.landmarks.length!==0?
-                    <a onClick={()=>props.openRegionViewer(props.data)}>{props.data.landmarks}</a>
+                    <a className="hoverEffect" onClick={()=>props.openRegionViewer(props.data)}>{props.data.landmarks}</a>
                     :
-                    <a onClick={()=>props.openRegionViewer(props.data)}>N/A</a>
+                    <a className="hoverEffect" onClick={()=>props.openRegionViewer(props.data)}>No landmarks</a>
                     
                     }
-                </div>
-            </WCol>
+                    </WCol>
         </WRow>
     );
 };

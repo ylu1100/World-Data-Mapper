@@ -6,7 +6,7 @@ const SidebarHeader = (props) => {
         <WRow className='sidebar-header'>
             <WCol size="7">
                 <WButton wType="texted" hoverAnimation="text-primary" className='sidebar-header-name'>
-                    Todolists
+                    Maps
                 </WButton>
             </WCol>
 

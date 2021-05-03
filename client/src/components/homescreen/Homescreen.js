@@ -452,9 +452,16 @@ const Homescreen = (props) => {
 			<WLHeader>
 				<WNavbar color="colored">
 					<ul>
-						<WNavItem>
-							Map
+					{
+						activeList._id==undefined?
+						<WNavItem className="hoverEffect">
+							The World Data Mapper
 						</WNavItem>
+						:
+						<WNavItem className="hoverEffect" onClick={()=>setActiveList({})}>
+							The World Data Mapper
+						</WNavItem>
+					}
 					</ul>
 					<ul>
 					{	
@@ -463,6 +470,7 @@ const Homescreen = (props) => {
 							user={props.user}
 							setShowCreate={setShowCreate} setShowLogin={setShowLogin}
 							setShowUpdate={setShowUpdate}
+							_id={activeList._id}
 							refetchTodos={mapsquery.refetch} setActiveList={setActiveList}
 						/>
 						
@@ -488,9 +496,15 @@ const Homescreen = (props) => {
 			:
 			<WLSide side="left">
 			<WSidebar>
-				{ancestorList.map((region)=>(
+				{ancestorList.map((region,index)=>(
 					<div>
-					<a onClick={()=>setActiveList(region)}>{region.name}</a>
+					{index==ancestorList.length-1?
+					<a className="hoverEffect"  style={{color:"yellow"}} onClick={()=>setActiveList(region)}>{region.name}</a>
+					
+					:
+					<a className="hoverEffect"   onClick={()=>setActiveList(region)}>{region.name}</a>
+					
+					}
 					<br></br>
 					</div>
 				))
@@ -562,7 +576,7 @@ const Homescreen = (props) => {
 				<WNavbar color="colored">
 					<ul>
 						<WNavItem>
-							Map
+							The World Data Mapper 
 						</WNavItem>
 					</ul>
 					<ul>
