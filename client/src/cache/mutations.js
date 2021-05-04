@@ -133,3 +133,8 @@ export const ADD_LANDMARK=gql`
 		addLandmark(_id:$_id,landmark:$landmark)
 	}
 `;
+export const SET_RECENT_MAP=gql`
+	mutation setRecentMap($user_id:String!,$mapId:Int!){
+		setRecentMap(user_id:$user_id,mapId:$mapId)
+	}
+`;

@@ -51,6 +51,7 @@ const Homescreen = (props) => {
 	const [SelectedListFirst]		= useMutation(mutations.SELECT_LIST_FIRST)
 	const[createSubregion]			= useMutation(mutations.ADD_NEW_REGION);
 	const[createNewRegion]			= useMutation(mutations.CREATE_NEW_REGION);
+	const [setRecentMap]=useMutation(mutations.SET_RECENT_MAP)
 	// const { loading, error, data, refetch } = useQuery(GET_DB_TODOS);
 	// const { loading, error, data, refetch } = useQuery(GET_DB_REGIONS);
 	const mapsquery=useQuery(GET_DB_TODOS);
@@ -88,7 +89,10 @@ const Homescreen = (props) => {
 
 	if(mapsquery.loading) { console.log(mapsquery.loading, 'loading'); }
 	if(mapsquery.error) { console.log(mapsquery.error, 'error'); }
-	if(mapsquery.data) { todolists = mapsquery.data.getAllMaps; }
+	if(mapsquery.data) { 
+		todolists = mapsquery.data.getAllMaps;
+		
+	}
 	
 	// if(regionsquery.loading) { console.log(regionsquery.loading, 'loading'); }
 	// if(regionsquery.error) { console.log(regionsquery.error, 'error'); }
@@ -392,8 +396,8 @@ const Homescreen = (props) => {
 
 	const handleSetActive = async (id) => {
 		const todo = todolists.find(todo => todo.id === id || todo._id === id);
-		
-	
+		console.log(todo)
+		const recentMap=await setRecentMap({variables:{user_id:props.user._id,mapId:todo.id}})
 		let temp=[]
 		temp.push(...todolists)
 		let index=todolists.indexOf(todo)

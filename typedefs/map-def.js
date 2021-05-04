@@ -30,6 +30,7 @@ const typeDefs = gql `
 		addItem(regionid:RegionId!,_id:String!):String
 		deleteItem(region:RegionInput!,_id:String!):[Region]
 		updateTodolistField(_id:String!,newName:String!):String
+		setRecentMap(user_id:String!,mapId:Int!):String
 		}
         
 	input MapInput {

@@ -12,7 +12,7 @@ module.exports={
 			if(!parentId) { return([])};
 			const regionlists = await Region.find({parentId: parentId});
 			//const listIds=await User.findOne({_id:_id})
-       
+			
 			// let mapIds=listIds.maps
 			// let maplistordered=[]
 			// for(let i=0;i<mapIds.length;i++){

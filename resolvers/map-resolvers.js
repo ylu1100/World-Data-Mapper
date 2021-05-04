@@ -25,6 +25,7 @@ module.exports={
 				const map= await Map.findOne({owner:_id,id:mapIds[i]})
 				maplistordered.push(map)
 			}
+			console.log(listIds.maps)
 			//console.log(todolistordered)
 			if(maplists) return (maplistordered);
 
@@ -150,6 +151,20 @@ module.exports={
 			if(updated) return newName;
 			else return "";
 		},
+		setRecentMap:async(_,args)=>{
+			const {user_id,mapId}= args
+			const objectId=new ObjectId(user_id)
+			const user = await User.findOne({_id:objectId})
+			
+			let maplist=[...user.maps]
+			console.log(maplist)
+			maplist.splice(maplist.indexOf(mapId),1)
+			
+			maplist.unshift(mapId)
+			console.log(maplist)
+			const updateMap=await User.updateOne({_id:objectId},{maps:maplist})
+			return ""
+		}
 		/** 
 			@param	 {object} args - a todolist objectID, an item objectID, field, and
 									 update value. Flag is used to interpret the completed 
