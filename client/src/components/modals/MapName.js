@@ -20,6 +20,7 @@ const MapName = (props) => {
 		
 		
 		<div style={{background:"rgb(53,58,68)"}}  className="signup-modal">
+		<WButton style={{marginLeft:"80%",width:'20%'}} onClick={()=>props.toggleMapName(false)} span clickAnimation="ripple-light" hoverAnimation="darken" shape="rounded" color="primary">x</WButton>
 			<div className="modal-header" onClose={() => props.toggleMapName(false)}>
 				Enter the Name of Your Map
 			</div>
