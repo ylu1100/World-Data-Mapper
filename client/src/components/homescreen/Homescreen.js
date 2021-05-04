@@ -462,7 +462,7 @@ const Homescreen = (props) => {
 							The World Data Mapper
 						</WNavItem>
 						:
-						<WNavItem className="hoverEffect" onClick={()=>setActiveList({})}>
+						<WNavItem className="hoverEffect" onClick={()=>{setActiveList({});props.setRegionViewerData({})}}>
 							The World Data Mapper
 						</WNavItem>
 					}

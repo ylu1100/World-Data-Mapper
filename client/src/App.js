@@ -8,21 +8,7 @@ import { jsTPS } 		from './utils/jsTPS';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import cookieParser from 'cookie-parser';
  
-function getCookie(cname) {
-	var name = cname + "=";
-	var decodedCookie = decodeURIComponent(document.cookie);
-	var ca = decodedCookie.split(';');
-	for(var i = 0; i <ca.length; i++) {
-	  var c = ca[i];
-	  while (c.charAt(0) == ' ') {
-		c = c.substring(1);
-	  }
-	  if (c.indexOf(name) == 0) {
-		return c.substring(name.length, c.length);
-	  }
-	}
-	return "";
-  }
+
 const App = () => {
 	const [showRegionViewer,setShowRegionViewer]=useState(false)
 	const [regionViewerData,setRegionViewerData]=useState({})
