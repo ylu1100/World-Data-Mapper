@@ -425,7 +425,7 @@ const Homescreen = (props) => {
 	/*
 		Since we only have 3 modals, this sort of hardcoding isnt an issue, if there
 		were more it would probably make sense to make a general modal component, and
-		a modal manager that handles which to show.
+		a modal manager that handles which to show
 	*/
 	const setShowLogin = () => {
 		toggleShowDelete(false);
