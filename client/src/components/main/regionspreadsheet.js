@@ -33,7 +33,7 @@ const Regionspreadsheet = (props) => {
            <h1>Region Name: {props.data.name}</h1>
            <h1>Parent Region: 
            </h1>
-           <a  className="hoverEffect" onClick={()=>props.setShowRegionViewer(false)}>{parentRegion.name}</a>
+           <a  style={{color:"blue"}} className="hoverEffect" onClick={()=>props.setShowRegionViewer(false)}>{parentRegion.name}</a>
            <h1>Region Capital: {props.data.capital}</h1>
             <h1>Region Leader: {props.data.leader}</h1>
             <h1># of Sub Regions: {props.data.subregions.length}</h1>
