@@ -37,7 +37,7 @@ const Login = (props) => {
 	return (
         // Replace div with WModal
 
-		<div className="login-modal">
+		<div style={{background:"rgb(53,58,68)"}} className="login-modal">
 			<div className="modal-header" onClose={() => props.setShowLogin(false)}>
 				Login
 			</div>

@@ -43,7 +43,7 @@ const CreateAccount = (props) => {
 	return (
         // Replace div with WModal
 
-		<div className="signup-modal">
+		<div style={{background:"rgb(53,58,68)"}} className="signup-modal">
 			<div className="modal-header" onClose={() => props.setShowCreate(false)}>
 				Sign Up
 			</div>

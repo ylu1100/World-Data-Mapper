@@ -542,7 +542,7 @@ const Homescreen = (props) => {
 				}
 
 			</WLMain>
-			{showDelete||showCreate||showLogin||showUpdate?
+			{showDelete||showCreate||showLogin||showUpdate||showMapName?
 				<div className="blurBackground"></div>
 			:
 			null
@@ -595,10 +595,12 @@ const Homescreen = (props) => {
 			</WLHeader>
 			{showCreate||showLogin?
 				<div className="blurBackground"></div>
+				
 			:
 			null
-			}	
 			
+			}	
+			<Home/>
 	
 			{
 				showCreate && (<CreateAccount setShowCreate={setShowCreate} fetchUser={props.fetchUser} setShowCreate={setShowCreate} />)
@@ -607,7 +609,7 @@ const Homescreen = (props) => {
 			{
 				showLogin && (<Login setShowLogin={setShowLogin} fetchUser={props.fetchUser} refetchTodos={mapsquery.refetch} setShowLogin={setShowLogin} />)
 			}
-	<Home/>
+	
 	</div>)
 		}
 };

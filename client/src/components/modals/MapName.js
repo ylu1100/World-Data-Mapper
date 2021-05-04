@@ -17,8 +17,9 @@ const MapName = (props) => {
 
 	return (
         // Replace div with WModal
-
-		<div className="signup-modal">
+		
+		
+		<div style={{background:"rgb(53,58,68)"}}  className="signup-modal">
 			<div className="modal-header" onClose={() => props.toggleMapName(false)}>
 				Enter the Name of Your Map
 			</div>
@@ -30,6 +31,7 @@ const MapName = (props) => {
 				Submit
 			</WButton>
 		</div>
+		
 	);
 }
 
