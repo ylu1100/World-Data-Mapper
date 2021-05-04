@@ -487,7 +487,9 @@ const Homescreen = (props) => {
 			<WLSide side="left">
 				<WSidebar>					
 							<SidebarContents
+								setShowDelete={setShowDelete}
 								toggleMapName={toggleMapName}
+								deleteList={deleteList}
 								activeList={activeList}
 								todolists={todolists} activeid={activeList.id} auth={auth}
 								handleSetActive={handleSetActive} createNewList={createNewList}

@@ -31,6 +31,7 @@ const SidebarEntry = (props) => {
                     props.index==0?
                     <div>
                     <a onClick={handleEditing}  className="hoverEffect" >Rename</a>
+                    <a  className="hoverEffect" onClick={()=>props.setShowDelete(true)}>Trash</a>
                     <div style={{color:"yellow"}} className='list-text'>
                             {props.name}
                            
@@ -40,6 +41,7 @@ const SidebarEntry = (props) => {
                         :
                         <div>
                         <a onClick={handleEditing}  className="hoverEffect" >Rename</a>
+                        <a  className="hoverEffect" onClick={()=>props.setShowDelete(true)}>Trash</a>
                         <div className='list-text'>
                             {props.name}
                             

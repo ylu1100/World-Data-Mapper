@@ -6,6 +6,7 @@ const SidebarContents = (props) => {
     return (
         <>
             <SidebarHeader 
+                
                 tps={props.tps}
                 activeid={props.activeid}
                 toggleMapName={props.toggleMapName}
@@ -13,6 +14,8 @@ const SidebarContents = (props) => {
                 undo={props.undo} redo={props.redo} 
             />
             <SidebarList
+                setShowDelete={props.setShowDelete}
+                deleteList={props.deleteList}
                 activeid={props.activeid} handleSetActive={props.handleSetActive}
                 todolists={props.todolists} createNewList={props.createNewList}
                 updateListField={props.updateListField}

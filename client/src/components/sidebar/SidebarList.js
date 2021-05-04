@@ -10,6 +10,8 @@ const SidebarList = (props) => {
                 props.todolists &&
                 props.todolists.map(todo => (
                     <SidebarEntry
+                        setShowDelete={props.setShowDelete}
+                        deleteList={props.deleteList}
                         index={index++}
                         handleSetActive={props.handleSetActive} activeid={props.activeid}
                         id={todo.id} 
