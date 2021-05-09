@@ -10,6 +10,10 @@ const regionSchema = new Schema(
 			type: Number,
 			required: true
 		},
+		owner:{
+			type:ObjectId,
+			required:true
+		},
 		parentId:{
 			type:ObjectId,
 			required:true

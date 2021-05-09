@@ -4,7 +4,13 @@ const User=require('../models/user-model2')
 const Region=require('../models/region-model')
 module.exports={
     Query: {
-        getAllRegions: async (_,args) => {
+		getAllUserRegions:async(_,__,{req})=>{
+			const regions=await Region.find({owner:req.userId,parentId:{$ne:null}})
+			console.log("lol")
+			console.log(regions)
+			return regions
+		},
+        getAllRegions: async (_,args) => { //get all subregions in list
             console.log("loading regions")
         
             const parentId=new ObjectId(args.parentId)
@@ -93,14 +99,11 @@ module.exports={
 		}
 	},
 	Mutation: {
-		/** 
-		 	@param 	 {object} args - a todolist id and an empty item object
-			@returns {string} the objectID of the item or an error message
-		**/
+	
 		addSubregion: async(_, args) => {
 			
-			const { region, _id } = args;
-	
+			const { region, _id } = args; //_id= parentId
+			
 			const listId = new ObjectId(_id);
 			let objectId;
 			
@@ -118,7 +121,7 @@ module.exports={
                 foundInRegion=false
             }
             
-			region._id = objectId;
+			
 			let listRegions
 			if(foundInRegion){
 				listRegions = found.subregions;
@@ -155,7 +158,7 @@ module.exports={
 			if(!found){
 				return "region not found"
 			}
-			const updated=await Region.updateOne({_id:objectId},{parentId:undefined})
+			const updated=await Region.updateOne({_id:objectId},{parentId:null})
 			if(updated) return found._id
 		// 	const  { region, _id } = args;
 		// 	console.log(region)
@@ -169,14 +172,16 @@ module.exports={
 		// 	if(updated) return (listItems);
 		// 	else return (found.regions);
 		},
-		createNewRegion: async (_, args) => {
+		createNewRegion: async (_, args,{req}) => {
             console.log('region creating...')
 			const { region } = args;
 			const objectId = new ObjectId();
+			const ownerId=new ObjectId(req.userId)
 			const { id,name,parentId,capital,leader,regions,landmarks } = region;
 			const newList = new Region({
 				_id: objectId,
 				id: id,
+				owner:ownerId,
                 parentId: parentId,
 				name: name,
 				capital:capital,
@@ -184,79 +189,19 @@ module.exports={
 				subregions: regions,
                 landmarks:landmarks
 			});
-            
-           
-			
-			// let currList=[]
-			
-			// currList.push(...user.maps)
-			// currList.push(id)
-			// await User.updateOne({_id:owner},{maps:currList})
-			//console.log(user)
-			//console.log(currList)
+
 			const updated = await newList.save();
 			if(updated) return objectId;
 			else return ('Could not add region');
 		},
-		// /** 
-		//  	@param 	 {object} args - a todolist objectID and item objectID
-		// 	@returns {array} the updated item array on success or the initial 
-		// 					 array on failure
-		// **/
-		// deleteItem: async (_, args) => {
-		// 	console.log(12312321)
-		// 	const  { region, _id } = args;
-		// 	console.log(region)
-		// 	const listId = new ObjectId(_id);
-		// 	const found = await Map.findOne({_id: listId});
-		// 	console.log(region._id)
-		// 	let listItems = found.regions;
-		// 	listItems = listItems.filter(item => item._id.toString() !== region._id);
-			
-		// 	const updated = await Map.updateOne({_id: listId}, { regions: listItems })
-		// 	if(updated) return (listItems);
-		// 	else return (found.regions);
-
-		// },
-		// /** 
-		//  	@param 	 {object} args - a todolist objectID 
-		// 	@returns {boolean} true on successful delete, false on failure
-		// **/
-		// deleteTodolist: async (_, args) => {
-		// 	const { _id ,userId} = args;
-		// 	const objectId = new ObjectId(_id);
-		// 	const deletedMap=await Map.findOne({_id: objectId});
-		// 	const deleted = await Map.deleteOne({_id: objectId});
-		// 	//console.log(deletedTodolist.id)
-		// 	//console.log(userId)
-		// 	let mapId=await User.findOne({_id:userId})
-			
-		// 	//console.log(todolistsId.todolists)
-		// 	let newMaps=[]
-		// 	newMaps.push(...mapId.maps)
-		// 	newMaps.splice(newMaps.indexOf(deletedMap.id),1)
-		// 	//console.log(newtodolists)
-		// 	await User.updateOne({_id:userId},{maps:newMaps})
-		// 	if(deleted) return true;
-		// 	else return false;
-		// },
-		// /** 
-		//  	@param 	 {object} args - a todolist objectID, field, and the update value
-		// 	@returns {boolean} true on successful update, false on failure
-		// **/
-		// updateTodolistField: async (_, args) => {
-		// 	const { field, value, _id } = args;
-		// 	const objectId = new ObjectId(_id);
-		// 	const updated = await Todolist.updateOne({_id: objectId}, {[field]: value});
-		// 	if(updated) return value;
-		// 	else return "";
-		// },
-		// /** 
-		// 	@param	 {object} args - a todolist objectID, an item objectID, field, and
-		// 							 update value. Flag is used to interpret the completed 
-		// 							 field,as it uses a boolean instead of a string
-		// 	@returns {array} the updated item array on success, or the initial item array on failure
-		// **/
+		setNewParent:async(_,args)=>{
+			const {_id,newParent}=args
+			const objectId=new ObjectId(_id)
+			const parentId=new ObjectId(newParent)
+			const updateParent=await Region.updateOne({_id:objectId},{parentId:parentId})
+			return ""
+		},
+		
 		updateItemField: async (_, args) => {
 			const { _id,  field,  value} = args;
 			const itemId = new ObjectId(_id);

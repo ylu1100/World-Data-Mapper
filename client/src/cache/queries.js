@@ -64,3 +64,17 @@ export const GET_ALL_PARENTS = gql`
 		}
 	}
 `;
+export const GET_ALL_USERREGIONS= gql`
+	query getAllUserRegions{
+		getAllUserRegions{
+			_id
+			id
+			parentId
+			name
+			capital
+			leader
+			subregions
+			landmarks
+		}
+	}
+`

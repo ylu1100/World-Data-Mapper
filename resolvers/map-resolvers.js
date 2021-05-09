@@ -74,7 +74,7 @@ module.exports={
 		 	@param 	 {object} args - an empty todolist object
 			@returns {string} the objectID of the todolist or an error message
 		**/
-		addTodolist: async (_, args) => {
+		addTodolist: async (_, args,{req}) => {
             
 			const { map } = args;
 			const objectId = new ObjectId();

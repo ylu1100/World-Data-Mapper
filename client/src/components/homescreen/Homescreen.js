@@ -174,6 +174,7 @@ const Homescreen = (props) => {
 		await new Promise(r => setTimeout(r, 200));
 		
 		regionsquery.refetch()
+		
 		setAddingItem(false)
 	};
 
@@ -186,6 +187,7 @@ const Homescreen = (props) => {
 		let opcode = 0;
 		const deletedRegion=await DeleteSubregion({variables:{_id:item._id}})
 		regionsquery.refetch()
+		
 		// let itemToDelete = {
 		// 	_id: item._id,
 		// 	id: item.id,
@@ -424,6 +426,7 @@ const Homescreen = (props) => {
 		setActiveList(todo);
 		props.tps.clearAllTransactions()
 		mapsquery.refetch()
+		
 		
 	};
 

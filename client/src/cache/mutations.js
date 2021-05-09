@@ -130,3 +130,8 @@ export const SET_RECENT_MAP=gql`
 		setRecentMap(user_id:$user_id,mapId:$mapId)
 	}
 `;
+export const SET_NEW_PARENT=gql`
+	mutation setNewParent($_id:String!,$newParent:String!){
+		setNewParent(_id:$_id,newParent:$newParent)
+	}
+`

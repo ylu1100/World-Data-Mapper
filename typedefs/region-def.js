@@ -5,6 +5,7 @@ const typeDefs = gql `
 	type Subregion {
 		_id: String!
 		id: Int!
+		owner:String!
 		parentId:String!
 		name:String!
 		capital:String!
@@ -14,6 +15,7 @@ const typeDefs = gql `
 	}
 	
 	extend type Query {
+		getAllUserRegions:[Subregion]
 		getAllRegions(parentId:String!): [Subregion]
         getRegionById(parentId:String!):Subregion
 		getAllParents(_id:String!):[Subregion]
@@ -24,6 +26,7 @@ const typeDefs = gql `
 		updateItemField(_id:String!,field:String!,value:String!):Subregion
 		addLandmark(_id:String!,landmark:String!):[String]
 		deleteSubregion(_id:String!):String
+		setNewParent(_id:String!,newParent:String!):String
 	}
 	input FieldInput {
 		_id: String
