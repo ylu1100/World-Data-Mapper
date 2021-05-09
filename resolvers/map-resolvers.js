@@ -25,7 +25,7 @@ module.exports={
 				const map= await Map.findOne({owner:_id,id:mapIds[i]})
 				maplistordered.push(map)
 			}
-			console.log(listIds.maps)
+			
 			//console.log(todolistordered)
 			if(maplists) return (maplistordered);
 
@@ -104,12 +104,12 @@ module.exports={
 							 array on failure
 		**/
 		deleteItem: async (_, args) => {
-			console.log(12312321)
+			
 			const  { region, _id } = args;
-			console.log(region)
+			
 			const listId = new ObjectId(_id);
 			const found = await Map.findOne({_id: listId});
-			console.log(region._id)
+			
 			let listItems = found.regions;
 			listItems = listItems.filter(item => item._id.toString() !== region._id);
 			

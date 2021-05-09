@@ -143,6 +143,17 @@ const TableHeader = (props) => {
                 <WButton onClick={sortListByIncomplete} className='table-header-section' wType="texted" >Leader</WButton>
                 }   
             </WCol>
+            <WCol size="2">
+                {
+                    !props.activeList.items ||props.activeList.items.length==0?
+                <WButton  className='table-header-section button-disable' wType="texted" >Flag</WButton>
+                :
+                    !sortedComplete?
+                <WButton onClick={sortListByComplete} className='table-header-section' wType="texted" >Flag</WButton>
+                 :
+                <WButton onClick={sortListByIncomplete} className='table-header-section' wType="texted" >Flag</WButton>
+                }   
+            </WCol>
             {/* <WCol size="2">
                 {
                     !props.activeList.items ||props.activeList.items.length==0?

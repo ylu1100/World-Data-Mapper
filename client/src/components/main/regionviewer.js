@@ -3,7 +3,7 @@ import { WButton, WInput, WRow, WCol } from 'wt-frontend';
 import * as mutations 					from '../../cache/mutations';
 import { useMutation, useQuery } 		from '@apollo/client';
 import * as query						from '../../cache/queries';
-const Regionspreadsheet = (props) => {
+const Regionviewer = (props) => {
     const [landmarkInput,setLandmarkInput]=useState("")
     const [addLandmarkToList] = useMutation(mutations.ADD_LANDMARK)
     const [landmarks,setLandmarks]=useState(props.data.landmarks)
@@ -61,4 +61,4 @@ const Regionspreadsheet = (props) => {
     );
 };
 
-export default Regionspreadsheet;
+export default Regionviewer;

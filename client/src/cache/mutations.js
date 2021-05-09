@@ -44,19 +44,11 @@ export const ADD_ITEM = gql`
 	}
 `;
 
-export const DELETE_ITEM = gql`
-	mutation DeleteItem($region: RegionInput!, $_id: String!) {
-		deleteItem(region: $region, _id: $_id) {
-			_id
-			id
-			name
-			capital
-			leader
-			landmarks
-		}
-			
+export const DELETE_SUBREGION=gql`
+	mutation DeleteSubregion($_id:String!){
+		deleteSubregion(_id:$_id)
 	}
-`;
+`
 
 export const UPDATE_ITEM_FIELD = gql`
 	mutation UpdateItemField($_id: String!, $field: String!, $value: String!) {

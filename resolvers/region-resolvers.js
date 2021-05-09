@@ -34,7 +34,7 @@ module.exports={
 		**/
 		getRegionById: async (_, args) => {
 			const { parentId} = args;
-			console.log("lol")
+			
 			const objectId = new ObjectId(parentId);
 			
 			let map = await Region.findOne({_id: objectId});
@@ -46,7 +46,7 @@ module.exports={
 			}
 			
 			if(map) {
-				console.log(map)
+				
 				return map
 			}
 			
@@ -147,6 +147,28 @@ module.exports={
 		 	@param 	 {object} args - an empty todolist object
 			@returns {string} the objectID of the todolist or an error message
 		**/
+		deleteSubregion:async(_,args)=>{
+			const {_id}=args
+			console.log(_id)
+			const objectId=new ObjectId(_id)
+			const found=await Region.findOne({_id:objectId})
+			if(!found){
+				return "region not found"
+			}
+			const updated=await Region.updateOne({_id:objectId},{parentId:undefined})
+			if(updated) return found._id
+		// 	const  { region, _id } = args;
+		// 	console.log(region)
+		// 	const listId = new ObjectId(_id);
+		// 	const found = await Map.findOne({_id: listId});
+		// 	console.log(region._id)
+		// 	let listItems = found.regions;
+		// 	listItems = listItems.filter(item => item._id.toString() !== region._id);
+			
+		// 	const updated = await Map.updateOne({_id: listId}, { regions: listItems })
+		// 	if(updated) return (listItems);
+		// 	else return (found.regions);
+		},
 		createNewRegion: async (_, args) => {
             console.log('region creating...')
 			const { region } = args;

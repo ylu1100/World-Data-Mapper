@@ -23,7 +23,7 @@ const typeDefs = gql `
 		createNewRegion(region:SubregionInput!):String
 		updateItemField(_id:String!,field:String!,value:String!):Subregion
 		addLandmark(_id:String!,landmark:String!):[String]
-	
+		deleteSubregion(_id:String!):String
 	}
 	input FieldInput {
 		_id: String

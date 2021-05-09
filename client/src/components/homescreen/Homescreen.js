@@ -44,7 +44,7 @@ const Homescreen = (props) => {
 	const [UpdateTodoItemField] 	= useMutation(mutations.UPDATE_ITEM_FIELD); //update field of subregion
 	const [UpdateTodolistField] 	= useMutation(mutations.UPDATE_TODOLIST_FIELD); //update map
 	const [DeleteTodolist] 			= useMutation(mutations.DELETE_TODOLIST);
-	const [DeleteTodoItem] 			= useMutation(mutations.DELETE_ITEM);
+	const [DeleteSubregion]			=useMutation(mutations.DELETE_SUBREGION)
 	const [AddTodolist] 			= useMutation(mutations.ADD_TODOLIST);
 	const [AddTodoItem] 			= useMutation(mutations.ADD_ITEM);
 	const [SortByTaskName] 			= useMutation(mutations.SORT_BY_TASK);
@@ -60,7 +60,8 @@ const Homescreen = (props) => {
 		variables:{parentId:props.regionViewerData.parentId},
 		skip:props.regionViewerData.parentId==undefined
 	})
-	const getparentsquery=useQuery(query.GET_ALL_PARENTS,{
+
+	const getparentsquery=useQuery(query.GET_ALL_PARENTS,{ //get all parents
 		variables:{_id:activeList._id},
 		skip:activeList._id==undefined
 	})
@@ -118,6 +119,8 @@ const Homescreen = (props) => {
 			
 		}
 	}
+	
+	
 	const tpsUndo = async () => {
 		const retVal = await props.tps.undoTransaction();
 		refetchTodos(mapsquery.refetch);
@@ -181,17 +184,20 @@ const Homescreen = (props) => {
 		let listID = activeList._id;
 		let itemID = item._id;
 		let opcode = 0;
-		let itemToDelete = {
-			_id: item._id,
-			id: item.id,
-			name:item.name,
-			capital:item.capital,
-			leader:item.leader,
-			landmarks:item.landmarks
-		}
-		let transaction = await new UpdateListItems_Transaction(listID, itemID, itemToDelete, opcode, AddTodoItem, DeleteTodoItem);
-		props.tps.addTransaction(transaction);
-		tpsRedo();
+		const deletedRegion=await DeleteSubregion({variables:{_id:item._id}})
+		regionsquery.refetch()
+		// let itemToDelete = {
+		// 	_id: item._id,
+		// 	id: item.id,
+		// 	name:item.name,
+		// 	capital:item.capital,
+		// 	leader:item.leader,
+		// 	landmarks:item.landmarks
+		// }
+		
+		// let transaction = await new UpdateListItems_Transaction(listID, itemID, itemToDelete, opcode, AddTodoItem, DeleteTodoItem);
+		// props.tps.addTransaction(transaction);
+		// tpsRedo();
 	};
 
 	const editItem = async (itemID, field, value, prev) => {

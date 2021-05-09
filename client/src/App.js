@@ -1,6 +1,6 @@
 import React , { useState }			from 'react';
 import Homescreen 		from './components/homescreen/Homescreen';
-import Regionspreadsheet from './components/main/regionspreadsheet'
+import Regionspreadsheet from './components/main/regionviewer'
 import Home from './components/main/home'
 import { useQuery } 	from '@apollo/client';
 import * as queries 	from './cache/queries';
