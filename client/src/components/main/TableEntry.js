@@ -9,13 +9,20 @@ const TableEntry = (props) => {
     const leader=data.leader
     const landmarks=data.landmarks
     const ancestorList=props.ancestorList
+    let flagExists=true
     let imgPath=""
     for(let i=0;i<ancestorList.length;i++){
-        imgPath+="/"+ancestorList[i].name
+        imgPath+=ancestorList[i].name+"/"
     }
-    imgPath+="/"+name+" Flag.png"
+    imgPath+=name+" Flag.png"
     console.log(imgPath)
-    
+    try{
+        require(`../../${imgPath}`)
+    }
+    catch{
+        flagExists=false
+    }
+    console.log("../../The World/Asia/China Flag.png")
     const [editingName, toggleNameEdit] = useState(false);
     const [editingCapital, toggleCapitalEdit] = useState(false);
     const [editingLeader, toggleLeaderEdit] = useState(false);
@@ -85,10 +92,11 @@ const TableEntry = (props) => {
                 }
             </WCol>
             <WCol size="2">
-                {ancestorList.length==2?
+                {
+               flagExists?
                 <div>
-                     <img src={require(`../..${imgPath}`).default} ></img> 
-                 
+                     <img style={{width:"24%"}} src={require(`../../${imgPath}`)} ></img> 
+                     
                 </div>
                 :
                 <div></div>
