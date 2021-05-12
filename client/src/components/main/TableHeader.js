@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {SORT_BY_TASK} from '../../cache/mutations';
 import { WButton, WRow, WCol } from 'wt-frontend';
 import { useMutation }    	from '@apollo/client';
+
 const TableHeader = (props) => {
 
     const buttonStyle = props.disabled ? ' table-header-button-disabled ' : 'table-header-button ';
@@ -192,9 +193,6 @@ const TableHeader = (props) => {
                 <div className="table-header-buttons">
                     <WButton onClick={props.disabled||props.addingItem? clickDisabled : props.addItem} wType="texted" className={`${buttonStyle}`}>
                         <i className="material-icons">add_box</i>
-                    </WButton>
-                    <WButton onClick={props.disabled ? clickDisabled : props.setShowDelete} wType="texted" className={`${buttonStyle}`}>
-                        <i className="material-icons">delete_outline</i>
                     </WButton>
                     <WButton onClick={props.disabled ? clickDisabled : () => {props.setActiveList({});props.tps.clearAllTransactions()}} wType="texted" className={`${buttonStyle}`}>
                         <i className="material-icons">close</i>

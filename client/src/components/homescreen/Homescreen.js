@@ -60,7 +60,7 @@ const Homescreen = (props) => {
 		variables:{parentId:props.regionViewerData.parentId},
 		skip:props.regionViewerData.parentId==undefined
 	})
-
+	
 	const getparentsquery=useQuery(query.GET_ALL_PARENTS,{ //get all parents
 		variables:{_id:activeList._id},
 		skip:activeList._id==undefined
@@ -532,6 +532,7 @@ const Homescreen = (props) => {
 					activeList ? 
 							<div className="container-secondary">
 								<MainContents
+									ancestorList={ancestorList}
 									openRegionViewer={props.openRegionViewer}
 									addingItem={addingItem}
 									goToSubregion={goToSubregion}

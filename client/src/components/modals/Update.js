@@ -52,6 +52,7 @@ const Update = (props) => {
 						
 							<WCol size="6">
 								<WInput 
+									defaultValue={props.user.fullName}
 									className="" onBlur={updateInput} name="fullName" labelAnimation="up" 
 									barAnimation="solid" labelText="Full Name" wType="outlined" inputType="text" 
 								/>
@@ -60,6 +61,7 @@ const Update = (props) => {
 
 						<div className="modal-spacer">&nbsp;</div>
 						<WInput 
+							defaultValue={props.user.email}
 							className="modal-input" onBlur={updateInput} name="email" labelAnimation="up" 
 							barAnimation="solid" labelText="Email Address" wType="outlined" inputType="text" 
 						/>

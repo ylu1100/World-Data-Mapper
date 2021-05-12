@@ -10,6 +10,7 @@ const TableContents = (props) => {
             {
                 entries.map((entry, index) => (
                     <TableEntry
+                        ancestorList={props.ancestorList}
                         openRegionViewer={props.openRegionViewer}
                         goToSubregion={props.goToSubregion}
                         size={entries.length}

@@ -1,6 +1,6 @@
 import React, { useState }  from 'react';
 import { WNavItem, WInput, WButton } from 'wt-frontend';
-
+import {IoTrash} from 'react-icons/io5'
 const SidebarEntry = (props) => {
     const [editing, toggleEditing] = useState(false);
     const [preEdit, setPreEdit] = useState(props.name);
@@ -30,21 +30,22 @@ const SidebarEntry = (props) => {
                     :   
                     props.index==0?
                     <div>
+                    
                     <a onClick={handleEditing}  className="hoverEffect" >Rename</a>
-                    <a  className="hoverEffect" onClick={()=>props.setShowDelete(true)}>Trash</a>
+                    
                     <div style={{color:"yellow"}} className='list-text'>
                             {props.name}
-                           
+                            <IoTrash  className="reactIconButton" style={{float:'right'}} onClick={()=>props.setShowDelete(true)}></IoTrash>
                         </div>
                         
                         </div>
                         :
                         <div>
                         <a onClick={handleEditing}  className="hoverEffect" >Rename</a>
-                        <a  className="hoverEffect" onClick={()=>props.setShowDelete(true)}>Trash</a>
-                        <div className='list-text'>
+                        
+                        <div  className='list-text'>
                             {props.name}
-                            
+                            <IoTrash  className="reactIconButton" style={{float:'right'}} onClick={()=>props.setShowDelete(true)}></IoTrash>
                         </div>
                         
                         </div>

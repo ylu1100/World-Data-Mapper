@@ -8,9 +8,14 @@ const TableEntry = (props) => {
     const name=data.name
     const leader=data.leader
     const landmarks=data.landmarks
-   
+    const ancestorList=props.ancestorList
+    let imgPath=""
+    for(let i=0;i<ancestorList.length;i++){
+        imgPath+="/"+ancestorList[i].name
+    }
+    imgPath+="/"+name+" Flag.png"
+    console.log(imgPath)
     
-
     const [editingName, toggleNameEdit] = useState(false);
     const [editingCapital, toggleCapitalEdit] = useState(false);
     const [editingLeader, toggleLeaderEdit] = useState(false);
@@ -55,7 +60,7 @@ const TableEntry = (props) => {
 
             <WCol size="2">
                 {
-                    editingCapital ? <input
+                    editingCapital ? <WInput
                         className='table-input' onBlur={handleCapitalEdit}
                         autoFocus={true} defaultValue={capital} type='text'
                         wType="outlined" barAnimation="solid" inputClass="table-input-class"
@@ -69,7 +74,7 @@ const TableEntry = (props) => {
 
             <WCol size="2">
                 {
-                    editingLeader ?<input
+                    editingLeader ?<WInput
                         className='table-input' onBlur={handleLeaderEdit}
                         autoFocus={true} defaultValue={leader} type='text'
                         wType="outlined" barAnimation="solid" inputClass="table-input-class"
@@ -79,47 +84,19 @@ const TableEntry = (props) => {
                         </div>
                 }
             </WCol>
-            {/* <WCol size="2">
-                {
-                    editingAssignment ? <WInput
-                            className='table-input' onBlur={handleAssignmentEdit}
-                            autoFocus={true} defaultValue={assignment} type='text'
-                            wType="outlined" barAnimation="solid" inputClass="table-input-class"
-                        />
-                        : 
-                        !data.completed?
-                            <div style={{color:'red'}} onClick={() => toggleAssignmentEdit(!editingAssignment)} className={`${completeStyle} table-text assignment-col`}>
-                            {assignment}
-                        </div>
-                        :
-                        <div style={{color:'black'}} onClick={() => toggleAssignmentEdit(!editingAssignment)} className={`${completeStyle} table-text assignment-col`}>
-                            {assignment}
-                        </div>
-                        }
-                
-            </WCol>     */}
+            <WCol size="2">
+                {ancestorList.length==2?
+                <div>
+                     <img src={require(`../..${imgPath}`).default} ></img> 
+                 
+                </div>
+                :
+                <div></div>
+                }
+            </WCol>    
             <WCol size="2">
                 <div className='button-group'>
-                    {/* {
-                    props.index==0?
-                    <WButton className="table-entry-buttons button-disable" onClick={() => props.reorderItem(data._id, -1)} wType="texted">
-                        <i className="material-icons">expand_less</i>
-                    </WButton>
-                    :
-                    <WButton className="table-entry-buttons " onClick={() => props.reorderItem(data._id, -1)} wType="texted">
-                        <i className="material-icons">expand_less</i>
-                    </WButton>
-                    } */}
-                    {/* {
-                    props.index==props.size-1?
-                    <WButton className="table-entry-buttons button-disable" onClick={() => props.reorderItem(data._id, 1)} wType="texted">
-                        <i className="material-icons">expand_more</i>
-                    </WButton>
-                    :
-                    <WButton className="table-entry-buttons" onClick={() => props.reorderItem(data._id, 1)} wType="texted">
-                        <i className="material-icons">expand_more</i>
-                    </WButton>
-                    } */}
+                    
                     <WButton className="table-entry-buttons" onClick={() => props.deleteItem(data)} wType="texted">
                         <i className="material-icons">close</i>
                     </WButton>
