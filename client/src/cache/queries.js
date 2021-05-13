@@ -78,3 +78,17 @@ export const GET_ALL_USERREGIONS= gql`
 		}
 	}
 `
+export const GET_DB_REGIONS_SORTED= gql`
+	query getAllRegionsSorted($parentId:String!,$sortBy:String!){
+		getAllRegionsSorted(parentId:$parentId,sortBy:$sortBy){
+			_id
+			id
+			parentId
+			name
+			capital
+			leader
+			subregions
+			landmarks
+		}
+	}
+`

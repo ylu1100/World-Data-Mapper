@@ -3,6 +3,8 @@ import TableHeader      from './TableHeader';
 import TableContents    from './TableContents';
 
 const MainContents = (props) => {
+    // const[regionslist,setRegionslist]=useState(props.regionslist)
+
     const [state,setState]=useState({
         ctrlPressed:false,
         zPressed:false,
@@ -55,25 +57,22 @@ const MainContents = (props) => {
         removeKeyEvent()
       }
     return (
-        <div tabIndex='0'  onKeyDown={checkKeyEvent} className='table ' >
+        <div   tabIndex='0'  onKeyDown={checkKeyEvent} className='table ' >
             <TableHeader
                 
                 addingItem={props.addingItem}
                 tps={props.tps}
                 activeList={props.activeList}
                 undo={props.undo} redo={props.redo}
-                sortByDescTaskName={props.sortByDescTaskName}
-                sortByTaskName={props.sortByTaskName}
-                sortListByDescendingDate={props.sortListByDescendingDate}
-                sortListByAscendingDate={props.sortListByAscendingDate}
-                sortListByIncomplete={props.sortListByIncomplete}
-				sortListByComplete={props.sortListByComplete}
-                sortListByDescendingAssignment={props.sortListByDescendingAssignment}
-				sortListByAscendingAssignment={props.sortListByAscendingAssignment}
+                sortListByAscendingName={props.sortListByAscendingName}
+                sortListByAscendingCapital={props.sortListByAscendingCapital}
+									sortListByAscendingLeader={props.sortListByAscendingLeader}
                 disabled={!props.activeList._id} addItem={props.addItem}
                 setShowDelete={props.setShowDelete} setActiveList={props.setActiveList}
             />
             <TableContents
+                
+                refetchRegions={props.refetchRegions}
                 ancestorList={props.ancestorList}
                 openRegionViewer={props.openRegionViewer}
                 goToSubregion={props.goToSubregion}

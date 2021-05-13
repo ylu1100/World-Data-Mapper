@@ -96,6 +96,86 @@ module.exports={
 			}
 			
 			return parentList
+		},
+		getAllRegionsSorted:async(_,args)=>{
+			const {parentId,sortBy}=args
+			const parentIdObj=new ObjectId(parentId)
+			const regionlists = await Region.find({parentId: parentIdObj});
+			let subregions=[...regionlists]
+			if(sortBy=="name"){
+				for(let i=0;i<subregions.length-1;i++){
+					for(let j=0;j<subregions.length-i-1;j++){
+						if((subregions[j].name).localeCompare(subregions[j+1].name)>0){
+					
+						let temp=subregions[j];
+						subregions[j]=subregions[j+1]
+						subregions[j+1]=temp
+						}
+					}
+				}
+			}
+			else if(sortBy=="revname"){
+				for(let i=0;i<subregions.length-1;i++){
+					for(let j=0;j<subregions.length-i-1;j++){
+						if((subregions[j].name).localeCompare(subregions[j+1].name)<0){
+					
+						let temp=subregions[j];
+						subregions[j]=subregions[j+1]
+						subregions[j+1]=temp
+						}
+					}
+				}
+			}
+			else if(sortBy=="revcapital"){
+				for(let i=0;i<subregions.length-1;i++){
+					for(let j=0;j<subregions.length-i-1;j++){
+						if((subregions[j].capital).localeCompare(subregions[j+1].capital)<0){
+					
+						let temp=subregions[j];
+						subregions[j]=subregions[j+1]
+						subregions[j+1]=temp
+						}
+					}
+				}
+			}
+			else if(sortBy=="capital"){
+				for(let i=0;i<subregions.length-1;i++){
+					for(let j=0;j<subregions.length-i-1;j++){
+						if((subregions[j].capital).localeCompare(subregions[j+1].capital)>0){
+					
+						let temp=subregions[j];
+						subregions[j]=subregions[j+1]
+						subregions[j+1]=temp
+						}
+					}
+				}
+			}
+			else if(sortBy=="revleader"){
+				for(let i=0;i<subregions.length-1;i++){
+					for(let j=0;j<subregions.length-i-1;j++){
+						if((subregions[j].leader).localeCompare(subregions[j+1].leader)<0){
+					
+						let temp=subregions[j];
+						subregions[j]=subregions[j+1]
+						subregions[j+1]=temp
+						}
+					}
+				}
+			}
+			else if(sortBy=="leader"){
+				for(let i=0;i<subregions.length-1;i++){
+					for(let j=0;j<subregions.length-i-1;j++){
+						if((subregions[j].leader).localeCompare(subregions[j+1].leader)>0){
+					
+						let temp=subregions[j];
+						subregions[j]=subregions[j+1]
+						subregions[j+1]=temp
+						}
+					}
+				}
+			}
+			
+			return subregions
 		}
 	},
 	Mutation: {

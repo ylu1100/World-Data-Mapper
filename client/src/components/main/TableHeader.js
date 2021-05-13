@@ -9,7 +9,8 @@ const TableHeader = (props) => {
     const clickDisabled = () => { };
     
     
-
+    console.log(props.activeList)
+    const[sortedName,setSortedName]=useState(false)
     const[sortedAscend,setSortedAscend]=useState(false)
     const[sortedDate,setSortedDate]=useState(false)
     const[sortedComplete,setSortedComplete]=useState(false)
@@ -54,20 +55,17 @@ const TableHeader = (props) => {
         return true
     }
     
-    const sortDescendTask=()=>{
-        props.sortByDescTaskName()
-        setSortedAscend(false)
-    }
-    const sortAscendTask=()=>{
+    
+    // const sortAscendTask=()=>{
        
-        if(checkForSortedTask()){
-            sortDescendTask()
+    //     if(checkForSortedTask()){
+    //         sortDescendTask()
             
-            return "lol"
-        }
-        props.sortByTaskName()
-        setSortedAscend(true)
-    }
+    //         return "lol"
+    //     }
+    //     props.sortByTaskName()
+    //     setSortedAscend(true)
+    // }
     const sortDescendDate=()=>{
         props.sortListByDescendingDate()
         setSortedDate(false)
@@ -107,53 +105,37 @@ const TableHeader = (props) => {
              <WCol size="2">
 
                 {
-                    !props.activeList.items ||props.activeList.items.length==0?
+                    !props.activeList.subregions ||props.activeList.subregions.length==0?
                 <WButton  className='table-header-section button-disable' wType="texted" >Name</WButton>
                 :
 
-                !sortedAscend?
-                <WButton onClick={sortAscendTask} className='table-header-section' wType="texted" >Name</WButton>
-                :
-                <WButton onClick={sortDescendTask} className='table-header-section' wType="texted" >Name</WButton>
-                
+                <WButton onClick={props.sortListByAscendingName} className='table-header-section' wType="texted" >Name</WButton>
+               
                 }   
             </WCol>
 
             <WCol size="2">
             
                 {
-                    !props.activeList.items ||props.activeList.items.length==0?
+                    !props.activeList.subregions ||props.activeList.subregions.length==0?
                 <WButton  className='table-header-section button-disable' wType="texted" >Capital</WButton>
                 :
-                    !sortedDate?
-                <WButton onClick={sortAscendDate} className='table-header-section' wType="texted">Capital</WButton>
-                :
-                <WButton onClick={sortDescendDate} className='table-header-section' wType="texted">Capital</WButton>
-               
-                }   
+                    
+                <WButton onClick={props.sortListByAscendingCapital} className='table-header-section' wType="texted">Capital</WButton>
+                }
             </WCol>
 
             <WCol size="2">
                 {
-                    !props.activeList.items ||props.activeList.items.length==0?
+                    !props.activeList.subregions ||props.activeList.subregions.length==0?
                 <WButton  className='table-header-section button-disable' wType="texted" >Leader</WButton>
                 :
-                    !sortedComplete?
-                <WButton onClick={sortListByComplete} className='table-header-section' wType="texted" >Leader</WButton>
-                 :
-                <WButton onClick={sortListByIncomplete} className='table-header-section' wType="texted" >Leader</WButton>
-                }   
+                <WButton onClick={props.sortListByAscendingLeader} className='table-header-section' wType="texted" >Leader</WButton>
+                }
             </WCol>
             <WCol size="2">
-                {
-                    !props.activeList.items ||props.activeList.items.length==0?
                 <WButton  className='table-header-section button-disable' wType="texted" >Flag</WButton>
-                :
-                    !sortedComplete?
-                <WButton onClick={sortListByComplete} className='table-header-section' wType="texted" >Flag</WButton>
-                 :
-                <WButton onClick={sortListByIncomplete} className='table-header-section' wType="texted" >Flag</WButton>
-                }   
+                  
             </WCol>
             {/* <WCol size="2">
                 {

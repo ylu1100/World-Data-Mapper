@@ -10,6 +10,7 @@ const SidebarList = (props) => {
                 props.todolists &&
                 props.todolists.map(todo => (
                     <SidebarEntry
+                        refetchRegions={props.refetchRegions}
                         setShowDelete={props.setShowDelete}
                         deleteList={props.deleteList}
                         index={index++}

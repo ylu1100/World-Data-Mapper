@@ -15,14 +15,14 @@ const TableEntry = (props) => {
         imgPath+=ancestorList[i].name+"/"
     }
     imgPath+=name+" Flag.png"
-    console.log(imgPath)
+  
     try{
         require(`../../${imgPath}`)
     }
     catch{
         flagExists=false
     }
-    console.log("../../The World/Asia/China Flag.png")
+    
     const [editingName, toggleNameEdit] = useState(false);
     const [editingCapital, toggleCapitalEdit] = useState(false);
     const [editingLeader, toggleLeaderEdit] = useState(false);

@@ -28,10 +28,12 @@ import WInput from 'wt-frontend/build/components/winput/WInput';
 const Homescreen = (props) => {
 	
 	let todolists 							= [];
-	let regionslist							=[];
+	// const [regionslist,setRegionsList]							=useState([]);
+	let regionslist=[]
 	let ancestorList				=[];
+	
 	const [todolistlist,setTodolists] = useState([])
-	const [regionlist,setRegionlist] = useState([])
+	
 	const [activeList, setActiveList] 		= useState({});
 	const [showDelete, toggleShowDelete] 	= useState(false);
 	const [showLogin, toggleShowLogin] 		= useState(false);
@@ -39,7 +41,7 @@ const Homescreen = (props) => {
 	const [showUpdate,toggleShowUpdate]=useState(false);
 	const [showMapName,toggleMapName]=useState(false)
 	const [addingItem,setAddingItem] =useState(false)
-
+	const [sortBy,setSortBy]=useState("")
 	const [ReorderTodoItems] 		= useMutation(mutations.REORDER_ITEMS);
 	const [UpdateTodoItemField] 	= useMutation(mutations.UPDATE_ITEM_FIELD); //update field of subregion
 	const [UpdateTodolistField] 	= useMutation(mutations.UPDATE_TODOLIST_FIELD); //update map
@@ -77,6 +79,10 @@ const Homescreen = (props) => {
 		variables:{parentId:activeList._id},
 		skip:activeList._id==undefined
 	})
+	const regionssortedquery=useQuery(query.GET_DB_REGIONS_SORTED,{
+		variables:{parentId:activeList._id,sortBy:sortBy},
+		skip:activeList._id==undefined
+	})
 	
 	if(getparentsquery.data!==undefined){
 		ancestorList=[...getparentsquery.data.getAllParents]
@@ -84,8 +90,19 @@ const Homescreen = (props) => {
 		console.log(ancestorList)
 	}
 	
-	regionslist=regionsquery.data
-
+	if(sortBy==""){
+		if(regionsquery.data!==undefined){
+			console.log("rerendering")
+		// setRegionsList(regionsquery.data.getAllRegions)
+			regionslist=regionsquery.data.getAllRegions
+		}
+	}
+	else{
+		if(regionssortedquery.data!==undefined){
+			regionslist=regionssortedquery.data.getAllRegionsSorted
+		}
+	}
+	console.log(regionslist)
 	
 
 	if(mapsquery.loading) { console.log(mapsquery.loading, 'loading'); }
@@ -130,6 +147,7 @@ const Homescreen = (props) => {
 	const tpsRedo = async () => {
 		const retVal = await props.tps.doTransaction();
 		refetchTodos(mapsquery.refetch);
+		
 		return retVal;
 	}
 
@@ -206,7 +224,7 @@ const Homescreen = (props) => {
 		let transaction = await new EditItem_Transaction(itemID, field, prev, value, UpdateTodoItemField);
 		props.tps.addTransaction(transaction);
 		tpsRedo();
-
+		
 	};
 
 	const reorderItem = async (itemID, dir) => {
@@ -240,152 +258,47 @@ const Homescreen = (props) => {
 		mapsquery.refetch()
 		//setActiveList(list)
 	};
-	
-	const sortListByAscendingDesc=async()=>{
+	const sortListByAscendingName=async()=>{
+		let subregions=[...regionslist]
+		console.log(subregions)
+		for(let i=0;i<subregions.length-1;i++){
+			for(let j=0;j<subregions.length-i-1;j++){
+				if((subregions[j].name).localeCompare(subregions[j+1].name)>0){
+					console.log("not sorted")
+					regionssortedquery.refetch()
+					setSortBy("name")
+					return
+				}
+			}
+		}
+		setSortBy("revname")
 		
-		let items=[]
-		items.push(...activeList.items)
-		for(let i=0;i<items.length-1;i++){
-			for(let j=0;j<items.length-i-1;j++){
-				if(items[j].description.localeCompare(items[j+1].description)>0){
-					let temp=items[j];
-					items[j]=items[j+1];
-					items[j+1]=temp;
-				}
-			}
-		}
-		let listID = activeList._id;
-		let transaction=await new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
-		props.tps.addTransaction(transaction);
-		tpsRedo();
 	}
-	const sortListByDescendingDesc=async()=>{
-		
-		let items=[]
-		items.push(...activeList.items)
-		for(let i=0;i<items.length-1;i++){
-			for(let j=0;j<items.length-i-1;j++){
-				if(items[j].description.localeCompare(items[j+1].description)<0){
-					let temp=items[j];
-					items[j]=items[j+1];
-					items[j+1]=temp;
+	const sortListByAscendingLeader=async()=>{
+		let subregions=[...regionslist]
+		for(let i=0;i<subregions.length-1;i++){
+			for(let j=0;j<subregions.length-i-1;j++){
+				if((subregions[j].leader).localeCompare(subregions[j+1].leader)>0){
+					setSortBy("leader")
+					regionssortedquery.refetch()
+					return
 				}
 			}
 		}
-		let listID = activeList._id;
-		let transaction=await new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
-		props.tps.addTransaction(transaction);
-		tpsRedo();
+		setSortBy("revleader")
 	}
-	const sortListByDescendingDate=async()=>{
-		
-		let items=[]
-		items.push(...activeList.items)
-		for(let i=0;i<items.length-1;i++){
-			for(let j=0;j<items.length-i-1;j++){
-				if(items[j].due_date<items[j+1].due_date){
-					let temp=items[j];
-					items[j]=items[j+1];
-					items[j+1]=temp;
-				}
-				
-			}
-		}
-		let listID = activeList._id;
-		let transaction=await new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
-		props.tps.addTransaction(transaction);
-		tpsRedo();
-	}
-	const sortListByAscendingDate=async()=>{
-		
-		let items=[]
-		items.push(...activeList.items)
-		for(let i=0;i<items.length-1;i++){
-			for(let j=0;j<items.length-i-1;j++){
-				if(items[j].due_date>items[j+1].due_date){
-					let temp=items[j];
-					items[j]=items[j+1];
-					items[j+1]=temp;
-				}
-				
-			}
-		}
-		let listID = activeList._id;
-		let transaction=await new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
-		props.tps.addTransaction(transaction);
-		tpsRedo();
-	}
-	const sortListByComplete=async()=>{
-		
-		let items=[]
-		items.push(...activeList.items)
-		for(let i=0;i<items.length-1;i++){
-			for(let j=0;j<items.length-i-1;j++){
-				if(!items[j].completed&&items[j+1].completed){
-					let temp=items[j];
-					items[j]=items[j+1];
-					items[j+1]=temp;
-				}
-				
-			}
-		}
-		let listID = activeList._id;
-		let transaction=await new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
-		props.tps.addTransaction(transaction);
-		tpsRedo();
-	}
-	const sortListByIncomplete=async()=>{
-		
-		let items=[]
-		items.push(...activeList.items)
-		for(let i=0;i<items.length-1;i++){
-			for(let j=0;j<items.length-i-1;j++){
-				if(items[j].completed&&!items[j+1].completed){
-					let temp=items[j];
-					items[j]=items[j+1];
-					items[j+1]=temp;
-				}
-				
-			}
-		}
-		let listID = activeList._id;
-		let transaction=await new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
-		props.tps.addTransaction(transaction);
-		tpsRedo();
-	}
-	const sortListByAscendingAssignment=async()=>{
-		let items=[]
-		items.push(...activeList.items)
-		for(let i=0;i<items.length-1;i++){
-			for(let j=0;j<items.length-i-1;j++){
-				if(items[j].assigned_to.localeCompare(items[j+1].assigned_to)>0){
-					let temp=items[j];
-					items[j]=items[j+1];
-					items[j+1]=temp;
+	const sortListByAscendingCapital=async()=>{
+		let subregions=[...regionslist]
+		for(let i=0;i<subregions.length-1;i++){
+			for(let j=0;j<subregions.length-i-1;j++){
+				if((subregions[j].capital).localeCompare(subregions[j+1].capital)>0){
+					setSortBy("capital")
+					regionssortedquery.refetch()
+					return
 				}
 			}
 		}
-		let listID = activeList._id;
-		let transaction=await new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
-		props.tps.addTransaction(transaction);
-		tpsRedo();
-	}
-	const sortListByDescendingAssignment=async ()=>{
-		let items=[]
-		items.push(...activeList.items)
-		for(let i=0;i<items.length-1;i++){
-			for(let j=0;j<items.length-i-1;j++){
-				if(items[j].assigned_to.localeCompare(items[j+1].assigned_to)<0){
-					let temp=items[j];
-					items[j]=items[j+1];
-					items[j+1]=temp;
-				}
-			}
-		}
-		let listID = activeList._id;
-		let transaction=await new SortItemsByTaskName_Transaction(listID,activeList.items,items,SortByTaskName)
-		props.tps.addTransaction(transaction);
-		tpsRedo();
+		setSortBy("revcapital")
 	}
 	const deleteList = async (_id) => {
 		DeleteTodolist({ variables: { _id: _id,userId:props.user._id }, refetchQueries: [{ query: GET_DB_TODOS }] });
@@ -424,6 +337,7 @@ const Homescreen = (props) => {
 		// 	variables:{ownerId:props.user._id,listIds:listids}})
 		
 		setActiveList(todo);
+		
 		props.tps.clearAllTransactions()
 		mapsquery.refetch()
 		
@@ -496,6 +410,7 @@ const Homescreen = (props) => {
 			<WLSide side="left">
 				<WSidebar>					
 							<SidebarContents
+								refetchRegions={regionsquery.refetch}
 								setShowDelete={setShowDelete}
 								toggleMapName={toggleMapName}
 								deleteList={deleteList}
@@ -532,19 +447,16 @@ const Homescreen = (props) => {
 					activeList ? 
 							<div className="container-secondary">
 								<MainContents
+									
 									ancestorList={ancestorList}
 									openRegionViewer={props.openRegionViewer}
 									addingItem={addingItem}
 									goToSubregion={goToSubregion}
 									undo={tpsUndo} redo={tpsRedo}
-									sortByTaskName={sortListByAscendingDesc}
-									sortByDescTaskName={sortListByDescendingDesc}
-									sortListByDescendingDate={sortListByDescendingDate}
-									sortListByAscendingDate={sortListByAscendingDate}
-									sortListByIncomplete={sortListByIncomplete}
-									sortListByComplete={sortListByComplete}
-									sortListByDescendingAssignment={sortListByDescendingAssignment}
-									sortListByAscendingAssignment={sortListByAscendingAssignment}
+									sortListByAscendingName={sortListByAscendingName}
+									sortListByAscendingCapital={sortListByAscendingCapital}
+									sortListByAscendingLeader={sortListByAscendingLeader}
+									refetchRegions={regionsquery.refetch}
 									addItem={addItem} deleteItem={deleteItem}
 									editItem={editItem} reorderItem={reorderItem}
 									setShowDelete={setShowDelete}

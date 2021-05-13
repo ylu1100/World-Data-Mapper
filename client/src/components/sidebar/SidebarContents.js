@@ -14,6 +14,7 @@ const SidebarContents = (props) => {
                 undo={props.undo} redo={props.redo} 
             />
             <SidebarList
+                refetchRegions={props.refetchRegions}
                 setShowDelete={props.setShowDelete}
                 deleteList={props.deleteList}
                 activeid={props.activeid} handleSetActive={props.handleSetActive}

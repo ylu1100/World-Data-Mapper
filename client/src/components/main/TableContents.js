@@ -1,15 +1,19 @@
-import React        from 'react';
+import React ,{useState}       from 'react';
 import TableEntry   from './TableEntry';
 
 const TableContents = (props) => {
  
     
-    const entries = props.activeList && props.regionslist ? props.regionslist.getAllRegions : null;
+
+    
+    const entries = props.activeList && props.regionslist ? props.regionslist : null;
+    
     return (
-        entries ? <div className=' table-entries container-primary'>
+        entries ? <div  className=' table-entries container-primary'>
             {
                 entries.map((entry, index) => (
                     <TableEntry
+                        refetchRegions={props.refetchRegions}
                         ancestorList={props.ancestorList}
                         openRegionViewer={props.openRegionViewer}
                         goToSubregion={props.goToSubregion}
