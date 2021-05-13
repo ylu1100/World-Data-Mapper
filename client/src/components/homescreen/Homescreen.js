@@ -17,10 +17,10 @@ import { useMutation, useQuery } 		from '@apollo/client';
 import { WNavbar, WSidebar, WNavItem } 	from 'wt-frontend';
 import { WLayout, WLHeader, WLMain, WLSide } from 'wt-frontend';
 import { UpdateListField_Transaction, 
-	UpdateListItems_Transaction, 
+	UpdateSubregions_Transaction, 
 	ReorderItems_Transaction, 
 	EditItem_Transaction, 
-	SortItemsByTaskName_Transaction,
+	SortItems_Transaction,
 	jsTPS} 				from '../../utils/jsTPS';
 import WInput from 'wt-frontend/build/components/winput/WInput';
 
@@ -140,13 +140,19 @@ const Homescreen = (props) => {
 	
 	const tpsUndo = async () => {
 		const retVal = await props.tps.undoTransaction();
+
 		refetchTodos(mapsquery.refetch);
+		regionsquery.refetch()
+		regionssortedquery.refetch()
+		
 		return retVal;
 	}
 
 	const tpsRedo = async () => {
 		const retVal = await props.tps.doTransaction();
 		refetchTodos(mapsquery.refetch);
+		regionsquery.refetch()
+		regionssortedquery.refetch()
 		
 		return retVal;
 	}
@@ -184,14 +190,15 @@ const Homescreen = (props) => {
 		};
 		//let transaction =  await new UpdateListItems_Transaction(listID, itemID, newItem, opcode, AddTodoItem, DeleteTodoItem);
 		const {data}=await createNewRegion({variables:{region:newItem}})
-	
-		const newRegionId=await createSubregion({variables:{regionId:data.createNewRegion,_id:listID}})
-		//props.tps.addTransaction(transaction);
+		console.log(data.createNewRegion)
+		// const newRegionId=await createSubregion({variables:{regionId:data.createNewRegion,_id:listID}})
+		let transaction=await new UpdateSubregions_Transaction(listID,data.createNewRegion,1,createSubregion,DeleteSubregion)
+		props.tps.addTransaction(transaction);
 		
 		tpsRedo();
 		await new Promise(r => setTimeout(r, 200));
 		
-		regionsquery.refetch()
+		
 		
 		setAddingItem(false)
 	};
@@ -203,21 +210,11 @@ const Homescreen = (props) => {
 		let listID = activeList._id;
 		let itemID = item._id;
 		let opcode = 0;
-		const deletedRegion=await DeleteSubregion({variables:{_id:item._id}})
-		regionsquery.refetch()
+		console.log(item)
+		let transaction = await new UpdateSubregions_Transaction(listID, itemID,  opcode, createSubregion,DeleteSubregion);
+		props.tps.addTransaction(transaction);
+		tpsRedo();
 		
-		// let itemToDelete = {
-		// 	_id: item._id,
-		// 	id: item.id,
-		// 	name:item.name,
-		// 	capital:item.capital,
-		// 	leader:item.leader,
-		// 	landmarks:item.landmarks
-		// }
-		
-		// let transaction = await new UpdateListItems_Transaction(listID, itemID, itemToDelete, opcode, AddTodoItem, DeleteTodoItem);
-		// props.tps.addTransaction(transaction);
-		// tpsRedo();
 	};
 
 	const editItem = async (itemID, field, value, prev) => {
@@ -264,14 +261,18 @@ const Homescreen = (props) => {
 		for(let i=0;i<subregions.length-1;i++){
 			for(let j=0;j<subregions.length-i-1;j++){
 				if((subregions[j].name).localeCompare(subregions[j+1].name)>0){
-					console.log("not sorted")
+					let transaction=new SortItems_Transaction(sortBy,"name",setSortBy)
 					regionssortedquery.refetch()
-					setSortBy("name")
+					props.tps.addTransaction(transaction)
+					tpsRedo()
 					return
 				}
 			}
 		}
-		setSortBy("revname")
+		let transaction=new SortItems_Transaction(sortBy,"revname",setSortBy)
+		regionssortedquery.refetch()
+		props.tps.addTransaction(transaction)
+		tpsRedo()
 		
 	}
 	const sortListByAscendingLeader=async()=>{
@@ -279,26 +280,36 @@ const Homescreen = (props) => {
 		for(let i=0;i<subregions.length-1;i++){
 			for(let j=0;j<subregions.length-i-1;j++){
 				if((subregions[j].leader).localeCompare(subregions[j+1].leader)>0){
-					setSortBy("leader")
+					let transaction=new SortItems_Transaction(sortBy,"leader",setSortBy)
 					regionssortedquery.refetch()
+					props.tps.addTransaction(transaction)
+					tpsRedo()
 					return
 				}
 			}
 		}
-		setSortBy("revleader")
+		let transaction=new SortItems_Transaction(sortBy,"revleader",setSortBy)
+		regionssortedquery.refetch()
+		props.tps.addTransaction(transaction)
+		tpsRedo()
 	}
 	const sortListByAscendingCapital=async()=>{
 		let subregions=[...regionslist]
 		for(let i=0;i<subregions.length-1;i++){
 			for(let j=0;j<subregions.length-i-1;j++){
 				if((subregions[j].capital).localeCompare(subregions[j+1].capital)>0){
-					setSortBy("capital")
+					let transaction=new SortItems_Transaction(sortBy,"capital",setSortBy)
 					regionssortedquery.refetch()
+					props.tps.addTransaction(transaction)
+					tpsRedo()
 					return
 				}
 			}
 		}
-		setSortBy("revcapital")
+		let transaction=new SortItems_Transaction(sortBy,"revcapital",setSortBy)
+		regionssortedquery.refetch()
+		props.tps.addTransaction(transaction)
+		tpsRedo()
 	}
 	const deleteList = async (_id) => {
 		DeleteTodolist({ variables: { _id: _id,userId:props.user._id }, refetchQueries: [{ query: GET_DB_TODOS }] });

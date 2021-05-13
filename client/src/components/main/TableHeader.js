@@ -10,50 +10,7 @@ const TableHeader = (props) => {
     
     
     console.log(props.activeList)
-    const[sortedName,setSortedName]=useState(false)
-    const[sortedAscend,setSortedAscend]=useState(false)
-    const[sortedDate,setSortedDate]=useState(false)
-    const[sortedComplete,setSortedComplete]=useState(false)
-    const[sortedAssignment,setSortedAssignment]=useState(false)
-    const checkForSortedTask=()=>{
-        if(!props.activeList.items){
-            
-            return false
-        }
-        let items=props.activeList.items;
-        for(let i=0;i<items.length-1;i++){
-            if(items[i].description.localeCompare(items[i+1].description)>0){
-                
-                return false
-            }
-        }
-        
-        return true
-    }
-    const checkForSortedDate=()=>{
-        if(!props.activeList.items){
-            return false
-        }
-        let items=props.activeList.items;
-        for(let i=0;i<items.length-1;i++){
-            if(items[i].due_date>items[i+1].due_date){
-                return false
-            }
-        }
-        return true
-    }
-    const checkForSortedAssignment=()=>{
-        if(!props.activeList.items){
-            return false
-        }
-        let items=props.activeList.items;
-        for(let i=0;i<items.length-1;i++){
-            if(items[i].assigned_to.localeCompare(items[i+1].assigned_to)>0){
-                return false
-            }
-        }
-        return true
-    }
+   
     
     
     // const sortAscendTask=()=>{
@@ -66,39 +23,8 @@ const TableHeader = (props) => {
     //     props.sortByTaskName()
     //     setSortedAscend(true)
     // }
-    const sortDescendDate=()=>{
-        props.sortListByDescendingDate()
-        setSortedDate(false)
-    }
-    const sortAscendDate=()=>{
-        if(checkForSortedDate()){
-            sortDescendDate()
-            return
-        }
-        props.sortListByAscendingDate()
-        setSortedDate(true)
-    }
-    const sortListByIncomplete=()=>{
-        props.sortListByIncomplete()
-        setSortedComplete(false)
-    }
-    const sortListByComplete=()=>{
-        props.sortListByComplete()
-        setSortedComplete(true)
-    }
-   
-    const sortListByDescendAssignment=()=>{
-        props.sortListByDescendingAssignment()
-        setSortedAssignment(false)
-    }
-    const sortListByAscendAssignment=()=>{
-        if(checkForSortedAssignment()){
-            sortListByDescendAssignment()
-            return
-        }
-        props.sortListByAscendingAssignment()
-        setSortedAssignment(true)
-    }
+    
+   console.log(props.tps.hasTransactionToUndo())
     return (
        
         <WRow className="table-header">

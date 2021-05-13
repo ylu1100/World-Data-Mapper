@@ -76,6 +76,21 @@ export class SortItemsByTaskName_Transaction extends jsTPS_Transaction{
 
     }
 }
+export class SortItems_Transaction extends jsTPS_Transaction{
+    constructor(oldSort,newSort,callback){
+        super();
+        this.oldSort=oldSort
+        this.newSort=newSort
+        this.updateFunction = callback;
+    }
+    async doTransaction() {
+      this.updateFunction(this.newSort)
+    }
+
+    async undoTransaction() {
+        this.updateFunction(this.oldSort)
+    }
+}
 export class EditItem_Transaction extends jsTPS_Transaction {
 	constructor(itemID, field, prev, update, callback) {
 		super();
@@ -98,7 +113,7 @@ export class EditItem_Transaction extends jsTPS_Transaction {
     async undoTransaction() {
 		const { data } = await this.updateFunction({ 
             variables:{  _id: this.itemID,
-                field: this.field, value: this.update, 
+                field: this.field, value: this.prev, 
              }
 });
 		return data;
@@ -107,13 +122,12 @@ export class EditItem_Transaction extends jsTPS_Transaction {
 }
 
 /*  Handles create/delete of list items */
-export class UpdateListItems_Transaction extends jsTPS_Transaction {
+export class UpdateSubregions_Transaction extends jsTPS_Transaction {
     // opcodes: 0 - delete, 1 - add 
-    constructor(listID, itemID, item, opcode, addfunc, delfunc) {
+    constructor(listID, itemID,  opcode, addfunc, delfunc) {
         super();
         this.listID = listID;
 		this.itemID = itemID;
-		this.item = item;
         this.addFunction = addfunc;
         this.deleteFunction = delfunc;
         this.opcode = opcode;
@@ -121,24 +135,21 @@ export class UpdateListItems_Transaction extends jsTPS_Transaction {
     async doTransaction() {
 		let data;
         this.opcode === 0 ? { data } = await this.deleteFunction({
-							variables: {region: this.item, _id: this.listID}})
+							variables: {_id:this.itemID}})
 						  : { data } = await this.addFunction({
-							variables: {region: this.item, _id: this.listID}})  
-		if(this.opcode !== 0) {
-            this.item._id = this.itemID = data.addItem;
-		}
+							variables: {regionId:this.itemID,_id:this.listID}})  
 		return data;
+        
     }
     // Since delete/add are opposites, flip matching opcode
     async undoTransaction() {
 		let data;
+        
         this.opcode === 1 ? { data } = await this.deleteFunction({
-							variables: {itemId: this.itemID, _id: this.listID}})
+                             variables: {_id:this.itemID}})
                           : { data } = await this.addFunction({
-							variables: {item: this.item, _id: this.listID}})
-		if(this.opcode !== 1) {
-            this.item._id = this.itemID = data.addItem;
-        }
+							variables: {regionId:this.itemID,_id:this.listID}}) 
+	
 		return data;
     }
 }
@@ -332,6 +343,7 @@ export class jsTPS {
      * return true if an undo operation is possible, false otherwise.
      */
     hasTransactionToUndo() {
+        console.log(this.mostRecentTransaction>=0)
         return this.mostRecentTransaction >= 0;
     }
     

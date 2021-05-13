@@ -183,44 +183,47 @@ module.exports={
 		addSubregion: async(_, args) => {
 			
 			const { region, _id } = args; //_id= parentId
-			
+			console.log('adding')
+			console.log(args)
 			const listId = new ObjectId(_id);
 			let objectId;
 			
-			if(!region._id){ 
+			if(!region){ 
 				objectId= new ObjectId();
 			}
 			else{
-				objectId=region._id
+				
+				objectId=new ObjectId(region)
 			}
-            let foundInRegion=true;
-			let found = await Region.findOne({_id: listId});
-			if(!found){
+			const regionObjId=new ObjectId(region)
+			let updated=await Region.updateOne({_id:regionObjId},{parentId:listId})
+			 //198-214 unnecessary
+            // let foundInRegion=true;
+			// let found = await Region.findOne({_id: listId});
+			// if(!found){
                
-                found=await Map.findOne({_id:listId})
-                foundInRegion=false
-            }
-            
+            //     found=await Map.findOne({_id:listId})
+            //     foundInRegion=false
+            // }
+			// let listRegions
+			// if(foundInRegion){
+			// 	listRegions = found.subregions;
+			// }
+			// else{
+			// 	listRegions = found.regions;
+			// }
 			
-			let listRegions
-			if(foundInRegion){
-				listRegions = found.subregions;
-			}
-			else{
-				listRegions = found.regions;
-			}
+			// listRegions.push(region);
 			
-			listRegions.push(region);
-			
-			let updated;  
-            
-			if(!foundInRegion){
-                console.log('region not found')
-                updated=await Map.updateOne({_id: listId}, { regions: listRegions });
-            }
-            else{
-                updated=await Region.updateOne({_id: listId}, { subregions: listRegions });
-            }
+			 
+            //217-224 unnecessary
+			// if(!foundInRegion){
+            //     console.log('region not found')
+            //     updated=await Map.updateOne({_id: listId}, { regions: listRegions });
+            // }
+            // else{
+            //     updated=await Region.updateOne({_id: listId}, { subregions: listRegions });
+            // }
             
             if(updated)return (objectId)
 			else return ('Could not add Region');
@@ -231,8 +234,10 @@ module.exports={
 			@returns {string} the objectID of the todolist or an error message
 		**/
 		deleteSubregion:async(_,args)=>{
+			console.log("lol")
 			const {_id}=args
-			console.log(_id)
+			
+			
 			const objectId=new ObjectId(_id)
 			const found=await Region.findOne({_id:objectId})
 			if(!found){
@@ -253,7 +258,7 @@ module.exports={
 		// 	else return (found.regions);
 		},
 		createNewRegion: async (_, args,{req}) => {
-            console.log('region creating...')
+            
 			const { region } = args;
 			const objectId = new ObjectId();
 			const ownerId=new ObjectId(req.userId)
