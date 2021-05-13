@@ -23,6 +23,7 @@ import { UpdateListField_Transaction,
 	SortItems_Transaction,
 	jsTPS} 				from '../../utils/jsTPS';
 import WInput from 'wt-frontend/build/components/winput/WInput';
+import { NoFragmentCyclesRule } from 'graphql';
 
 
 const Homescreen = (props) => {
@@ -58,16 +59,17 @@ const Homescreen = (props) => {
 	// const { loading, error, data, refetch } = useQuery(GET_DB_REGIONS);
 	const mapsquery=useQuery(GET_DB_TODOS);
 	
-	const parentregionsquery = useQuery(query.GET_DB_REGION_BY_ID,{
-		variables:{parentId:props.regionViewerData.parentId},
-		skip:props.regionViewerData.parentId==undefined
-	})
+	
+
 	
 	const getparentsquery=useQuery(query.GET_ALL_PARENTS,{ //get all parents
 		variables:{_id:activeList._id},
 		skip:activeList._id==undefined
 	})
-	
+	const parentregionsquery = useQuery(query.GET_DB_REGION_BY_ID,{
+		variables:{parentId:props.regionViewerData.data.parentId},
+		skip:props.regionViewerData.data=="lol",
+	})
 	//if navigated from regionviewer, show parents
 	if((activeList==undefined || Object.keys(activeList).length==0)&&parentregionsquery.data!==undefined){
 		console.log("set active list")

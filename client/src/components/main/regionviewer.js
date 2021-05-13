@@ -7,17 +7,26 @@ const Regionviewer = (props) => {
     let allUserRegions=[]
     const [landmarkInput,setLandmarkInput]=useState("")
     const [addLandmarkToList] = useMutation(mutations.ADD_LANDMARK)
-    const [landmarks,setLandmarks]=useState(props.data.landmarks)
+    const [landmarks,setLandmarks]=useState(props.data.data.landmarks)
     const [showChangeRegion,toggleChangeRegion]=useState(false)
     const [SetNewParent] = useMutation(mutations.SET_NEW_PARENT)
     let parentRegion=""
     let flagExists=true
+    const testquery = useQuery(query.GET_DB_REGION_BY_ID,{
+		variables:{parentId:props.data.data._id},
+	})
+    console.log(testquery)
     const addLandmark=async()=>{
-        console.log("input:")
-        console.log(landmarkInput)
-        const landmarklist=await addLandmarkToList({variables:{_id:props.data._id,landmark:landmarkInput}})
+      
+        const landmarklist=await addLandmarkToList({variables:{_id:props.data.data._id,landmark:landmarkInput}})
         console.log(landmarklist.data.addLandmark)
+        let data={...props.data.data}
+        data.landmarks=landmarklist.data.addLandmark
+        
+        props.setRegionViewerData({data})
+        testquery.refetch()
         setLandmarkInput("")
+        
         setLandmarks(landmarklist.data.addLandmark)
         
     }
@@ -25,21 +34,23 @@ const Regionviewer = (props) => {
         setLandmarkInput(e.target.value)
     }
     const parentregionsquery = useQuery(query.GET_DB_REGION_BY_ID,{
-		variables:{parentId:props.data.parentId},
+		variables:{parentId:props.data.data.parentId},
 	})
-  
+    
+    
     if(parentregionsquery.data!==undefined){
         parentRegion=parentregionsquery.data.getRegionById
+        
     }
     const userregions=useQuery(query.GET_ALL_USERREGIONS)
 	if(userregions.data){
 		allUserRegions=userregions.data.getAllUserRegions
 	}
     const changeParent=async(parent)=>{
-        const setParent=await SetNewParent({variables:{_id:props.data._id,newParent:parent._id}})
+        const setParent=await SetNewParent({variables:{_id:props.data.data._id,newParent:parent._id}})
         parentregionsquery.refetch()
     }
-    console.log(props.data.imgPath)
+    
 
     try{
         require(`../../${props.data.imgPath}`)
@@ -57,14 +68,14 @@ const Regionviewer = (props) => {
                 :
                 <div></div>
                 }
-           <h1>Region Name: {props.data.name}</h1>
+           <h1>Region Name: {props.data.data.name}</h1>
            <h1>Parent Region: 
            </h1>
            <a  style={{color:"blue"}} className="hoverEffect" onClick={()=>props.setShowRegionViewer(false)}>{parentRegion.name}</a>
            <a onClick={()=>toggleChangeRegion(true)}>Change region</a>
-           <h1>Region Capital: {props.data.capital}</h1>
-            <h1>Region Leader: {props.data.leader}</h1>
-            <h1># of Sub Regions: {props.data.subregions.length}</h1>
+           <h1>Region Capital: {props.data.data.capital}</h1>
+            <h1>Region Leader: {props.data.data.leader}</h1>
+            <h1># of Sub Regions: {props.data.data.subregions.length}</h1>
             <div>
             <div style={{overflow:"hidden",overflowY:"scroll",width:"300px",height:"500px"}}>
             {landmarks.map((landmark)=>(

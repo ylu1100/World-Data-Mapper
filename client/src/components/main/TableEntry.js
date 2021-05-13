@@ -22,7 +22,10 @@ const TableEntry = (props) => {
     catch{
         flagExists=false
     }
-    
+    let landmarkStr=""
+    for(let i=0;i<landmarks.length;i++){
+        landmarkStr+=landmarks[i]+","
+    }
     const [editingName, toggleNameEdit] = useState(false);
     const [editingCapital, toggleCapitalEdit] = useState(false);
     const [editingLeader, toggleLeaderEdit] = useState(false);
@@ -116,7 +119,7 @@ const TableEntry = (props) => {
                
                     {
                     props.data.landmarks.length!==0?
-                    <a className="hoverEffect" onClick={()=>props.openRegionViewer(props.data,imgPath)}>{props.data.landmarks}</a>
+                    <a className="hoverEffect" onClick={()=>props.openRegionViewer(props.data,imgPath)}>{landmarkStr}</a>
                     :
                     <a className="hoverEffect" onClick={()=>props.openRegionViewer(props.data,imgPath)}>No landmarks</a>
                     

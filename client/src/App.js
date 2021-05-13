@@ -11,12 +11,13 @@ import cookieParser from 'cookie-parser';
 
 const App = () => {
 	const [showRegionViewer,setShowRegionViewer]=useState(false)
-	const [regionViewerData,setRegionViewerData]=useState({})
-	
+	const [regionViewerData,setRegionViewerData]=useState({data:"lol"})
+	console.log(regionViewerData)
 	let user = null;
     let transactionStack = new jsTPS();
 	
     const { loading, error, data, refetch } = useQuery(queries.GET_DB_USER);
+	
 	console.log(refetch)
     if(error) { 
 		
@@ -27,13 +28,11 @@ const App = () => {
 		if(getCurrentUser !== null) { user = getCurrentUser; }
     }
 	const openRegionViewer=(data,imgPath)=>{
-		let tempdata={...data}
-		tempdata.imgPath=imgPath
+		setRegionViewerData({data,imgPath})
 		setShowRegionViewer(true)
-		setRegionViewerData(tempdata)
+		
 	}
-	console.log('regionv')
-	console.log((showRegionViewer))
+	
 	//console.log(regionViewerData)
 	return(
 		<BrowserRouter>
@@ -62,7 +61,7 @@ const App = () => {
 				
 					render={()=>
 						
-						<Regionspreadsheet  setShowRegionViewer={setShowRegionViewer} data={regionViewerData}/>
+						<Regionspreadsheet setRegionViewerData={setRegionViewerData} setShowRegionViewer={setShowRegionViewer} data={regionViewerData}/>
 					}
 				/>
 				

@@ -6,8 +6,7 @@ module.exports={
     Query: {
 		getAllUserRegions:async(_,__,{req})=>{
 			const regions=await Region.find({owner:req.userId,parentId:{$ne:null}})
-			console.log("lol")
-			console.log(regions)
+		
 			return regions
 		},
         getAllRegions: async (_,args) => { //get all subregions in list
@@ -41,6 +40,8 @@ module.exports={
 		getRegionById: async (_, args) => {
 			const { parentId} = args;
 			
+			console.log("getting region")
+			console.log(parentId)
 			const objectId = new ObjectId(parentId);
 			
 			let map = await Region.findOne({_id: objectId});
@@ -52,12 +53,13 @@ module.exports={
 			}
 			
 			if(map) {
-				
-				return map
+				console.log("found it")
+				console.log(map)
+				return (map)
 			}
 			
 			else {
-				
+				console.log('no found')
 				return ({})
 			};
 		},
@@ -184,7 +186,7 @@ module.exports={
 			
 			const { region, _id } = args; //_id= parentId
 			console.log('adding')
-			console.log(args)
+			
 			const listId = new ObjectId(_id);
 			let objectId;
 			
