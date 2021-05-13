@@ -116,9 +116,9 @@ const TableEntry = (props) => {
                
                     {
                     props.data.landmarks.length!==0?
-                    <a className="hoverEffect" onClick={()=>props.openRegionViewer(props.data)}>{props.data.landmarks}</a>
+                    <a className="hoverEffect" onClick={()=>props.openRegionViewer(props.data,imgPath)}>{props.data.landmarks}</a>
                     :
-                    <a className="hoverEffect" onClick={()=>props.openRegionViewer(props.data)}>No landmarks</a>
+                    <a className="hoverEffect" onClick={()=>props.openRegionViewer(props.data,imgPath)}>No landmarks</a>
                     
                     }
                     </WCol>

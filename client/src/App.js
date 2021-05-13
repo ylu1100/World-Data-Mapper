@@ -26,9 +26,11 @@ const App = () => {
 		let { getCurrentUser } = data;
 		if(getCurrentUser !== null) { user = getCurrentUser; }
     }
-	const openRegionViewer=(data)=>{
+	const openRegionViewer=(data,imgPath)=>{
+		let tempdata={...data}
+		tempdata.imgPath=imgPath
 		setShowRegionViewer(true)
-		setRegionViewerData(data)
+		setRegionViewerData(tempdata)
 	}
 	console.log('regionv')
 	console.log((showRegionViewer))

@@ -11,6 +11,7 @@ const Regionviewer = (props) => {
     const [showChangeRegion,toggleChangeRegion]=useState(false)
     const [SetNewParent] = useMutation(mutations.SET_NEW_PARENT)
     let parentRegion=""
+    let flagExists=true
     const addLandmark=async()=>{
         console.log("input:")
         console.log(landmarkInput)
@@ -38,8 +39,24 @@ const Regionviewer = (props) => {
         const setParent=await SetNewParent({variables:{_id:props.data._id,newParent:parent._id}})
         parentregionsquery.refetch()
     }
+    console.log(props.data.imgPath)
+
+    try{
+        require(`../../${props.data.imgPath}`)
+    }
+    catch{
+        flagExists=false
+    }
     return (
        <div>
+            {flagExists?
+                <div>
+                     <img  src={require(`../../${props.data.imgPath}`)} ></img> 
+                     
+                </div>
+                :
+                <div></div>
+                }
            <h1>Region Name: {props.data.name}</h1>
            <h1>Parent Region: 
            </h1>
