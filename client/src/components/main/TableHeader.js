@@ -8,11 +8,6 @@ const TableHeader = (props) => {
     const buttonStyle = props.disabled ? ' table-header-button-disabled ' : 'table-header-button ';
     const clickDisabled = () => { };
     
-    
-    console.log(props.activeList)
-   
-    
-    
     // const sortAscendTask=()=>{
        
     //     if(checkForSortedTask()){
@@ -31,7 +26,7 @@ const TableHeader = (props) => {
              <WCol size="2">
 
                 {
-                    !props.activeList.subregions ||props.activeList.subregions.length==0?
+                    props.regionslist.length==0?
                 <WButton  className='table-header-section button-disable' wType="texted" >Name</WButton>
                 :
 
@@ -43,7 +38,7 @@ const TableHeader = (props) => {
             <WCol size="2">
             
                 {
-                    !props.activeList.subregions ||props.activeList.subregions.length==0?
+                    props.regionslist.length==0?
                 <WButton  className='table-header-section button-disable' wType="texted" >Capital</WButton>
                 :
                     
@@ -53,7 +48,7 @@ const TableHeader = (props) => {
 
             <WCol size="2">
                 {
-                    !props.activeList.subregions ||props.activeList.subregions.length==0?
+                    props.regionslist.length==0?
                 <WButton  className='table-header-section button-disable' wType="texted" >Leader</WButton>
                 :
                 <WButton onClick={props.sortListByAscendingLeader} className='table-header-section' wType="texted" >Leader</WButton>

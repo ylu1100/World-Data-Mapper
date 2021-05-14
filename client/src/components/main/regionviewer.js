@@ -43,15 +43,19 @@ const Regionviewer = (props) => {
         parentRegion=parentregionsquery.data.getRegionById
         
     }
-    const userregions=useQuery(query.GET_ALL_USERREGIONS)
+    const userregions=useQuery(query.GET_ALL_USERREGIONS,{
+        variables:{_id:props.data.data._id}
+    })
 	if(userregions.data){
+        console.log("alluserregions")
+    console.log(userregions)
 		allUserRegions=userregions.data.getAllUserRegions
 	}
-    console.log("alluserregions")
-    console.log(userregions)
+    
     const changeParent=async(parent)=>{
         const setParent=await SetNewParent({variables:{_id:props.data.data._id,newParent:parent._id}})
         testquery.refetch()
+        userregions.refetch()
         props.setShowRegionViewer(false)
     }
     

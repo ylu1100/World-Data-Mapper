@@ -15,7 +15,7 @@ const typeDefs = gql `
 	}
 	
 	extend type Query {
-		getAllUserRegions:[Subregion]
+		getAllUserRegions(_id:String!):[Subregion]
 		getAllRegions(parentId:String!): [Subregion]
         getRegionById(parentId:String!):Subregion
 		getAllParents(_id:String!):[Subregion]

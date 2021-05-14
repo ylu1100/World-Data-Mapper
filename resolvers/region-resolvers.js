@@ -4,7 +4,11 @@ const User=require('../models/user-model2')
 const Region=require('../models/region-model')
 module.exports={
     Query: {
-		getAllUserRegions:async(_,__,{req})=>{
+		getAllUserRegions:async(_,args,{req})=>{
+			
+			const {_id}= args
+			console.log("============================")
+			console.log(_id)
 			const regions=await Region.find({owner:req.userId,parentId:{$ne:null}})
 			const maps= await Map.find({owner:req.userId})
 			let subregions=[...regions]
@@ -20,11 +24,8 @@ module.exports={
 				while(sr.parentId!==null){
 					
 					sr2=await Region.findOne({_id:new ObjectId(sr.parentId)})
-					
 					if(sr2==null){
-						
-						sr2=await Map.findOne({_id:new ObjectId(sr.parentId)})
-						
+						sr2=await Map.findOne({_id:new ObjectId(sr.parentId)})	
 						if(!sr2){
 							sr2=await Map.findOne({_id:new ObjectId(sr._id)})
 							if(!sr2){
@@ -51,6 +52,7 @@ module.exports={
 					validRegionsIndex.push(i)
 				}
 			}
+			
 			let validRegions=[]
 			for(let i=0;i<validRegionsIndex.length;i++){
 				if(subregions[validRegionsIndex[i]].parentId==null){
@@ -60,7 +62,10 @@ module.exports={
 					subregions[validRegionsIndex[i]].leader='N/A'
 					
 				}
-				validRegions.push(subregions[validRegionsIndex[i]])
+				
+				if(subregions[validRegionsIndex[i]]._id!=_id){
+					validRegions.push(subregions[validRegionsIndex[i]])
+				}
 			}
 			console.log("validRegions")
 			console.log(validRegions)

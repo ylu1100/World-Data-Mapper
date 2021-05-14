@@ -59,7 +59,7 @@ const MainContents = (props) => {
     return (
         <div   tabIndex='0'  onKeyDown={checkKeyEvent} className='table ' >
             <TableHeader
-                
+                regionslist={props.regionslist}
                 addingItem={props.addingItem}
                 tps={props.tps}
                 activeList={props.activeList}

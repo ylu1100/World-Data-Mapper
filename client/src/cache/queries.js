@@ -65,8 +65,8 @@ export const GET_ALL_PARENTS = gql`
 	}
 `;
 export const GET_ALL_USERREGIONS= gql`
-	query getAllUserRegions{
-		getAllUserRegions{
+	query getAllUserRegions($_id:String!){
+		getAllUserRegions(_id:$_id){
 			_id
 			id
 			parentId
