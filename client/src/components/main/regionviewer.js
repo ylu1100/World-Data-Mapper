@@ -51,7 +51,11 @@ const Regionviewer = (props) => {
         parentregionsquery.refetch()
     }
     
-
+    const changeRegionWindow=()=>{
+        userregions.refetch()
+        toggleChangeRegion(true);
+        
+    }
     try{
         require(`../../${props.data.imgPath}`)
     }
@@ -72,7 +76,7 @@ const Regionviewer = (props) => {
            <h1>Parent Region: 
            </h1>
            <a  style={{color:"blue"}} className="hoverEffect" onClick={()=>props.setShowRegionViewer(false)}>{parentRegion.name}</a>
-           <a onClick={()=>toggleChangeRegion(true)}>Change region</a>
+           <a onClick={changeRegionWindow}>Change region</a>
            <h1>Region Capital: {props.data.data.capital}</h1>
             <h1>Region Leader: {props.data.data.leader}</h1>
             <h1># of Sub Regions: {props.data.data.subregions.length}</h1>

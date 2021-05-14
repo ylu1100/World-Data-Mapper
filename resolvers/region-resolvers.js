@@ -6,8 +6,58 @@ module.exports={
     Query: {
 		getAllUserRegions:async(_,__,{req})=>{
 			const regions=await Region.find({owner:req.userId,parentId:{$ne:null}})
-		
-			return regions
+			const maps= await Map.find({owner:req.userId})
+			let subregions=[...regions]
+			subregions.push(...maps)
+			
+			let validRegionsIndex=[]
+			
+			for(let i=0;i<subregions.length;i++){
+				let sr=subregions[i]
+				let sr2;
+				let valid=false
+				let num=0
+				while(sr.parentId!==null){
+					
+					sr2=await Region.findOne({_id:new ObjectId(sr.parentId)})
+					
+					if(sr2==null){
+						
+						sr2=await Map.findOne({_id:new ObjectId(sr.parentId)})
+						
+						if(!sr2){
+							sr2=await Map.findOne({_id:new ObjectId(sr._id)})
+							if(!sr2){
+								break
+							}
+							else{
+								valid=true
+								break;
+							}
+						}
+						else{
+							valid=true
+							break
+						}
+						
+					}
+					else{
+						sr=sr2
+					}
+				}
+				
+				if(valid){
+					validRegionsIndex.push(i)
+				}
+			}
+			let validRegions=[]
+			for(let i=0;i<validRegionsIndex.length;i++){
+				validRegions.push(subregions[validRegionsIndex[i]])
+			}
+			console.log("validRegions")
+			console.log(validRegions)
+			console.log(validRegions.length)
+			return validRegions
 		},
         getAllRegions: async (_,args) => { //get all subregions in list
             console.log("loading regions")
@@ -53,13 +103,13 @@ module.exports={
 			}
 			
 			if(map) {
-				console.log("found it")
+				
 				console.log(map)
 				return (map)
 			}
 			
 			else {
-				console.log('no found')
+				
 				return ({})
 			};
 		},
