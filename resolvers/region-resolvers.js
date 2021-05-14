@@ -31,6 +31,7 @@ module.exports={
 								break
 							}
 							else{
+								
 								valid=true
 								break;
 							}
@@ -52,6 +53,13 @@ module.exports={
 			}
 			let validRegions=[]
 			for(let i=0;i<validRegionsIndex.length;i++){
+				if(subregions[validRegionsIndex[i]].parentId==null){
+					subregions[validRegionsIndex[i]].parentId='N/A'
+					subregions[validRegionsIndex[i]].capital='N/A'
+					subregions[validRegionsIndex[i]].landmarks=[]
+					subregions[validRegionsIndex[i]].leader='N/A'
+					
+				}
 				validRegions.push(subregions[validRegionsIndex[i]])
 			}
 			console.log("validRegions")

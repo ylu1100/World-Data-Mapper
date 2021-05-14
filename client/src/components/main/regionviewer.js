@@ -15,15 +15,16 @@ const Regionviewer = (props) => {
     const testquery = useQuery(query.GET_DB_REGION_BY_ID,{
 		variables:{parentId:props.data.data._id},
 	})
-    console.log(testquery)
+    
     const addLandmark=async()=>{
       
         const landmarklist=await addLandmarkToList({variables:{_id:props.data.data._id,landmark:landmarkInput}})
         console.log(landmarklist.data.addLandmark)
         let data={...props.data.data}
         data.landmarks=landmarklist.data.addLandmark
+        console.log(data)
+        props.setRegionViewerData({data:data})
         
-        props.setRegionViewerData({data})
         testquery.refetch()
         setLandmarkInput("")
         
@@ -46,9 +47,12 @@ const Regionviewer = (props) => {
 	if(userregions.data){
 		allUserRegions=userregions.data.getAllUserRegions
 	}
+    console.log("alluserregions")
+    console.log(userregions)
     const changeParent=async(parent)=>{
         const setParent=await SetNewParent({variables:{_id:props.data.data._id,newParent:parent._id}})
-        parentregionsquery.refetch()
+        testquery.refetch()
+        props.setShowRegionViewer(false)
     }
     
     const changeRegionWindow=()=>{

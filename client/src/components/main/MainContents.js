@@ -71,7 +71,8 @@ const MainContents = (props) => {
                 setShowDelete={props.setShowDelete} setActiveList={props.setActiveList}
             />
             <TableContents
-                
+                setShowDeleteSubregion={props.setShowDeleteSubregion}
+                setSubregionToBeDeleted={props.setSubregionToBeDeleted}
                 refetchRegions={props.refetchRegions}
                 ancestorList={props.ancestorList}
                 openRegionViewer={props.openRegionViewer}

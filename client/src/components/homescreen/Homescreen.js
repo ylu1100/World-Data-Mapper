@@ -8,6 +8,7 @@ import Delete 							from '../modals/Delete';
 import CreateAccount 					from '../modals/CreateAccount';
 import Update					from '../modals/Update';
 import Home from '../main/home'
+import DeleteSubregionModal from '../modals/DeleteSubregion'
 import MapName					from '../modals/MapName';
 import { GET_DB_TODOS } 				from '../../cache/queries';
 
@@ -41,6 +42,8 @@ const Homescreen = (props) => {
 	const [showCreate, toggleShowCreate] 	= useState(false);
 	const [showUpdate,toggleShowUpdate]=useState(false);
 	const [showMapName,toggleMapName]=useState(false)
+	const [showDeleteSubregion,setShowDeleteSubregion] = useState(false)
+	const [subregionToBeDeleted,setSubregionToBeDeleted] = useState({})
 	const [addingItem,setAddingItem] =useState(false)
 	const [sortBy,setSortBy]=useState("")
 	const [ReorderTodoItems] 		= useMutation(mutations.REORDER_ITEMS);
@@ -66,9 +69,10 @@ const Homescreen = (props) => {
 		variables:{_id:activeList._id},
 		skip:activeList._id==undefined
 	})
+	
 	const parentregionsquery = useQuery(query.GET_DB_REGION_BY_ID,{
 		variables:{parentId:props.regionViewerData.data.parentId},
-		skip:props.regionViewerData.data=="lol",
+		skip:props.regionViewerData.data==-1,
 	})
 	//if navigated from regionviewer, show parents
 	if((activeList==undefined || Object.keys(activeList).length==0)&&parentregionsquery.data!==undefined){
@@ -398,7 +402,7 @@ const Homescreen = (props) => {
 							The World Data Mapper
 						</WNavItem>
 						:
-						<WNavItem className="hoverEffect" onClick={()=>{setActiveList({});props.setRegionViewerData({})}}>
+						<WNavItem className="hoverEffect" onClick={()=>{setActiveList({});props.setRegionViewerData({data:-1})}}>
 							The World Data Mapper
 						</WNavItem>
 					}
@@ -460,7 +464,8 @@ const Homescreen = (props) => {
 					activeList ? 
 							<div className="container-secondary">
 								<MainContents
-									
+									setShowDeleteSubregion={setShowDeleteSubregion}
+									setSubregionToBeDeleted={setSubregionToBeDeleted}
 									ancestorList={ancestorList}
 									openRegionViewer={props.openRegionViewer}
 									addingItem={addingItem}
@@ -483,7 +488,7 @@ const Homescreen = (props) => {
 				}
 
 			</WLMain>
-			{showDelete||showCreate||showLogin||showUpdate||showMapName?
+			{showDelete||showCreate||showLogin||showUpdate||showMapName||showDeleteSubregion?
 				<div className="blurBackground"></div>
 			:
 			null
@@ -505,6 +510,9 @@ const Homescreen = (props) => {
 			}
 			{
 				showMapName &&(<MapName createNewList={createNewList} refetchTodos={mapsquery.refetch}  toggleMapName={toggleMapName}></MapName>)
+			}
+			{
+				showDeleteSubregion && (<DeleteSubregionModal subregionToBeDeleted={subregionToBeDeleted} deleteItem={deleteItem} setShowDeleteSubregion={setShowDeleteSubregion} ></DeleteSubregionModal>)
 			}
 		</WLayout>
 	

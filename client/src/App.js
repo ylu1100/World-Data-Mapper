@@ -11,7 +11,7 @@ import cookieParser from 'cookie-parser';
 
 const App = () => {
 	const [showRegionViewer,setShowRegionViewer]=useState(false)
-	const [regionViewerData,setRegionViewerData]=useState({data:"lol"})
+	const [regionViewerData,setRegionViewerData]=useState({data:-1})
 	console.log(regionViewerData)
 	let user = null;
     let transactionStack = new jsTPS();
@@ -50,7 +50,7 @@ const App = () => {
 					path="/home" 
 					name="home" 
 					render={() => 
-						<Homescreen setShowRegionViewer={setShowRegionViewer} setRegionViewerData={setRegionViewerData} regionViewerData={regionViewerData} openRegionViewer={openRegionViewer} tps={transactionStack} fetchUser={refetch} user={user} />
+						<Homescreen showRegionViewer={showRegionViewer} setShowRegionViewer={setShowRegionViewer} setRegionViewerData={setRegionViewerData} regionViewerData={regionViewerData} openRegionViewer={openRegionViewer} tps={transactionStack} fetchUser={refetch} user={user} />
 					} 
 				/> 
 				:

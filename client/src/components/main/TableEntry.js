@@ -108,7 +108,7 @@ const TableEntry = (props) => {
             <WCol size="2">
                 <div className='button-group'>
                     
-                    <WButton className="table-entry-buttons" onClick={() => props.deleteItem(data)} wType="texted">
+                    <WButton className="table-entry-buttons" onClick={() => {props.setSubregionToBeDeleted(data);props.setShowDeleteSubregion(true);}} wType="texted">
                         <i className="material-icons">close</i>
                     </WButton>
                     <a className="hoverEffect" onClick={()=>props.goToSubregion(props.data)}>Go to sub</a>

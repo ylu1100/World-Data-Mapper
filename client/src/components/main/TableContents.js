@@ -13,6 +13,8 @@ const TableContents = (props) => {
             {
                 entries.map((entry, index) => (
                     <TableEntry
+                        setShowDeleteSubregion={props.setShowDeleteSubregion}
+                        setSubregionToBeDeleted={props.setSubregionToBeDeleted}
                         refetchRegions={props.refetchRegions}
                         ancestorList={props.ancestorList}
                         openRegionViewer={props.openRegionViewer}
