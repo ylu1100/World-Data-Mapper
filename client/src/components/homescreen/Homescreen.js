@@ -85,6 +85,7 @@ const Homescreen = (props) => {
 		variables:{parentId:activeList._id},
 		skip:activeList._id==undefined
 	})
+	console.log(regionsquery)
 	const regionssortedquery=useQuery(query.GET_DB_REGIONS_SORTED,{
 		variables:{parentId:activeList._id,sortBy:sortBy},
 		skip:activeList._id==undefined
@@ -143,7 +144,13 @@ const Homescreen = (props) => {
 		}
 	}
 	
-	
+	const refetchEverything=async()=>{
+		regionsquery.refetch();
+		regionssortedquery.refetch();
+		props.tps.clearAllTransactions()
+		console.log(regionsquery)
+		console.log(activeList._id)
+	}
 	const tpsUndo = async () => {
 		const retVal = await props.tps.undoTransaction();
 
@@ -157,8 +164,8 @@ const Homescreen = (props) => {
 	const tpsRedo = async () => {
 		const retVal = await props.tps.doTransaction();
 		refetchTodos(mapsquery.refetch);
-		regionsquery.refetch()
-		regionssortedquery.refetch()
+		regionsquery.refetch();
+		regionssortedquery.refetch();
 		
 		return retVal;
 	}
@@ -210,7 +217,9 @@ const Homescreen = (props) => {
 	};
 
 	const goToSubregion =(region)=>{
+		refetchEverything()
 		setActiveList(region)
+		
 	}
 	const deleteItem = async (item) => {
 		let listID = activeList._id;
@@ -331,7 +340,6 @@ const Homescreen = (props) => {
 		tpsRedo();
 
 	};
-
 	const handleSetActive = async (id) => {
 		const todo = todolists.find(todo => todo.id === id || todo._id === id);
 		console.log(todo)
@@ -446,10 +454,10 @@ const Homescreen = (props) => {
 				{ancestorList.map((region,index)=>(
 					<div>
 					{index==ancestorList.length-1?
-					<a className="hoverEffect"  style={{color:"yellow"}} onClick={()=>setActiveList(region)}>{region.name}</a>
+					<a className="hoverEffect"  style={{color:"yellow"}} onClick={()=>{refetchEverything();setActiveList(region);}}>{region.name}</a>
 					
 					:
-					<a className="hoverEffect"   onClick={()=>setActiveList(region)}>{region.name}</a>
+					<a className="hoverEffect"   onClick={()=>{refetchEverything();setActiveList(region);}}>{region.name}</a>
 					
 					}
 					<br></br>
@@ -464,6 +472,7 @@ const Homescreen = (props) => {
 					activeList ? 
 							<div className="container-secondary">
 								<MainContents
+									refetchEverything={refetchEverything}
 									setShowDeleteSubregion={setShowDeleteSubregion}
 									setSubregionToBeDeleted={setSubregionToBeDeleted}
 									ancestorList={ancestorList}

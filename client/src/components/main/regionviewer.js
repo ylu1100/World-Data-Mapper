@@ -15,7 +15,11 @@ const Regionviewer = (props) => {
     const testquery = useQuery(query.GET_DB_REGION_BY_ID,{
 		variables:{parentId:props.data.data._id},
 	})
+    const regionsquery =  useQuery(query.GET_DB_REGIONS,{
+		variables:{parentId:props.data.data.parentId},
+	})
     
+    const mapsquery=useQuery(query.GET_DB_TODOS);
     const addLandmark=async()=>{
       
         const landmarklist=await addLandmarkToList({variables:{_id:props.data.data._id,landmark:landmarkInput}})
@@ -54,9 +58,13 @@ const Regionviewer = (props) => {
     
     const changeParent=async(parent)=>{
         const setParent=await SetNewParent({variables:{_id:props.data.data._id,newParent:parent._id}})
-        testquery.refetch()
-        userregions.refetch()
-        props.setShowRegionViewer(false)
+        let data={...props.data.data}
+        data.parentId=parent._id
+        console.log(data)
+        props.setRegionViewerData({data:data})
+        regionsquery.refetch()
+      
+        
     }
     
     const changeRegionWindow=()=>{
@@ -84,7 +92,7 @@ const Regionviewer = (props) => {
            <h1>Parent Region: 
            </h1>
            <a  style={{color:"blue"}} className="hoverEffect" onClick={()=>props.setShowRegionViewer(false)}>{parentRegion.name}</a>
-           <a onClick={changeRegionWindow}>Change region</a>
+           <a className="hoverEffect" onClick={changeRegionWindow}>Change region</a>
            <h1>Region Capital: {props.data.data.capital}</h1>
             <h1>Region Leader: {props.data.data.leader}</h1>
             <h1># of Sub Regions: {props.data.data.subregions.length}</h1>
@@ -110,10 +118,10 @@ const Regionviewer = (props) => {
                 </div>
                 {showChangeRegion?
                 <div style={{overflow:"hidden",overflowY:"scroll",width:"300px",height:"500px"}}>
-                    <a onClick={()=>toggleChangeRegion(false)}>x</a>
+                    <a className="hoverEffect" onClick={()=>toggleChangeRegion(false)}>x</a>
                     {allUserRegions.map((region)=>(
                         <div>
-                        <a onClick={()=>changeParent(region)} style={{fontSize:"12px"}}>{region.name}</a>
+                        <a  className="hoverEffect"  onClick={()=>changeParent(region)} style={{fontSize:"12px"}}>{region.name}</a>
                         </div>
                     ))
 

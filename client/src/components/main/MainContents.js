@@ -71,6 +71,7 @@ const MainContents = (props) => {
                 setShowDelete={props.setShowDelete} setActiveList={props.setActiveList}
             />
             <TableContents
+              refetchEverything={props.refetchEverything}
                 setShowDeleteSubregion={props.setShowDeleteSubregion}
                 setSubregionToBeDeleted={props.setSubregionToBeDeleted}
                 refetchRegions={props.refetchRegions}

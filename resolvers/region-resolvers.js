@@ -76,7 +76,8 @@ module.exports={
             console.log("loading regions")
         
             const parentId=new ObjectId(args.parentId)
-			
+			console.log(parentId)
+			console.log(args.parentId)
 			if(!parentId) { return([])};
 			const regionlists = await Region.find({parentId: parentId});
 			//const listIds=await User.findOne({_id:_id})
@@ -88,6 +89,7 @@ module.exports={
 			// 	maplistordered.push(map)
 			// }
 			//console.log(todolistordered)
+			console.log(regionlists)
 			if(regionlists) return (regionlists);
 
 		},
