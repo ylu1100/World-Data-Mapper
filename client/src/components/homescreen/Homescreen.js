@@ -76,16 +76,17 @@ const Homescreen = (props) => {
 	})
 	//if navigated from regionviewer, show parents
 	if((activeList==undefined || Object.keys(activeList).length==0)&&parentregionsquery.data!==undefined){
-		console.log("set active list")
+		
 		setActiveList(parentregionsquery.data.getRegionById)
 	}
 	
 	
 	const regionsquery =  useQuery(query.GET_DB_REGIONS,{
 		variables:{parentId:activeList._id},
-		skip:activeList._id==undefined
+		skip:activeList._id==undefined,
+		fetchPolicy: "network-only"
 	})
-	console.log(regionsquery)
+
 	const regionssortedquery=useQuery(query.GET_DB_REGIONS_SORTED,{
 		variables:{parentId:activeList._id,sortBy:sortBy},
 		skip:activeList._id==undefined
@@ -94,12 +95,12 @@ const Homescreen = (props) => {
 	if(getparentsquery.data!==undefined){
 		ancestorList=[...getparentsquery.data.getAllParents]
 		ancestorList.reverse()
-		console.log(ancestorList)
+	
 	}
 	
 	if(sortBy==""){
 		if(regionsquery.data!==undefined){
-			console.log("rerendering")
+			
 		// setRegionsList(regionsquery.data.getAllRegions)
 			regionslist=regionsquery.data.getAllRegions
 		}
@@ -109,7 +110,7 @@ const Homescreen = (props) => {
 			regionslist=regionssortedquery.data.getAllRegionsSorted
 		}
 	}
-	console.log(regionslist)
+
 	
 
 	if(mapsquery.loading) { console.log(mapsquery.loading, 'loading'); }
@@ -144,13 +145,19 @@ const Homescreen = (props) => {
 		}
 	}
 	
-	const refetchEverything=async()=>{
-		regionsquery.refetch();
-		regionssortedquery.refetch();
+	const refetchEverything=async(region)=>{
+		setActiveList(region)
 		props.tps.clearAllTransactions()
+		mapsquery.refetch()
+		regionsquery.refetch({variables:{parentId:-1}})
 		console.log(regionsquery)
-		console.log(activeList._id)
+		if(regionsquery.data!==undefined){
+		regionslist=regionsquery.data.getAllRegions
+		}
+		
+		
 	}
+
 	const tpsUndo = async () => {
 		const retVal = await props.tps.undoTransaction();
 
@@ -203,7 +210,7 @@ const Homescreen = (props) => {
 		};
 		//let transaction =  await new UpdateListItems_Transaction(listID, itemID, newItem, opcode, AddTodoItem, DeleteTodoItem);
 		const {data}=await createNewRegion({variables:{region:newItem}})
-		console.log(data.createNewRegion)
+		
 		// const newRegionId=await createSubregion({variables:{regionId:data.createNewRegion,_id:listID}})
 		let transaction=await new UpdateSubregions_Transaction(listID,data.createNewRegion,1,createSubregion,DeleteSubregion)
 		props.tps.addTransaction(transaction);
@@ -217,15 +224,15 @@ const Homescreen = (props) => {
 	};
 
 	const goToSubregion =(region)=>{
-		refetchEverything()
-		setActiveList(region)
 		
+		setActiveList(region)
+		refetchEverything(region)
 	}
 	const deleteItem = async (item) => {
 		let listID = activeList._id;
 		let itemID = item._id;
 		let opcode = 0;
-		console.log(item)
+		
 		let transaction = await new UpdateSubregions_Transaction(listID, itemID,  opcode, createSubregion,DeleteSubregion);
 		props.tps.addTransaction(transaction);
 		tpsRedo();
@@ -272,7 +279,7 @@ const Homescreen = (props) => {
 	};
 	const sortListByAscendingName=async()=>{
 		let subregions=[...regionslist]
-		console.log(subregions)
+		
 		for(let i=0;i<subregions.length-1;i++){
 			for(let j=0;j<subregions.length-i-1;j++){
 				if((subregions[j].name).localeCompare(subregions[j+1].name)>0){
@@ -342,8 +349,6 @@ const Homescreen = (props) => {
 	};
 	const handleSetActive = async (id) => {
 		const todo = todolists.find(todo => todo.id === id || todo._id === id);
-		console.log(todo)
-		const recentMap=await setRecentMap({variables:{user_id:props.user._id,mapId:todo.id}})
 		let temp=[]
 		temp.push(...todolists)
 		let index=todolists.indexOf(todo)
@@ -365,7 +370,7 @@ const Homescreen = (props) => {
 		
 		props.tps.clearAllTransactions()
 		mapsquery.refetch()
-		
+		regionsquery.refetch()
 		
 	};
 
@@ -454,10 +459,10 @@ const Homescreen = (props) => {
 				{ancestorList.map((region,index)=>(
 					<div>
 					{index==ancestorList.length-1?
-					<a className="hoverEffect"  style={{color:"yellow"}} onClick={()=>{refetchEverything();setActiveList(region);}}>{region.name}</a>
+					<a className="hoverEffect"  style={{color:"yellow"}} onClick={()=>{refetchEverything(region);}}>{region.name}</a>
 					
 					:
-					<a className="hoverEffect"   onClick={()=>{refetchEverything();setActiveList(region);}}>{region.name}</a>
+					<a className="hoverEffect"   onClick={()=>{refetchEverything(region);}}>{region.name}</a>
 					
 					}
 					<br></br>

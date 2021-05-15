@@ -90,6 +90,7 @@ module.exports={
 			// }
 			//console.log(todolistordered)
 			console.log(regionlists)
+			console.log(regionlists.length)
 			if(regionlists) return (regionlists);
 
 		},

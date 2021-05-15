@@ -58,17 +58,14 @@ const Regionviewer = (props) => {
     
     const changeParent=async(parent)=>{
         const setParent=await SetNewParent({variables:{_id:props.data.data._id,newParent:parent._id}})
+        while(!setParent){}
         let data={...props.data.data}
         data.parentId=parent._id
         console.log(data)
         props.setRegionViewerData({data:data})
-        regionsquery.refetch()
-      
-        
     }
     
     const changeRegionWindow=()=>{
-        userregions.refetch()
         toggleChangeRegion(true);
         
     }
