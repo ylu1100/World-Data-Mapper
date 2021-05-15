@@ -1,4 +1,4 @@
-import React ,{useState}      from 'react';
+import React ,{useState,useEffect}      from 'react';
 import { WButton, WInput, WRow, WCol } from 'wt-frontend';
 import * as mutations 					from '../../cache/mutations';
 import { useMutation, useQuery } 		from '@apollo/client';
@@ -12,19 +12,21 @@ const Regionviewer = (props) => {
     let allUserRegions=[]
     const [landmarkInput,setLandmarkInput]=useState("")
     const [addLandmarkToList] = useMutation(mutations.ADD_LANDMARK)
-    const [landmarks,setLandmarks]=useState(props.data.data.landmarks)
+    const [landmarks,setLandmarks]=useState(props.data.regionslist[props.data.index].landmarks)
     const [showChangeRegion,toggleChangeRegion]=useState(false)
     const [SetNewParent] = useMutation(mutations.SET_NEW_PARENT)
+    const [DeleteLandmark] = useMutation(mutations.DELETE_LANDMARK)
     const [showUpdate,setShowUpdate]=useState(false);
     let parentRegion=""
     let flagExists=true
     const testquery = useQuery(query.GET_DB_REGION_BY_ID,{
 		variables:{parentId:props.data.data._id},
+     
 	})
     const regionsquery =  useQuery(query.GET_DB_REGIONS,{
 		variables:{parentId:props.data.data.parentId},
 	})
-    
+    console.log(props.data)
     const mapsquery=useQuery(query.GET_DB_TODOS);
     const addLandmark=async()=>{
       
@@ -34,7 +36,9 @@ const Regionviewer = (props) => {
         data.landmarks=landmarklist.data.addLandmark
         let newdata={...props.data}
         newdata.data=data
-        console.log(data)
+        let templist=[...newdata.regionslist]
+        templist[props.data.index]=data
+        newdata.regionslist=templist
         props.setRegionViewerData(newdata)
         
         testquery.refetch()
@@ -63,7 +67,19 @@ const Regionviewer = (props) => {
     console.log(userregions)
 		allUserRegions=userregions.data.getAllUserRegions
 	}
-    
+    const deleteLandmark=async(landmark,index)=>{
+        const deleted=await DeleteLandmark({variables:{_id:props.data.data._id,landmarkIndex:index}})
+        
+        let data={...props.data.data}
+        data.landmarks=deleted.data.deleteLandmark
+        let newdata={...props.data}
+        newdata.data=data
+        let templist=[...newdata.regionslist]
+        templist[props.data.index]=data
+        newdata.regionslist=templist
+        props.setRegionViewerData(newdata)
+        setLandmarks(deleted.data.deleteLandmark)
+    }
     const changeParent=async(parent)=>{
         const setParent=await SetNewParent({variables:{_id:props.data.data._id,newParent:parent._id}})
         while(!setParent){}
@@ -73,14 +89,17 @@ const Regionviewer = (props) => {
         newdata.data=data
         console.log(data)
         props.setRegionViewerData(newdata)
+        
     }
     const goPrevRegion=()=>{
         let index=props.data.index
         let data={...props.data}
         data.data=props.data.regionslist[index-1]
+        console.log(data)
         data.index=index-1
         props.setRegionViewerData(data)
-    
+        testquery.refetch()
+        setLandmarks(props.data.regionslist[props.data.index-1].landmarks)
      }
     const goNextRegion=()=>{
         let index=props.data.index
@@ -88,6 +107,9 @@ const Regionviewer = (props) => {
         data.data=props.data.regionslist[index+1]
         data.index=index+1
         props.setRegionViewerData(data)
+        testquery.refetch()
+        setLandmarks(props.data.regionslist[props.data.index+1].landmarks)
+        
      }
     const changeRegionWindow=()=>{
         toggleChangeRegion(true);
@@ -162,10 +184,10 @@ const Regionviewer = (props) => {
             <h1># of Sub Regions: {props.data.data.subregions.length}</h1>
             <div>
             <div style={{overflow:"hidden",overflowY:"scroll",width:"300px",height:"500px"}}>
-            {landmarks.map((landmark)=>(
-                <div>
-                <h1 style={{fontSize:"12px"}}>{landmark}</h1>
-                
+            {landmarks.map((landmark,index)=>(
+                <div style={{width:'90%'}}>
+                {landmark}
+                <a onClick={()=>deleteLandmark(landmark,index)} className='hoverEffect' style={{float:'right'}} >x</a>
                 </div>
             ))
             }

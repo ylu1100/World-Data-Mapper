@@ -28,6 +28,7 @@ const typeDefs = gql `
 		addLandmark(_id:String!,landmark:String!):[String]
 		deleteSubregion(_id:String!):String
 		setNewParent(_id:String!,newParent:String!):String
+		deleteLandmark(_id:String!,landmarkIndex:Int!):[String]
 	}
 	input FieldInput {
 		_id: String

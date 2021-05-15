@@ -135,3 +135,8 @@ export const SET_NEW_PARENT=gql`
 		setNewParent(_id:$_id,newParent:$newParent)
 	}
 `
+export const DELETE_LANDMARK=gql`
+	mutation deleteLandmark($_id:String!,$landmarkIndex:Int!){
+		deleteLandmark(_id:$_id,landmarkIndex:$landmarkIndex)
+	}
+`

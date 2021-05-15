@@ -7,8 +7,7 @@ module.exports={
 		getAllUserRegions:async(_,args,{req})=>{
 			
 			const {_id}= args
-			console.log("============================")
-			console.log(_id)
+			
 			const regions=await Region.find({owner:req.userId,parentId:{$ne:null}})
 			const maps= await Map.find({owner:req.userId})
 			let subregions=[...regions]
@@ -67,9 +66,7 @@ module.exports={
 					validRegions.push(subregions[validRegionsIndex[i]])
 				}
 			}
-			console.log("validRegions")
-			console.log(validRegions)
-			console.log(validRegions.length)
+			
 			return validRegions
 		},
         getAllRegions: async (_,args) => { //get all subregions in list
@@ -379,7 +376,21 @@ module.exports={
 			}
 
 		},
-		
+		deleteLandmark:async(_,args)=>{
+			const {_id,landmarkIndex}=args
+			const objId=new ObjectId(_id)
+			const region= await Region.findOne({_id:objId})
+			console.log(region)
+			let landmarks=[...region.landmarks]
+			landmarks.splice(landmarkIndex,1)
+			const updated=await Region.updateOne({_id:objId},{landmarks:landmarks})
+			if(updated){
+			return landmarks
+			}
+			else{
+				return region.landmarks
+			}
+		}
 		/**
 		// 	@param 	 {object} args - contains list id, item to swap, and swap direction
 		// 	@returns {array} the reordered item array on success, or initial ordering on failure
