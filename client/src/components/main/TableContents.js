@@ -13,6 +13,7 @@ const TableContents = (props) => {
             {
                 entries.map((entry, index) => (
                     <TableEntry
+                        regionslist={props.regionslist }
                          refetchEverything={props.refetchEverything}
                         setShowDeleteSubregion={props.setShowDeleteSubregion}
                         setSubregionToBeDeleted={props.setSubregionToBeDeleted}

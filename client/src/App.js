@@ -12,6 +12,7 @@ import cookieParser from 'cookie-parser';
 const App = () => {
 	const [showRegionViewer,setShowRegionViewer]=useState(false)
 	const [regionViewerData,setRegionViewerData]=useState({data:-1})
+	const [activeList,setActiveList]=useState({})
 	console.log(regionViewerData)
 	let user = null;
     let transactionStack = new jsTPS();
@@ -27,8 +28,10 @@ const App = () => {
 		let { getCurrentUser } = data;
 		if(getCurrentUser !== null) { user = getCurrentUser; }
     }
-	const openRegionViewer=(data,imgPath)=>{
-		setRegionViewerData({data,imgPath})
+	const openRegionViewer=(data,imgPath,regionslist,index)=>{
+		console.log(regionslist)
+		console.log(index)
+		setRegionViewerData({data,imgPath,regionslist,index})
 		setShowRegionViewer(true)
 		
 	}
@@ -50,7 +53,7 @@ const App = () => {
 					path="/home" 
 					name="home" 
 					render={() => 
-						<Homescreen showRegionViewer={showRegionViewer} setShowRegionViewer={setShowRegionViewer} setRegionViewerData={setRegionViewerData} regionViewerData={regionViewerData} openRegionViewer={openRegionViewer} tps={transactionStack} fetchUser={refetch} user={user} />
+						<Homescreen activeList={activeList} setActiveList={setActiveList}  showRegionViewer={showRegionViewer} setShowRegionViewer={setShowRegionViewer} setRegionViewerData={setRegionViewerData} regionViewerData={regionViewerData} openRegionViewer={openRegionViewer} tps={transactionStack} fetchUser={refetch} user={user} />
 					} 
 				/> 
 				:
@@ -61,7 +64,7 @@ const App = () => {
 				
 					render={()=>
 						
-						<Regionspreadsheet setRegionViewerData={setRegionViewerData} setShowRegionViewer={setShowRegionViewer} data={regionViewerData}/>
+						<Regionspreadsheet showRegionViewer={showRegionViewer} setActiveList={setActiveList} fetchUser={refetch} user={user}  setRegionViewerData={setRegionViewerData} setShowRegionViewer={setShowRegionViewer} data={regionViewerData}/>
 					}
 				/>
 				

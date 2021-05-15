@@ -3,6 +3,11 @@ import { WButton, WInput, WRow, WCol } from 'wt-frontend';
 import * as mutations 					from '../../cache/mutations';
 import { useMutation, useQuery } 		from '@apollo/client';
 import * as query						from '../../cache/queries';
+import NavbarOptions 					from '../navbar/NavbarOptions';
+import { WNavbar, WSidebar, WNavItem } 	from 'wt-frontend';
+import { WLayout, WLHeader, WLMain, WLSide } from 'wt-frontend';
+import Update					from '../modals/Update';
+import {IoArrowBack,IoArrowForward} from 'react-icons/io5'
 const Regionviewer = (props) => {
     let allUserRegions=[]
     const [landmarkInput,setLandmarkInput]=useState("")
@@ -10,6 +15,7 @@ const Regionviewer = (props) => {
     const [landmarks,setLandmarks]=useState(props.data.data.landmarks)
     const [showChangeRegion,toggleChangeRegion]=useState(false)
     const [SetNewParent] = useMutation(mutations.SET_NEW_PARENT)
+    const [showUpdate,setShowUpdate]=useState(false);
     let parentRegion=""
     let flagExists=true
     const testquery = useQuery(query.GET_DB_REGION_BY_ID,{
@@ -26,8 +32,10 @@ const Regionviewer = (props) => {
         console.log(landmarklist.data.addLandmark)
         let data={...props.data.data}
         data.landmarks=landmarklist.data.addLandmark
+        let newdata={...props.data}
+        newdata.data=data
         console.log(data)
-        props.setRegionViewerData({data:data})
+        props.setRegionViewerData(newdata)
         
         testquery.refetch()
         setLandmarkInput("")
@@ -61,10 +69,26 @@ const Regionviewer = (props) => {
         while(!setParent){}
         let data={...props.data.data}
         data.parentId=parent._id
+        let newdata={...props.data}
+        newdata.data=data
         console.log(data)
-        props.setRegionViewerData({data:data})
+        props.setRegionViewerData(newdata)
     }
+    const goPrevRegion=()=>{
+        let index=props.data.index
+        let data={...props.data}
+        data.data=props.data.regionslist[index-1]
+        data.index=index-1
+        props.setRegionViewerData(data)
     
+     }
+    const goNextRegion=()=>{
+        let index=props.data.index
+        let data={...props.data}
+        data.data=props.data.regionslist[index+1]
+        data.index=index+1
+        props.setRegionViewerData(data)
+     }
     const changeRegionWindow=()=>{
         toggleChangeRegion(true);
         
@@ -76,7 +100,50 @@ const Regionviewer = (props) => {
         flagExists=false
     }
     return (
-       <div>
+        <WLayout wLayout="header-lside" >
+        <WLHeader>
+				<WNavbar color="colored">
+					<ul>
+					
+						<WNavItem className="hoverEffect"onClick={()=>{props.setShowRegionViewer(false);props.setRegionViewerData({data:-1});props.setActiveList({})}} >
+							The World Data Mapper
+						</WNavItem>
+					
+					</ul>
+                    <ul>
+                    <WNavItem hoverAnimation="lighten">
+                    {props.data.index==0?
+                     null
+                    :
+                    <IoArrowBack onClick={()=>goPrevRegion()}  className="reactIconButton"></IoArrowBack>
+                    }
+                    </WNavItem>
+                    <WNavItem hoverAnimation="lighten">
+                    
+                    {props.data.index==props.data.regionslist.length-1?
+                    null
+                    :
+                    <IoArrowForward onClick={()=>goNextRegion()}  className="reactIconButton"></IoArrowForward>
+                    }
+                    </WNavItem>
+                    </ul>
+					<ul>
+					{	
+						<NavbarOptions
+                            showRegionViewer={props.showRegionViewer}
+							fetchUser={props.fetchUser} 
+							user={props.user}
+                            setShowRegionViewer={props.setShowRegionViewer}
+                            setShowUpdate={setShowUpdate}
+                            auth={props.user !== null}
+                            setActiveList={props.setActiveList}
+						/>
+						
+					}
+					</ul>
+				</WNavbar>
+                </WLHeader>
+                <WLMain>
             {flagExists?
                 <div>
                      <img  src={require(`../../${props.data.imgPath}`)} ></img> 
@@ -127,7 +194,16 @@ const Regionviewer = (props) => {
                 :
                 null
                 }
-       </div>
+                </WLMain>
+                {showUpdate?
+				<div className="blurBackground"></div>
+			    :
+			    null
+                }
+                {
+				showUpdate && (<Update  user={props.user}  fetchUser={props.fetchUser} setShowUpdate={setShowUpdate} />)
+			    }
+                </WLayout>
     );
 };
 

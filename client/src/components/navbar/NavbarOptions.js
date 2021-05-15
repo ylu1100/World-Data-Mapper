@@ -15,10 +15,14 @@ const LoggedIn = (props) => {
             let reset = await client.resetStore();
             if (reset) props.setActiveList({});
         }
+        if(props.setShowRegionViewer!=null){
+            props.setShowRegionViewer(false)
+        }
     };
 
     return (
         <div>
+       
         <WNavItem hoverAnimation="lighten">
             <h1 className="navbar-options">{props.user.fullName}</h1>
         </WNavItem>
@@ -61,7 +65,7 @@ const NavbarOptions = (props) => {
         <>
             {
                 props.auth === false ? <LoggedOut user={props.user} setShowLogin={props.setShowLogin} setShowCreate={props.setShowCreate} />
-                : <LoggedIn  user={props.user} fetchUser={props.fetchUser} setShowUpdate={props.setShowUpdate} setActiveList={props.setActiveList} logout={props.logout} />
+                : <LoggedIn  setShowRegionViewer={props.setShowRegionViewer}  user={props.user} fetchUser={props.fetchUser} setShowUpdate={props.setShowUpdate} setActiveList={props.setActiveList} logout={props.logout} />
             }
         </>
 

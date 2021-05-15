@@ -36,7 +36,7 @@ const Homescreen = (props) => {
 	
 	const [todolistlist,setTodolists] = useState([])
 	
-	const [activeList, setActiveList] 		= useState({});
+	const [activeList, setActiveList] 		= useState(props.activeList);
 	const [showDelete, toggleShowDelete] 	= useState(false);
 	const [showLogin, toggleShowLogin] 		= useState(false);
 	const [showCreate, toggleShowCreate] 	= useState(false);
@@ -89,7 +89,8 @@ const Homescreen = (props) => {
 
 	const regionssortedquery=useQuery(query.GET_DB_REGIONS_SORTED,{
 		variables:{parentId:activeList._id,sortBy:sortBy},
-		skip:activeList._id==undefined
+		skip:activeList._id==undefined,
+		fetchPolicy: "network-only"
 	})
 	
 	if(getparentsquery.data!==undefined){
@@ -520,7 +521,7 @@ const Homescreen = (props) => {
 				showLogin && (<Login setShowLogin={setShowLogin} fetchUser={props.fetchUser} refetchTodos={mapsquery.refetch} setShowLogin={setShowLogin} />)
 			}
 			{
-				showUpdate && (<Update  user={props.user} setShowLogin={setShowLogin} fetchUser={props.fetchUser} refetchTodos={mapsquery.refetch} setShowUpdate={setShowUpdate} />)
+				showUpdate && (<Update  user={props.user} setShowLogin={setShowLogin} fetchUser={props.fetchUser} setShowUpdate={setShowUpdate} />)
 			}
 			{
 				showMapName &&(<MapName createNewList={createNewList} refetchTodos={mapsquery.refetch}  toggleMapName={toggleMapName}></MapName>)
