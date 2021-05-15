@@ -390,6 +390,20 @@ module.exports={
 			else{
 				return region.landmarks
 			}
+		},
+		changeRegionLandmark:async(_,args)=>{
+			const {_id,landmarkIndex,landmark}=args
+			console.log(args)
+			const region=await Region.findOne({_id:new ObjectId(_id)})
+			let landmarks=[...region.landmarks]
+			landmarks[landmarkIndex]=landmark
+			const update=await Region.updateOne({_id:new ObjectId(_id)},{landmarks:landmarks})
+			if(update){
+				return landmarks
+			}
+			else{
+				return []
+			}
 		}
 		/**
 		// 	@param 	 {object} args - contains list id, item to swap, and swap direction

@@ -52,7 +52,7 @@ module.exports={
 			const { region, _id } = args;
 			const listId = new ObjectId(_id);
 			let objectId;
-			console.log(region)
+			
 			if(!region._id){ 
 				objectId= new ObjectId();
 			}
@@ -64,7 +64,7 @@ module.exports={
 			region._id = objectId;
 			let listRegions = found.regions;
 			listRegions.push(region);
-			console.log(region._id)
+			
 			const updated = await Map.updateOne({_id: listId}, { regions: listRegions });
 
 			if(updated) return (objectId);
@@ -151,9 +151,10 @@ module.exports={
 			if(updated) return newName;
 			else return "";
 		},
-		setRecentMap:async(_,args)=>{
-			const {user_id,mapId}= args
-			const objectId=new ObjectId(user_id)
+		setRecentMap:async(_,args,{req})=>{
+			const {mapId}= args
+			console.log(mapId)
+			const objectId=new ObjectId(req.userId)
 			const user = await User.findOne({_id:objectId})
 			
 			let maplist=[...user.maps]
@@ -161,7 +162,7 @@ module.exports={
 			maplist.splice(maplist.indexOf(mapId),1)
 			
 			maplist.unshift(mapId)
-			console.log(maplist)
+			
 			const updateMap=await User.updateOne({_id:objectId},{maps:maplist})
 			return ""
 		}

@@ -126,8 +126,8 @@ export const ADD_LANDMARK=gql`
 	}
 `;
 export const SET_RECENT_MAP=gql`
-	mutation setRecentMap($user_id:String!,$mapId:Int!){
-		setRecentMap(user_id:$user_id,mapId:$mapId)
+	mutation setRecentMap($mapId:Int!){
+		setRecentMap(mapId:$mapId)
 	}
 `;
 export const SET_NEW_PARENT=gql`
@@ -138,5 +138,10 @@ export const SET_NEW_PARENT=gql`
 export const DELETE_LANDMARK=gql`
 	mutation deleteLandmark($_id:String!,$landmarkIndex:Int!){
 		deleteLandmark(_id:$_id,landmarkIndex:$landmarkIndex)
+	}
+`
+export const EDIT_LANDMARK=gql`
+	mutation changeRegionLandmark($_id:String!,$landmarkIndex:Int!,$landmark:String!){
+		changeRegionLandmark(_id:$_id,landmarkIndex:$landmarkIndex,landmark:$landmark)
 	}
 `

@@ -20,6 +20,7 @@ const typeDefs = gql `
         getRegionById(parentId:String!):Subregion
 		getAllParents(_id:String!):[Subregion]
 		getAllRegionsSorted(parentId:String!,sortBy:String!):[Subregion]
+		
 	}
 	extend type Mutation {
 		addSubregion(region:String!, _id: String!): String
@@ -29,6 +30,7 @@ const typeDefs = gql `
 		deleteSubregion(_id:String!):String
 		setNewParent(_id:String!,newParent:String!):String
 		deleteLandmark(_id:String!,landmarkIndex:Int!):[String]
+		changeRegionLandmark(_id:String!,landmarkIndex:Int!,landmark:String!):[String!]
 	}
 	input FieldInput {
 		_id: String

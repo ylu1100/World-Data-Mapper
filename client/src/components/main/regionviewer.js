@@ -7,15 +7,22 @@ import NavbarOptions 					from '../navbar/NavbarOptions';
 import { WNavbar, WSidebar, WNavItem } 	from 'wt-frontend';
 import { WLayout, WLHeader, WLMain, WLSide } from 'wt-frontend';
 import Update					from '../modals/Update';
-import {IoArrowBack,IoArrowForward} from 'react-icons/io5'
+import DeleteLandmarkModal				from '../modals/DeleteLandmark';
+import EditLandmarkModal from '../modals/EditLandmarkModal'
+import {IoArrowBack,IoArrowForward,IoPencil} from 'react-icons/io5'
 const Regionviewer = (props) => {
     let allUserRegions=[]
     const [landmarkInput,setLandmarkInput]=useState("")
     const [addLandmarkToList] = useMutation(mutations.ADD_LANDMARK)
     const [landmarks,setLandmarks]=useState(props.data.regionslist[props.data.index].landmarks)
     const [showChangeRegion,toggleChangeRegion]=useState(false)
+    const [showDeleteLandmark,setShowDeleteLandmark]=useState(false)
+    const [showEditLandmark,setShowEditLandmark]=useState(false)
+    const [landmarkToBeDeleted,setLandmarkToBeDeleted]=useState({})
+    const [landmarkToBeEdited,setLandmarkToBeEdited]=useState({})
     const [SetNewParent] = useMutation(mutations.SET_NEW_PARENT)
     const [DeleteLandmark] = useMutation(mutations.DELETE_LANDMARK)
+    const [EditLandmark] = useMutation(mutations.EDIT_LANDMARK)
     const [showUpdate,setShowUpdate]=useState(false);
     let parentRegion=""
     let flagExists=true
@@ -26,25 +33,17 @@ const Regionviewer = (props) => {
     const regionsquery =  useQuery(query.GET_DB_REGIONS,{
 		variables:{parentId:props.data.data.parentId},
 	})
-    console.log(props.data)
+    
     const mapsquery=useQuery(query.GET_DB_TODOS);
     const addLandmark=async()=>{
       
         const landmarklist=await addLandmarkToList({variables:{_id:props.data.data._id,landmark:landmarkInput}})
         console.log(landmarklist.data.addLandmark)
-        let data={...props.data.data}
-        data.landmarks=landmarklist.data.addLandmark
-        let newdata={...props.data}
-        newdata.data=data
-        let templist=[...newdata.regionslist]
-        templist[props.data.index]=data
-        newdata.regionslist=templist
-        props.setRegionViewerData(newdata)
-        
+        updateLandmarksList(landmarklist.data.addLandmark)
         testquery.refetch()
         setLandmarkInput("")
         
-        setLandmarks(landmarklist.data.addLandmark)
+        
         
     }
     const updateLandmarkInput=(e)=>{
@@ -67,18 +66,35 @@ const Regionviewer = (props) => {
     console.log(userregions)
 		allUserRegions=userregions.data.getAllUserRegions
 	}
-    const deleteLandmark=async(landmark,index)=>{
-        const deleted=await DeleteLandmark({variables:{_id:props.data.data._id,landmarkIndex:index}})
+    const openDeleteLandmarkModal=(landmark,index)=>{
         
+        setLandmarkToBeDeleted({landmark,index});
+        
+        setShowDeleteLandmark(true)
+    }
+    const openEditLandmarkModal=(landmark,index)=>{
+        setLandmarkToBeEdited({landmark,index})
+        setShowEditLandmark(true)
+    }
+    const updateLandmarksList=(list)=>{
+        setLandmarks(list)
         let data={...props.data.data}
-        data.landmarks=deleted.data.deleteLandmark
+        data.landmarks=list
         let newdata={...props.data}
         newdata.data=data
         let templist=[...newdata.regionslist]
         templist[props.data.index]=data
         newdata.regionslist=templist
         props.setRegionViewerData(newdata)
-        setLandmarks(deleted.data.deleteLandmark)
+    }
+    const changeLandmark=async(oldlandmark,index,newlandmark)=>{
+        const changed=await EditLandmark({variables:{_id:props.data.data._id,landmarkIndex:index,landmark:newlandmark}})
+        updateLandmarksList(changed.data.changeRegionLandmark)
+        
+    }
+    const deleteLandmark=async(landmark,index)=>{
+        const deleted=await DeleteLandmark({variables:{_id:props.data.data._id,landmarkIndex:index}})
+        updateLandmarksList(deleted.data.deleteLandmark)
     }
     const changeParent=async(parent)=>{
         const setParent=await SetNewParent({variables:{_id:props.data.data._id,newParent:parent._id}})
@@ -92,20 +108,31 @@ const Regionviewer = (props) => {
         
     }
     const goPrevRegion=()=>{
+        
         let index=props.data.index
         let data={...props.data}
         data.data=props.data.regionslist[index-1]
-        console.log(data)
+        
         data.index=index-1
+        let path=props.data.imgPath.toString()
+        
+        path=path.substring(0,path.lastIndexOf("/")+1)+data.data.name+" Flag.png"
+        data.imgPath=path
+   
         props.setRegionViewerData(data)
         testquery.refetch()
         setLandmarks(props.data.regionslist[props.data.index-1].landmarks)
      }
     const goNextRegion=()=>{
+
         let index=props.data.index
         let data={...props.data}
         data.data=props.data.regionslist[index+1]
         data.index=index+1
+        let path=props.data.imgPath.toString()
+        
+        path=path.substring(0,path.lastIndexOf("/")+1)+data.data.name+" Flag.png"
+        data.imgPath=path
         props.setRegionViewerData(data)
         testquery.refetch()
         setLandmarks(props.data.regionslist[props.data.index+1].landmarks)
@@ -133,21 +160,28 @@ const Regionviewer = (props) => {
 					
 					</ul>
                     <ul>
-                    <WNavItem hoverAnimation="lighten">
+                 
                     {props.data.index==0?
-                     null
+                        <WNavItem >
+                        <IoArrowBack style={{color:'gray'}}></IoArrowBack>
+                        </WNavItem>
                     :
-                    <IoArrowBack onClick={()=>goPrevRegion()}  className="reactIconButton"></IoArrowBack>
-                    }
-                    </WNavItem>
                     <WNavItem hoverAnimation="lighten">
+                    <IoArrowBack onClick={()=>goPrevRegion()}  className="reactIconButton"></IoArrowBack>
+                    </WNavItem>
+                    }
+                  
                     
                     {props.data.index==props.data.regionslist.length-1?
-                    null
+                        <WNavItem >
+                        <IoArrowForward style={{color:'gray'}}></IoArrowForward>
+                        </WNavItem>
                     :
+                    <WNavItem hoverAnimation="lighten">
                     <IoArrowForward onClick={()=>goNextRegion()}  className="reactIconButton"></IoArrowForward>
-                    }
                     </WNavItem>
+                    }
+                    
                     </ul>
 					<ul>
 					{	
@@ -187,7 +221,8 @@ const Regionviewer = (props) => {
             {landmarks.map((landmark,index)=>(
                 <div style={{width:'90%'}}>
                 {landmark}
-                <a onClick={()=>deleteLandmark(landmark,index)} className='hoverEffect' style={{float:'right'}} >x</a>
+                <a onClick={()=>openDeleteLandmarkModal(landmark,index)} className='hoverEffect' style={{float:'right'}} >x</a>
+                <IoPencil onClick={()=>openEditLandmarkModal(landmark,index)} className='hoverEffect' style={{float:'right'}}></IoPencil>
                 </div>
             ))
             }
@@ -217,7 +252,7 @@ const Regionviewer = (props) => {
                 null
                 }
                 </WLMain>
-                {showUpdate?
+                {showUpdate||showDeleteLandmark||showEditLandmark?
 				<div className="blurBackground"></div>
 			    :
 			    null
@@ -225,6 +260,12 @@ const Regionviewer = (props) => {
                 {
 				showUpdate && (<Update  user={props.user}  fetchUser={props.fetchUser} setShowUpdate={setShowUpdate} />)
 			    }
+                {
+                showDeleteLandmark && (<DeleteLandmarkModal deleteLandmark={deleteLandmark} setShowDeleteLandmark={setShowDeleteLandmark} landmarkToBeDeleted={landmarkToBeDeleted}></DeleteLandmarkModal>)
+                }
+                {
+                showEditLandmark && (<EditLandmarkModal changeLandmark={changeLandmark} landmarkToBeEdited={landmarkToBeEdited} setShowEditLandmark={setShowEditLandmark}></EditLandmarkModal>)
+                }
                 </WLayout>
     );
 };

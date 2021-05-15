@@ -62,9 +62,6 @@ const Homescreen = (props) => {
 	// const { loading, error, data, refetch } = useQuery(GET_DB_REGIONS);
 	const mapsquery=useQuery(GET_DB_TODOS);
 	
-	
-
-	
 	const getparentsquery=useQuery(query.GET_ALL_PARENTS,{ //get all parents
 		variables:{_id:activeList._id},
 		skip:activeList._id==undefined
@@ -350,23 +347,23 @@ const Homescreen = (props) => {
 	};
 	const handleSetActive = async (id) => {
 		const todo = todolists.find(todo => todo.id === id || todo._id === id);
-		let temp=[]
-		temp.push(...todolists)
-		let index=todolists.indexOf(todo)
-		let temp2=[]
-		temp2.push(temp[index])
-		temp.splice(index,1)
-		temp2.push(...temp)
-		//temp2= new list of todolists
-		let listids=[]
-		for(let i=0;i<temp2.length;i++){
-			listids.push(temp2[i].id)
-		}
+		// let temp=[]
+		// temp.push(...todolists)
+		// let index=todolists.indexOf(todo)
+		// let temp2=[]
+		// temp2.push(temp[index])
+		// temp.splice(index,1)
+		// temp2.push(...temp)
+		// //temp2= new list of todolists
+		// let listids=[]
+		// for(let i=0;i<temp2.length;i++){
+		// 	listids.push(temp2[i].id)
+		// }
+		// console.log(listids)
+		// document.cookie="listId="+todo._id
 		
-		document.cookie="listId="+todo._id
-		// const {data} = await SelectedListFirst({
-		// 	variables:{ownerId:props.user._id,listIds:listids}})
-		
+		const setRecent= await setRecentMap({variables:{mapId:id}})
+
 		setActiveList(todo);
 		
 		props.tps.clearAllTransactions()

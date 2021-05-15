@@ -64,7 +64,7 @@ const App = () => {
 				
 					render={()=>
 						
-						<Regionspreadsheet showRegionViewer={showRegionViewer} setActiveList={setActiveList} fetchUser={refetch} user={user}  setRegionViewerData={setRegionViewerData} setShowRegionViewer={setShowRegionViewer} data={regionViewerData}/>
+						<Regionspreadsheet showRegionViewer={showRegionViewer} tps={transactionStack} setActiveList={setActiveList} fetchUser={refetch} user={user}  setRegionViewerData={setRegionViewerData} setShowRegionViewer={setShowRegionViewer} data={regionViewerData}/>
 					}
 				/>
 				
