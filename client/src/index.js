@@ -4,6 +4,7 @@ import React 	from 'react';
 import ReactDOM from 'react-dom';
 import App 		from './App';
 import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
+import { jsTPS } 		from './utils/jsTPS';
 const cache = new InMemoryCache({
 
 	/*
@@ -34,7 +35,7 @@ const client = new ApolloClient({
 	credentials: 'include',
 	cache: cache,
 });
-
+let transactionStack = new jsTPS();
 
 
 
@@ -42,7 +43,7 @@ const client = new ApolloClient({
 ReactDOM.render(
 	<React.StrictMode>
 		<ApolloProvider client={client}>
-	    	<App />
+	    	<App transactionStack={transactionStack} />
 		</ApolloProvider>
   	</React.StrictMode>,
   	document.getElementById('root')

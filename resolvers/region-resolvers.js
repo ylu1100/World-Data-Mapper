@@ -349,7 +349,7 @@ module.exports={
 			const objectId=new ObjectId(_id)
 			const parentId=new ObjectId(newParent)
 			const updateParent=await Region.updateOne({_id:objectId},{parentId:parentId})
-			return ""
+			return newParent
 		},
 		
 		updateItemField: async (_, args) => {
@@ -383,6 +383,21 @@ module.exports={
 			console.log(region)
 			let landmarks=[...region.landmarks]
 			landmarks.splice(landmarkIndex,1)
+			const updated=await Region.updateOne({_id:objId},{landmarks:landmarks})
+			if(updated){
+			return landmarks
+			}
+			else{
+				return region.landmarks
+			}
+		},
+		insertLandmark:async(_,args)=>{
+			console.log(args)
+			const {_id,landmarkIndex,landmark}=args
+			const objId=new ObjectId(_id)
+			const region=await Region.findOne({_id:objId})
+			let landmarks=[...region.landmarks]
+			landmarks.splice(landmarkIndex,0,landmark)
 			const updated=await Region.updateOne({_id:objId},{landmarks:landmarks})
 			if(updated){
 			return landmarks

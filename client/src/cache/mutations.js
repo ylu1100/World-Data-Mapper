@@ -140,6 +140,11 @@ export const DELETE_LANDMARK=gql`
 		deleteLandmark(_id:$_id,landmarkIndex:$landmarkIndex)
 	}
 `
+export const INSERT_LANDMARK=gql`
+	mutation insertLandmark($_id:String!,$landmarkIndex:Int!,$landmark:String!){
+		insertLandmark(_id:$_id,landmarkIndex:$landmarkIndex,landmark:$landmark)
+	}
+`
 export const EDIT_LANDMARK=gql`
 	mutation changeRegionLandmark($_id:String!,$landmarkIndex:Int!,$landmark:String!){
 		changeRegionLandmark(_id:$_id,landmarkIndex:$landmarkIndex,landmark:$landmark)

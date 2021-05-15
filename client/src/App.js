@@ -4,18 +4,19 @@ import Regionspreadsheet from './components/main/regionviewer'
 import Home from './components/main/home'
 import { useQuery } 	from '@apollo/client';
 import * as queries 	from './cache/queries';
-import { jsTPS } 		from './utils/jsTPS';
+
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import cookieParser from 'cookie-parser';
  
 
-const App = () => {
+const App = (props) => {
 	const [showRegionViewer,setShowRegionViewer]=useState(false)
 	const [regionViewerData,setRegionViewerData]=useState({data:-1})
 	const [activeList,setActiveList]=useState({})
 	console.log(regionViewerData)
 	let user = null;
-    let transactionStack = new jsTPS();
+
+   
 	
     const { loading, error, data, refetch } = useQuery(queries.GET_DB_USER);
 	
@@ -53,7 +54,7 @@ const App = () => {
 					path="/home" 
 					name="home" 
 					render={() => 
-						<Homescreen activeList={activeList} setActiveList={setActiveList}  showRegionViewer={showRegionViewer} setShowRegionViewer={setShowRegionViewer} setRegionViewerData={setRegionViewerData} regionViewerData={regionViewerData} openRegionViewer={openRegionViewer} tps={transactionStack} fetchUser={refetch} user={user} />
+						<Homescreen activeList={activeList} setActiveList={setActiveList}  showRegionViewer={showRegionViewer} setShowRegionViewer={setShowRegionViewer} setRegionViewerData={setRegionViewerData} regionViewerData={regionViewerData} openRegionViewer={openRegionViewer} tps={props.transactionStack} fetchUser={refetch} user={user} />
 					} 
 				/> 
 				:
@@ -64,7 +65,7 @@ const App = () => {
 				
 					render={()=>
 						
-						<Regionspreadsheet showRegionViewer={showRegionViewer} tps={transactionStack} setActiveList={setActiveList} fetchUser={refetch} user={user}  setRegionViewerData={setRegionViewerData} setShowRegionViewer={setShowRegionViewer} data={regionViewerData}/>
+						<Regionspreadsheet showRegionViewer={showRegionViewer} tps={props.transactionStack} setActiveList={setActiveList} fetchUser={refetch} user={user}  setRegionViewerData={setRegionViewerData} setShowRegionViewer={setShowRegionViewer} data={regionViewerData}/>
 					}
 				/>
 				

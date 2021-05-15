@@ -153,10 +153,126 @@ export class UpdateSubregions_Transaction extends jsTPS_Transaction {
 		return data;
     }
 }
+export class EditLandmark_Transaction extends jsTPS_Transaction {
+	constructor(itemID, index,prevlandmark,newlandmark,updateFunction) {
+		super();
+		this.itemID = itemID;
+		this.index=index;
+        this.prevlandmark=prevlandmark
+        this.newlandmark=newlandmark
+		this.updateFunction = updateFunction;
+	}	
 
+	async doTransaction() {
+		const {data } = await this.updateFunction({ 
+				variables:{  _id: this.itemID,
+                        landmarkIndex:this.index,landmark:this.newlandmark 
+						  }
+			});
+		return data;
+    }
 
+    async undoTransaction() {
+        console.log('hii')
+		const {data } = await this.updateFunction({ 
+            variables:{  _id: this.itemID,
+                    landmarkIndex:this.index,landmark:this.prevlandmark 
+                      }
+        });
+     
+		return data;
 
+    }
+}
+export class DeleteLandmark_Transaction extends jsTPS_Transaction {
+	constructor(itemID, index,landmark,deleteFunc,insertFunc) {
+		super();
+		this.itemID = itemID;
+		this.index=index;
+        this.landmark=landmark
+		this.delFunc=deleteFunc;
+        this.insFunc=insertFunc
+	}	
 
+	async doTransaction() {
+		const {data } = await this.delFunc({ 
+				variables:{  _id: this.itemID,
+                        landmarkIndex:this.index
+						  }
+			});
+		return data;
+    }
+
+    async undoTransaction() {
+		const {data } = await this.insFunc({ 
+            variables:{  _id: this.itemID,
+                    landmarkIndex:this.index,landmark:this.landmark 
+                      }
+        });
+     
+		return data;
+
+    }
+}
+export class AddLandmark_Transaction extends jsTPS_Transaction {
+	constructor(itemID, landmark,index,deleteFunc,addFunc) {
+		super();
+		this.itemID = itemID;
+        this.landmark=landmark
+        this.index=index
+		this.delFunc=deleteFunc;
+        this.addFunc=addFunc
+	}	
+
+	async doTransaction() {
+		const {data } = await this.addFunc({ 
+				variables:{  _id: this.itemID,
+                        landmark:this.landmark
+						  }
+			});
+		return data;
+    }
+
+    async undoTransaction() {
+		const {data } = await this.delFunc({ 
+            variables:{  _id: this.itemID,
+                    landmarkIndex:this.index,landmark:this.landmark 
+                      }
+        });
+     
+		return data;
+
+    }
+}
+export class ChangeParent_Transaction extends jsTPS_Transaction {
+	constructor(itemID,oldParent, newParent,callback) {
+		super();
+		this.itemID = itemID;
+        this.newParent=newParent
+        this.oldParent=oldParent
+        this.callback=callback
+	}	
+
+	async doTransaction() {
+		const {data } = await this.callback({ 
+				variables:{  _id: this.itemID,
+                        newParent:this.newParent
+						  }
+			});
+		return data;
+    }
+
+    async undoTransaction() {
+		const {data } = await this.callback({ 
+            variables:{  _id: this.itemID,
+                newParent:this.oldParent
+                  }
+        });
+     
+		return data;
+
+    }
+}
 export class jsTPS {
     constructor() {
         // THE TRANSACTION STACK
@@ -213,6 +329,7 @@ export class jsTPS {
 
         // AND NOW ADD THE TRANSACTION
         this.transactions.push(transaction);
+        
         // AND EXECUTE IT
         // this.doTransaction();        
     }
@@ -275,6 +392,7 @@ export class jsTPS {
      */
      async undoTransaction() {
 		let retVal;
+      
         if (this.hasTransactionToUndo()) {
             this.performingUndo = true;
             let transaction = this.transactions[this.mostRecentTransaction];
@@ -296,6 +414,7 @@ export class jsTPS {
      */
     clearAllTransactions() {
         // REMOVE ALL THE TRANSACTIONS
+        console.log("CLEARINGGG")
         this.transactions = [];
         
         // MAKE SURE TO RESET THE LOCATION OF THE
@@ -336,14 +455,17 @@ export class jsTPS {
         return this.mostRecentTransaction + 1;
     }
     
-    /**
+    /*
      * This method tests to see if there is a transaction on the stack that
      * can be undone at the time this function is called.
      * 
      * return true if an undo operation is possible, false otherwise.
      */
     hasTransactionToUndo() {
+        console.log(this.mostRecentTransaction)
         console.log(this.mostRecentTransaction>=0)
+        console.log(this.getUndoSize())
+        console.log(this.getSize())
         return this.mostRecentTransaction >= 0;
     }
     
@@ -354,6 +476,7 @@ export class jsTPS {
      * return true if a redo operation is possible, false otherwise.
      */
     hasTransactionToRedo() {
+ 
         return this.mostRecentTransaction < (this.transactions.length-1);
     }
         
