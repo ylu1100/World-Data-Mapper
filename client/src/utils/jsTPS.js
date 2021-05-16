@@ -154,10 +154,11 @@ export class UpdateSubregions_Transaction extends jsTPS_Transaction {
     }
 }
 export class EditLandmark_Transaction extends jsTPS_Transaction {
-	constructor(itemID, index,prevlandmark,newlandmark,updateFunction) {
+	constructor(itemID,ancestorList, index,prevlandmark,newlandmark,updateFunction) {
 		super();
 		this.itemID = itemID;
 		this.index=index;
+        this.ancestorList=ancestorList
         this.prevlandmark=prevlandmark
         this.newlandmark=newlandmark
 		this.updateFunction = updateFunction;
@@ -166,7 +167,8 @@ export class EditLandmark_Transaction extends jsTPS_Transaction {
 	async doTransaction() {
 		const {data } = await this.updateFunction({ 
 				variables:{  _id: this.itemID,
-                        landmarkIndex:this.index,landmark:this.newlandmark 
+                        landmarkIndex:this.index,landmark:this.newlandmark,
+                        parentRegions:this.ancestorList
 						  }
 			});
 		return data;
@@ -176,7 +178,8 @@ export class EditLandmark_Transaction extends jsTPS_Transaction {
         console.log('hii')
 		const {data } = await this.updateFunction({ 
             variables:{  _id: this.itemID,
-                    landmarkIndex:this.index,landmark:this.prevlandmark 
+                    landmarkIndex:this.index,landmark:this.prevlandmark ,
+                    parentRegions:this.ancestorList
                       }
         });
      
@@ -185,10 +188,11 @@ export class EditLandmark_Transaction extends jsTPS_Transaction {
     }
 }
 export class DeleteLandmark_Transaction extends jsTPS_Transaction {
-	constructor(itemID, index,landmark,deleteFunc,insertFunc) {
+	constructor(itemID,ancestorList ,index,landmark,deleteFunc,insertFunc) {
 		super();
 		this.itemID = itemID;
 		this.index=index;
+        this.ancestorList=ancestorList
         this.landmark=landmark
 		this.delFunc=deleteFunc;
         this.insFunc=insertFunc
@@ -197,7 +201,8 @@ export class DeleteLandmark_Transaction extends jsTPS_Transaction {
 	async doTransaction() {
 		const {data } = await this.delFunc({ 
 				variables:{  _id: this.itemID,
-                        landmarkIndex:this.index
+                        landmarkIndex:this.index,
+                        parentRegions:this.ancestorList
 						  }
 			});
 		return data;
@@ -206,7 +211,8 @@ export class DeleteLandmark_Transaction extends jsTPS_Transaction {
     async undoTransaction() {
 		const {data } = await this.insFunc({ 
             variables:{  _id: this.itemID,
-                    landmarkIndex:this.index,landmark:this.landmark 
+                    landmarkIndex:this.index,landmark:this.landmark, 
+                    parentRegions:this.ancestorList
                       }
         });
      
@@ -215,11 +221,12 @@ export class DeleteLandmark_Transaction extends jsTPS_Transaction {
     }
 }
 export class AddLandmark_Transaction extends jsTPS_Transaction {
-	constructor(itemID, landmark,index,deleteFunc,addFunc) {
+	constructor(itemID,ancestorList,landmark,index,deleteFunc,addFunc) {
 		super();
 		this.itemID = itemID;
         this.landmark=landmark
         this.index=index
+        this.ancestorList=ancestorList
 		this.delFunc=deleteFunc;
         this.addFunc=addFunc
 	}	
@@ -227,7 +234,8 @@ export class AddLandmark_Transaction extends jsTPS_Transaction {
 	async doTransaction() {
 		const {data } = await this.addFunc({ 
 				variables:{  _id: this.itemID,
-                        landmark:this.landmark
+                        landmark:this.landmark,
+                        parentRegions:this.ancestorList
 						  }
 			});
 		return data;
@@ -236,7 +244,9 @@ export class AddLandmark_Transaction extends jsTPS_Transaction {
     async undoTransaction() {
 		const {data } = await this.delFunc({ 
             variables:{  _id: this.itemID,
-                    landmarkIndex:this.index,landmark:this.landmark 
+                    landmarkIndex:this.index,
+                    landmark:this.landmark ,
+                    parentRegions:this.ancestorList
                       }
         });
      
@@ -245,9 +255,10 @@ export class AddLandmark_Transaction extends jsTPS_Transaction {
     }
 }
 export class ChangeParent_Transaction extends jsTPS_Transaction {
-	constructor(itemID,oldParent, newParent,callback) {
+	constructor(itemID,ancestorList,oldParent, newParent,callback) {
 		super();
 		this.itemID = itemID;
+        this.ancestorList=ancestorList
         this.newParent=newParent
         this.oldParent=oldParent
         this.callback=callback
@@ -256,7 +267,8 @@ export class ChangeParent_Transaction extends jsTPS_Transaction {
 	async doTransaction() {
 		const {data } = await this.callback({ 
 				variables:{  _id: this.itemID,
-                        newParent:this.newParent
+                        newParent:this.newParent,
+                        parentRegions:this.ancestorList
 						  }
 			});
 		return data;
@@ -265,7 +277,8 @@ export class ChangeParent_Transaction extends jsTPS_Transaction {
     async undoTransaction() {
 		const {data } = await this.callback({ 
             variables:{  _id: this.itemID,
-                newParent:this.oldParent
+                newParent:this.oldParent,
+                parentRegions:this.ancestorList
                   }
         });
      

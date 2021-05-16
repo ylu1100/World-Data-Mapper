@@ -88,6 +88,7 @@ module.exports={
 			//console.log(todolistordered)
 			console.log(regionlists)
 			console.log(regionlists.length)
+			
 			if(regionlists) return (regionlists);
 
 		},
@@ -345,10 +346,48 @@ module.exports={
 			else return ('Could not add region');
 		},
 		setNewParent:async(_,args)=>{
-			const {_id,newParent}=args
+			const {_id,newParent,parentRegions}=args
+			console.log(parentRegions)
 			const objectId=new ObjectId(_id)
 			const parentId=new ObjectId(newParent)
 			const updateParent=await Region.updateOne({_id:objectId},{parentId:parentId})
+			const region= await Region.findOne({_id:objectId})
+			let currLandmarks=[...region.landmarks]
+			let currSubLandmarks=[...region.subregionlandmarks]
+			//update all ancestors
+			for(let i=0;i<parentRegions.length-1;i++){
+				const ObjId=new ObjectId(parentRegions[i])
+				const region=await Region.findOne({_id:ObjId})
+				sublandmarklist=[...region.subregionlandmarks]
+				//remove landmark and subregionlandmarks from ancestors
+				for(let i=0;i<region.landmarks.length;i++){
+					sublandmarklist.splice(sublandmarklist.indexOf(currLandmarks[i]),1)
+				}
+				for(let i=0;i<region.subregionlandmarks.length;i++){
+					sublandmarklist.splice(sublandmarklist.indexOf(currSubLandmarks[i]),1)
+				}
+			const update= await Region.updateOne({_id:parentRegions[i]},{subregionlandmarks:sublandmarklist})
+			
+			}
+			const curr=await Region.findOne({_id:objectId})
+			let regionancestor=curr;
+			while(regionancestor!=null){
+				//region ancestor=parent
+				regionancestor=await Region.findOne({_id:new ObjectId(regionancestor.parentId)})
+				if(regionancestor==null){
+					break
+				}
+				sublandmarklist=[...regionancestor.subregionlandmarks]
+				//add landmark and subregionlandmarks to new ancestors
+				for(let i=0;i<curr.landmarks.length;i++){
+					sublandmarklist.push(curr.landmarks[i])
+				}
+				for(let i=0;i<curr.subregionlandmarks.length;i++){
+					sublandmarklist.push(curr.subregionlandmarks[i])
+				}
+				const update= await Region.updateOne({_id:regionancestor._id},{subregionlandmarks:sublandmarklist})
+			}
+			
 			return newParent
 		},
 		
@@ -365,60 +404,96 @@ module.exports={
 			else return (found);
 		},
 		addLandmark:async(_,args)=>{
-			const {_id,landmark}= args
-			const region= await Region.findOne({_id:_id})
-			let landmarklist=[...region.landmarks]
+			const {_id,landmark,parentRegions}= args
+			console.log(parentRegions)
+			let sublandmarklist;
+			let landmarklist;
+			//update landmark
+			const ObjId=new ObjectId(_id)
+			const region=await Region.findOne({_id:ObjId})
+			landmarklist=[...region.landmarks]
 			landmarklist.push(landmark)
-			const update= await Region.updateOne({_id:_id},{landmarks:landmarklist})
-			if(update){return landmarklist}
-			else{
-				return []
+			const update=await Region.updateOne({_id:ObjId},{landmarks:landmarklist})
+
+			//update all ancestors
+			for(let i=0;i<parentRegions.length-1;i++){
+				const ObjId=new ObjectId(parentRegions[i])
+				const region=await Region.findOne({_id:ObjId})
+				sublandmarklist=[...region.subregionlandmarks]
+				sublandmarklist.push(landmark)
+			const update= await Region.updateOne({_id:parentRegions[i]},{subregionlandmarks:sublandmarklist})
+			
 			}
+			return landmarklist
 
 		},
 		deleteLandmark:async(_,args)=>{
-			const {_id,landmarkIndex}=args
-			const objId=new ObjectId(_id)
-			const region= await Region.findOne({_id:objId})
-			console.log(region)
-			let landmarks=[...region.landmarks]
-			landmarks.splice(landmarkIndex,1)
-			const updated=await Region.updateOne({_id:objId},{landmarks:landmarks})
-			if(updated){
-			return landmarks
+			const {_id,landmarkIndex,parentRegions}=args
+			let sublandmarklist;
+			let landmarklist;
+			//update landmark
+			const ObjId=new ObjectId(_id)
+			const region=await Region.findOne({_id:ObjId})
+			landmarklist=[...region.landmarks]
+			let landmark=landmarklist[landmarkIndex]
+			landmarklist.splice(landmarkIndex,1)
+			const update=await Region.updateOne({_id:ObjId},{landmarks:landmarklist})
+
+			//update all ancestors
+			for(let i=0;i<parentRegions.length-1;i++){
+				const ObjId=new ObjectId(parentRegions[i])
+				const region=await Region.findOne({_id:ObjId})
+				sublandmarklist=[...region.subregionlandmarks]
+				sublandmarklist.splice(sublandmarklist.indexOf(landmark),1)
+			const update= await Region.updateOne({_id:parentRegions[i]},{subregionlandmarks:sublandmarklist})
+			
 			}
-			else{
-				return region.landmarks
-			}
+			return landmarklist
 		},
 		insertLandmark:async(_,args)=>{
-			console.log(args)
-			const {_id,landmarkIndex,landmark}=args
-			const objId=new ObjectId(_id)
-			const region=await Region.findOne({_id:objId})
-			let landmarks=[...region.landmarks]
-			landmarks.splice(landmarkIndex,0,landmark)
-			const updated=await Region.updateOne({_id:objId},{landmarks:landmarks})
-			if(updated){
-			return landmarks
+			const {_id,landmarkIndex,landmark,parentRegions}=args
+			let sublandmarklist;
+			let landmarklist;
+			//update landmark
+			const ObjId=new ObjectId(_id)
+			const region=await Region.findOne({_id:ObjId})
+			landmarklist=[...region.landmarks]
+			landmarklist.splice(landmarkIndex,0,landmark)
+			const update=await Region.updateOne({_id:ObjId},{landmarks:landmarklist})
+
+			//update all ancestors
+			for(let i=0;i<parentRegions.length-1;i++){
+				const ObjId=new ObjectId(parentRegions[i])
+				const region=await Region.findOne({_id:ObjId})
+				sublandmarklist=[...region.subregionlandmarks]
+				sublandmarklist.push(landmark)
+			const update= await Region.updateOne({_id:parentRegions[i]},{subregionlandmarks:sublandmarklist})
+			
 			}
-			else{
-				return region.landmarks
-			}
+			return landmarklist
 		},
 		changeRegionLandmark:async(_,args)=>{
-			const {_id,landmarkIndex,landmark}=args
-			console.log(args)
-			const region=await Region.findOne({_id:new ObjectId(_id)})
-			let landmarks=[...region.landmarks]
-			landmarks[landmarkIndex]=landmark
-			const update=await Region.updateOne({_id:new ObjectId(_id)},{landmarks:landmarks})
-			if(update){
-				return landmarks
+			const {_id,landmarkIndex,landmark,parentRegions}=args
+			let sublandmarklist;
+			let landmarklist;
+			//update landmark
+			const ObjId=new ObjectId(_id)
+			const region=await Region.findOne({_id:ObjId})
+			landmarklist=[...region.landmarks]
+			let currlm=landmarklist[landmarkIndex]
+			landmarklist[landmarkIndex]=landmark
+			const update=await Region.updateOne({_id:ObjId},{landmarks:landmarklist})
+
+			//update all ancestors
+			for(let i=0;i<parentRegions.length-1;i++){
+				const ObjId=new ObjectId(parentRegions[i])
+				const region=await Region.findOne({_id:ObjId})
+				sublandmarklist=[...region.subregionlandmarks]
+				sublandmarklist[sublandmarklist.indexOf(currlm)]=landmark
+			const update= await Region.updateOne({_id:parentRegions[i]},{subregionlandmarks:sublandmarklist})
+			
 			}
-			else{
-				return []
-			}
+			return landmarklist
 		}
 		/**
 		// 	@param 	 {object} args - contains list id, item to swap, and swap direction

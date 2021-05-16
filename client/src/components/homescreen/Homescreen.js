@@ -117,7 +117,7 @@ const Homescreen = (props) => {
 		todolists = mapsquery.data.getAllMaps;
 		
 	}
-	
+
 	// if(regionsquery.loading) { console.log(regionsquery.loading, 'loading'); }
 	// if(regionsquery.error) { console.log(regionsquery.error, 'error'); }
 	// if(regionsquery.data) { regionslist = regionsquery.data.getAllRegions({variables:{parentId:"lol"}}); }
@@ -204,7 +204,8 @@ const Homescreen = (props) => {
 			capital:'N/A',
 			leader:'N/A',
 			subregions:[],
-			landmarks:[]
+			landmarks:[],
+			subregionlandmarks:[]
 		};
 		//let transaction =  await new UpdateListItems_Transaction(listID, itemID, newItem, opcode, AddTodoItem, DeleteTodoItem);
 		const {data}=await createNewRegion({variables:{region:newItem}})

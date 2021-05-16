@@ -33,6 +33,7 @@ export const GET_DB_REGIONS = gql`
 			leader
 			subregions
 			landmarks
+			subregionlandmarks
 		}
 	}
 `;
@@ -47,6 +48,7 @@ export const GET_DB_REGION_BY_ID = gql`
 			leader
 			subregions
 			landmarks
+			subregionlandmarks
 		}
 	}
 `;
@@ -61,6 +63,7 @@ export const GET_ALL_PARENTS = gql`
 			leader
 			subregions
 			landmarks
+			subregionlandmarks
 		}
 	}
 `;
@@ -75,6 +78,7 @@ export const GET_ALL_USERREGIONS= gql`
 			leader
 			subregions
 			landmarks
+			subregionlandmarks
 		}
 	}
 `
@@ -89,6 +93,7 @@ export const GET_DB_REGIONS_SORTED= gql`
 			leader
 			subregions
 			landmarks
+			subregionlandmarks
 		}
 	}
 `

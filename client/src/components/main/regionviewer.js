@@ -30,6 +30,7 @@ const Regionviewer = (props) => {
     const [showUpdate,setShowUpdate]=useState(false);
     let parentRegion=""
     let flagExists=true
+    let ancestorList=[]
     const testquery = useQuery(query.GET_DB_REGION_BY_ID,{
 		variables:{parentId:props.data.data._id},
      
@@ -40,7 +41,13 @@ const Regionviewer = (props) => {
     
     const mapsquery=useQuery(query.GET_DB_TODOS);
     const addLandmark=async()=>{
-       let transaction = new AddLandmark_Transaction(props.data.data._id,landmarkInput,landmarks.length,DeleteLandmark,addLandmarkToList)
+        let ancestorIds=[]
+        for(let i=0;i<ancestorList.length;i++){
+            ancestorIds.push(ancestorList[i]._id)
+        }
+        console.log(ancestorList)
+        ancestorIds.splice(0,1)
+       let transaction = new AddLandmark_Transaction(props.data.data._id,ancestorIds,landmarkInput,landmarks.length,DeleteLandmark,addLandmarkToList)
        props.tps.addTransaction(transaction)
         const promise=await tpsRedo()
         updateLandmarksList(promise.addLandmark)
@@ -57,8 +64,15 @@ const Regionviewer = (props) => {
     const parentregionsquery = useQuery(query.GET_DB_REGION_BY_ID,{
 		variables:{parentId:props.data.data.parentId},
 	})
-    
-    
+    const getancestorsquery=useQuery(query.GET_ALL_PARENTS,{ //get all parents
+		variables:{_id:props.data.data._id},
+	})
+    if(getancestorsquery.data!==undefined){
+        ancestorList=[...getancestorsquery.data.getAllParents]
+        ancestorList.reverse()
+        
+        console.log(ancestorList)
+    }
     if(parentregionsquery.data!==undefined){
         parentRegion=parentregionsquery.data.getRegionById
         
@@ -141,7 +155,13 @@ const Regionviewer = (props) => {
         props.setRegionViewerData(newdata)
     }
     const changeLandmark=async(oldlandmark,index,newlandmark)=>{
-        let transaction = new EditLandmark_Transaction(props.data.data._id,index,oldlandmark,newlandmark,EditLandmark)
+        let ancestorIds=[]
+        for(let i=0;i<ancestorList.length;i++){
+            ancestorIds.push(ancestorList[i]._id)
+        }
+        console.log(ancestorList)
+        ancestorIds.splice(0,1)
+        let transaction = new EditLandmark_Transaction(props.data.data._id, ancestorIds,index,oldlandmark,newlandmark,EditLandmark)
         props.tps.addTransaction(transaction);
     
       
@@ -152,13 +172,25 @@ const Regionviewer = (props) => {
        
     }
     const deleteLandmark=async(landmark,index)=>{
-        let transaction=new DeleteLandmark_Transaction(props.data.data._id,index,landmark,DeleteLandmark,InsertLandmark)
+        let ancestorIds=[]
+        for(let i=0;i<ancestorList.length;i++){
+            ancestorIds.push(ancestorList[i]._id)
+        }
+        console.log(ancestorList)
+        ancestorIds.splice(0,1)
+        let transaction=new DeleteLandmark_Transaction(props.data.data._id,ancestorIds,index,landmark,DeleteLandmark,InsertLandmark)
         props.tps.addTransaction(transaction)
         const promise=await tpsRedo()
         updateLandmarksList(promise.deleteLandmark)
     }
     const changeParent=async(parent)=>{
-        let transaction= new ChangeParent_Transaction(props.data.data._id,props.data.data.parentId,parent._id,SetNewParent)
+        let ancestorIds=[]
+        for(let i=0;i<ancestorList.length;i++){
+            ancestorIds.push(ancestorList[i]._id)
+        }
+        console.log(ancestorList)
+        ancestorIds.splice(0,1)
+        let transaction= new ChangeParent_Transaction(props.data.data._id,ancestorIds,props.data.data.parentId,parent._id,SetNewParent)
         props.tps.addTransaction(transaction)
         tpsRedo()
         let data={...props.data.data}
@@ -262,6 +294,23 @@ const Regionviewer = (props) => {
 					</ul>
 				</WNavbar>
                 </WLHeader>
+                <WLSide side="left">
+			<WSidebar style={{marginRight:'50px'}}>
+				{ancestorList.map((region,index)=>(
+					<div>
+					{index==ancestorList.length-1?
+					<a className="hoverEffect" onClick={()=>{props.tps.clearAllTransactions();props.setShowRegionViewer(false);props.setRegionViewerData({data:-1});props.setActiveList(region)}} style={{color:"yellow"}} >{region.name}</a>
+					
+					:
+					<a className="hoverEffect" onClick={()=>{props.tps.clearAllTransactions();props.setShowRegionViewer(false);props.setRegionViewerData({data:-1});props.setActiveList(region)}} >{region.name}</a>
+					
+					}
+					<br></br>
+					</div>
+				))
+				}
+			</WSidebar>
+			</WLSide>
                 <WLMain>
                 {
                     props.tps.hasTransactionToUndo()?
@@ -294,12 +343,20 @@ const Regionviewer = (props) => {
             <div>
             <div style={{overflow:"hidden",overflowY:"scroll",width:"300px",height:"500px"}}>
             {landmarks.map((landmark,index)=>(
-                <div style={{width:'90%'}}>
+                <div style={{color:'blue', width:'90%'}}>
                 {landmark}
                 <a onClick={()=>openDeleteLandmarkModal(landmark,index)} className='hoverEffect' style={{float:'right'}} >x</a>
                 <IoPencil onClick={()=>openEditLandmarkModal(landmark,index)} className='hoverEffect' style={{float:'right'}}></IoPencil>
                 </div>
             ))
+            }
+            {
+                props.data.data.subregionlandmarks.map((sublandmark)=>(
+                    <div style={{color:'red',width:'90%'}}>
+                {sublandmark}
+               
+                </div>
+                ))
             }
             </div>
             <WInput        

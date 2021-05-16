@@ -49,6 +49,7 @@ const typeDefs = gql `
         leader:String!
 		subregions:[String]
         landmarks:[String]
+		subregionlandmarks:[String]
 	}
 	input RegionId{
 		region_id:String!

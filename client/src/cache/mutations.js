@@ -120,33 +120,34 @@ export const CREATE_NEW_REGION=gql`
 		createNewRegion(region:$region)
 	}
 `;
-export const ADD_LANDMARK=gql`
-	mutation addLandmark($_id:String!,$landmark:String!){
-		addLandmark(_id:$_id,landmark:$landmark)
-	}
-`;
+
 export const SET_RECENT_MAP=gql`
 	mutation setRecentMap($mapId:Int!){
 		setRecentMap(mapId:$mapId)
 	}
 `;
 export const SET_NEW_PARENT=gql`
-	mutation setNewParent($_id:String!,$newParent:String!){
-		setNewParent(_id:$_id,newParent:$newParent)
+	mutation setNewParent($_id:String!,$newParent:String!,$parentRegions:[String!]){
+		setNewParent(_id:$_id,newParent:$newParent,parentRegions:$parentRegions)
 	}
 `
+export const ADD_LANDMARK=gql`
+	mutation addLandmark($_id:String!,$landmark:String!,$parentRegions:[String!]){
+		addLandmark(_id:$_id,landmark:$landmark,parentRegions:$parentRegions)
+	}
+`;
 export const DELETE_LANDMARK=gql`
-	mutation deleteLandmark($_id:String!,$landmarkIndex:Int!){
-		deleteLandmark(_id:$_id,landmarkIndex:$landmarkIndex)
+	mutation deleteLandmark($_id:String!,$landmarkIndex:Int!,$parentRegions:[String!]){
+		deleteLandmark(_id:$_id,landmarkIndex:$landmarkIndex,parentRegions:$parentRegions)
 	}
 `
 export const INSERT_LANDMARK=gql`
-	mutation insertLandmark($_id:String!,$landmarkIndex:Int!,$landmark:String!){
-		insertLandmark(_id:$_id,landmarkIndex:$landmarkIndex,landmark:$landmark)
+	mutation insertLandmark($_id:String!,$landmarkIndex:Int!,$landmark:String!,$parentRegions:[String!]){
+		insertLandmark(_id:$_id,landmarkIndex:$landmarkIndex,landmark:$landmark,parentRegions:$parentRegions)
 	}
 `
 export const EDIT_LANDMARK=gql`
-	mutation changeRegionLandmark($_id:String!,$landmarkIndex:Int!,$landmark:String!){
-		changeRegionLandmark(_id:$_id,landmarkIndex:$landmarkIndex,landmark:$landmark)
+	mutation changeRegionLandmark($_id:String!,$landmarkIndex:Int!,$landmark:String!,$parentRegions:[String!]){
+		changeRegionLandmark(_id:$_id,landmarkIndex:$landmarkIndex,landmark:$landmark,parentRegions:$parentRegions)
 	}
 `

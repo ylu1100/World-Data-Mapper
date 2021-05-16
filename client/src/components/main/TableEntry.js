@@ -9,6 +9,7 @@ const TableEntry = (props) => {
     const leader=data.leader
     const landmarks=data.landmarks
     const ancestorList=props.ancestorList
+    console.log(data)
     let flagExists=true
     let imgPath=""
     for(let i=0;i<ancestorList.length;i++){
@@ -25,6 +26,9 @@ const TableEntry = (props) => {
     let landmarkStr=""
     for(let i=0;i<landmarks.length;i++){
         landmarkStr+=landmarks[i]+","
+    }
+    for(let i=0;i<data.subregionlandmarks.length;i++){
+        landmarkStr+=data.subregionlandmarks[i]+","
     }
     const [editingName, toggleNameEdit] = useState(false);
     const [editingCapital, toggleCapitalEdit] = useState(false);
@@ -118,10 +122,11 @@ const TableEntry = (props) => {
                 <WCol size="2">
                
                     {
-                    props.data.landmarks.length!==0?
-                    <a className="hoverEffect" onClick={()=>props.openRegionViewer(props.data,imgPath,props.regionslist,props.index)}>{landmarkStr}</a>
-                    :
+                    props.data.landmarks.length==0&&props.data.subregionlandmarks.length==0?
                     <a className="hoverEffect" onClick={()=>props.openRegionViewer(props.data,imgPath,props.regionslist,props.index)}>No landmarks</a>
+                    
+                    :
+                    <a className="hoverEffect" onClick={()=>props.openRegionViewer(props.data,imgPath,props.regionslist,props.index)}>{landmarkStr}</a>
                     
                     }
                     </WCol>

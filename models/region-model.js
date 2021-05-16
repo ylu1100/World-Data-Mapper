@@ -38,7 +38,10 @@ const regionSchema = new Schema(
 			type: [String],
 			required: true
 		},
-		
+		subregionlandmarks:{
+			type:[String],
+			required:true
+		}
 	}
 );
 
