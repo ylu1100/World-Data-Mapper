@@ -59,6 +59,7 @@ const MainContents = (props) => {
     return (
         <div   tabIndex='0'  onKeyDown={checkKeyEvent} className='table ' >
             <TableHeader
+                sortBy={props.sortBy}
                 regionslist={props.regionslist}
                 addingItem={props.addingItem}
                 tps={props.tps}

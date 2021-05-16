@@ -477,6 +477,7 @@ const Homescreen = (props) => {
 					activeList ? 
 							<div className="container-secondary">
 								<MainContents
+									sortBy={sortBy}
 									refetchEverything={refetchEverything}
 									setShowDeleteSubregion={setShowDeleteSubregion}
 									setSubregionToBeDeleted={setSubregionToBeDeleted}
