@@ -9,7 +9,7 @@ const TableEntry = (props) => {
     const leader=data.leader
     const landmarks=data.landmarks
     const ancestorList=props.ancestorList
-    console.log(data)
+   
     let flagExists=true
     let imgPath=""
     for(let i=0;i<ancestorList.length;i++){
@@ -35,38 +35,111 @@ const TableEntry = (props) => {
     const [editingLeader, toggleLeaderEdit] = useState(false);
     
     const handleNameEdit = (e) => {
+        props.setRowCol({})
         toggleNameEdit(false);
         const newName = e.target.value ? e.target.value : 'No Name';
         const prevName = name;
+        if(prevName==newName){
+            
+			return
+		}
+      
         props.editItem(data._id, 'name', newName, prevName);
+        
     };
 
     const handleCapitalEdit = (e) => {
+        props.setRowCol({})
         toggleCapitalEdit(false);
         const newCapital = e.target.value ? e.target.value : 'No Capital';
         const prevCapital = capital;
+        if(prevCapital==newCapital){
+            console.log('what')
+			return
+		}
+        
         props.editItem(data._id, 'capital', newCapital, prevCapital);
+        
     };
 
     const handleLeaderEdit = (e) => {
+        props.setRowCol({})
         toggleLeaderEdit(false);
         const newLeader = e.target.value ? e.target.value : "No Leader";
         const prevLeader = leader;
+        if(prevLeader==newLeader){
+            console.log('what')
+			return
+		}
+        
         props.editItem(data._id, 'leader', newLeader, prevLeader);
+       
     };
-    
+    const handleFocus = (e) => {
+        
+        e.target.select();
+    }
+    const checkKeyEvent=(e)=>{
+        //left
+        
+        if(e.keyCode=='37'){
+            
+            if(props.editingRowCol.col==0){
+                return
+            }
+            e.target.blur()
+            props.setRowCol({row:props.editingRowCol.row,col:props.editingRowCol.col-1})
+        }
+        //up
+        if(e.keyCode=='38'){
+            if(props.editingRowCol.row==0){
+                return
+            }
+            e.target.blur()
+            props.setRowCol({row:props.editingRowCol.row-1,col:props.editingRowCol.col})
+        }
+        //right
+        if(e.keyCode=='39'){
+            if(props.editingRowCol.col==2){
+                return
+            }
+            e.target.blur()
+            props.setRowCol({row:props.editingRowCol.row,col:props.editingRowCol.col+1})
+        }
+        //down
+        if(e.keyCode=='40'){
+            if(props.editingRowCol.row==props.size-1){
+               
+                return
+            }
+            e.target.blur()
+            props.setRowCol({row:props.editingRowCol.row+1,col:props.editingRowCol.col})
+        }
+    }
     return (
-        <WRow className='table-entry'>
+        <WRow  onKeyDown={checkKeyEvent} className='table-entry'>
+         <WCol size="1">
+                <div className='button-group'>
+                    
+                    <WButton className="table-entry-buttons" onClick={() => {props.setSubregionToBeDeleted(data);props.setShowDeleteSubregion(true);}} wType="texted">
+                        <i className="material-icons">close</i>
+                    </WButton>
+                    <a className="hoverEffect" onClick={()=>props.goToSubregion(props.data)}>Sub region</a>
+                    
+                </div>
+                </WCol>
             <WCol size="2">
                 {
-                    editingName || name === ''
+                    editingName ||(props.editingRowCol.row==props.index && props.editingRowCol.col==0)
                         ? <WInput
+                            onFocus={handleFocus}
                             className='table-input' onBlur={handleNameEdit}
+                            onFocusOut={handleNameEdit}
                             autoFocus={true} defaultValue={name} type='text'
                             wType="outlined" barAnimation="solid" inputClass="table-input-class"
                         />
                         : <div className="table-text"
-                            onClick={() => toggleNameEdit(!editingName)}
+                            onClick={() => {toggleNameEdit(!editingName);props.setRowCol({row:props.index,col:0})}}
                         >{name}
                         </div>
                 }
@@ -74,13 +147,16 @@ const TableEntry = (props) => {
 
             <WCol size="2">
                 {
-                    editingCapital ? <WInput
+                    editingCapital ||(props.editingRowCol.row==props.index && props.editingRowCol.col==1) ? 
+                    <WInput
+                    onFocus={handleFocus}
                         className='table-input' onBlur={handleCapitalEdit}
+                        onFocusOut={handleCapitalEdit}
                         autoFocus={true} defaultValue={capital} type='text'
                         wType="outlined" barAnimation="solid" inputClass="table-input-class"
                     />
                         : <div className="table-text"
-                            onClick={() => toggleCapitalEdit(!editingCapital)}
+                            onClick={() => {toggleCapitalEdit(!editingCapital);props.setRowCol({row:props.index,col:1})}}
                         >{capital}
                         </div>
                 }
@@ -88,17 +164,18 @@ const TableEntry = (props) => {
 
             <WCol size="2">
                 {
-                    editingLeader ?<WInput
+                    editingLeader ||(props.editingRowCol.row==props.index && props.editingRowCol.col==2) ?<WInput
                         className='table-input' onBlur={handleLeaderEdit}
+                        onFocusOut={handleLeaderEdit}
                         autoFocus={true} defaultValue={leader} type='text'
                         wType="outlined" barAnimation="solid" inputClass="table-input-class"
                     />
-                        : <div onClick={() => toggleLeaderEdit(!editingLeader)} className={` table-text`}>
+                        : <div onClick={() => {toggleLeaderEdit(!editingLeader);props.setRowCol({row:props.index,col:2})}} className={` table-text`}>
                             {leader}
                         </div>
                 }
             </WCol>
-            <WCol size="2">
+            <WCol size="1">
                 {
                flagExists?
                 <div>
@@ -109,24 +186,17 @@ const TableEntry = (props) => {
                 <div></div>
                 }
             </WCol>    
-            <WCol size="2">
-                <div className='button-group'>
-                    
-                    <WButton className="table-entry-buttons" onClick={() => {props.setSubregionToBeDeleted(data);props.setShowDeleteSubregion(true);}} wType="texted">
-                        <i className="material-icons">close</i>
-                    </WButton>
-                    <a className="hoverEffect" onClick={()=>props.goToSubregion(props.data)}>Go to sub</a>
-                    
-                </div>
-                </WCol>
+            <WCol size="1"></WCol>
                 <WCol size="2">
                
                     {
                     props.data.landmarks.length==0&&props.data.subregionlandmarks.length==0?
-                    <a className="hoverEffect" onClick={()=>props.openRegionViewer(props.data,imgPath,props.regionslist,props.index)}>No landmarks</a>
+                    <a style={{whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}} className="hoverEffect" onClick={()=>props.openRegionViewer(props.data,imgPath,props.regionslist,props.index)}>No landmarks</a>
                     
                     :
-                    <a className="hoverEffect" onClick={()=>props.openRegionViewer(props.data,imgPath,props.regionslist,props.index)}>{landmarkStr}</a>
+                    <a className="hoverEffect" onClick={()=>props.openRegionViewer(props.data,imgPath,props.regionslist,props.index)}>
+                    <p className="hoverEffect" style={{whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}} >{landmarkStr}</p>
+                    </a>
                     
                     }
                     </WCol>

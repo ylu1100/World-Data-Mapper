@@ -23,6 +23,7 @@ const TableHeader = (props) => {
     return (
        
         <WRow className="table-header">
+        <WCol size="1"></WCol>
              <WCol size="2">
 
                 {
@@ -54,22 +55,16 @@ const TableHeader = (props) => {
                 <WButton onClick={props.sortListByAscendingLeader} className='table-header-section' wType="texted" >Leader</WButton>
                 }
             </WCol>
-            <WCol size="2">
-                <WButton  className='table-header-section button-disable' wType="texted" >Flag</WButton>
-                  
+            <WCol size="1">
+            {
+                    props.regionslist.length==0?
+                    <WButton  className='table-header-section button-disable' wType="texted" >Flag</WButton>
+                  :
+                  <WButton  className='table-header-section button-disable2' wType="texted" >Flag</WButton>
+            }
             </WCol>
-            {/* <WCol size="2">
-                {
-                    !props.activeList.items ||props.activeList.items.length==0?
-                <WButton  className='table-header-section button-disable' wType="texted" >Assigned To</WButton>
-                :
-                    !sortedAssignment?
-                <WButton onClick={sortListByAscendAssignment} className='table-header-section' wType="texted" >Assigned To</WButton>
-                 :
-                <WButton onClick={sortListByDescendAssignment} className='table-header-section' wType="texted" >Assigned To</WButton>
-                }   
-            </WCol>     */}
-            <WCol size="2">
+           
+            <WCol size="1">
             <div className='button-group'>
             {   
                         props.tps.hasTransactionToUndo()?
@@ -91,6 +86,14 @@ const TableHeader = (props) => {
                         </WButton>
                         }
             </div>            
+            </WCol>
+            <WCol size="1">
+            {
+                    props.regionslist.length==0?
+                    <WButton  className='table-header-section button-disable' wType="texted" >Landmark</WButton>
+                  :
+                  <WButton  className='table-header-section button-disable2' wType="texted" >Landmark</WButton>
+            }
             </WCol>
             <WCol size="2">
                 <div className="table-header-buttons">

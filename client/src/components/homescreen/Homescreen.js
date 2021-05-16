@@ -239,6 +239,7 @@ const Homescreen = (props) => {
 	};
 
 	const editItem = async (itemID, field, value, prev) => {
+		
 		let transaction = await new EditItem_Transaction(itemID, field, prev, value, UpdateTodoItemField);
 		props.tps.addTransaction(transaction);
 		tpsRedo();

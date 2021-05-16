@@ -7,12 +7,16 @@ const TableContents = (props) => {
 
     
     const entries = props.activeList && props.regionslist ? props.regionslist : null;
-    
+    const[editingRowCol,setRowCol]=useState({})
+   
     return (
         entries ? <div  className=' table-entries container-primary'>
             {
                 entries.map((entry, index) => (
                     <TableEntry
+                        
+                        editingRowCol={editingRowCol}
+                        setRowCol={setRowCol}
                         regionslist={props.regionslist }
                          refetchEverything={props.refetchEverything}
                         setShowDeleteSubregion={props.setShowDeleteSubregion}
