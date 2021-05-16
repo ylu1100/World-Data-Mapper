@@ -41,6 +41,10 @@ const Regionviewer = (props) => {
     
     const mapsquery=useQuery(query.GET_DB_TODOS);
     const addLandmark=async()=>{
+        if(props.data.data.landmarks.indexOf(landmarkInput)>=0){
+            alert('Duplicate landmarks not allowed')
+            return
+        }
         let ancestorIds=[]
         for(let i=0;i<ancestorList.length;i++){
             ancestorIds.push(ancestorList[i]._id)
@@ -314,15 +318,15 @@ const Regionviewer = (props) => {
                 <WLMain>
                 {
                     props.tps.hasTransactionToUndo()?
-                <IoArrowUndo className='hoverEffect'  onClick={tpsUndo}></IoArrowUndo>
+                <IoArrowUndo style={{fontSize:'25px'}} className='hoverEffect'  onClick={tpsUndo}></IoArrowUndo>
                 :
-                <IoArrowUndo style={{color:'rgb(53,58,68)'}} ></IoArrowUndo>
+                <IoArrowUndo style={{color:'rgb(53,58,68)',fontSize:'25px'}} ></IoArrowUndo>
                 }
                 {
                     props.tps.hasTransactionToRedo()?
-                 <IoArrowRedo className='hoverEffect'  onClick={tpsRedo}></IoArrowRedo>
+                 <IoArrowRedo  style={{fontSize:'25px'}} className='hoverEffect'  onClick={tpsRedo}></IoArrowRedo>
                  :
-                 <IoArrowRedo style={{color:'rgb(53,58,68)'}} ></IoArrowRedo>
+                 <IoArrowRedo style={{color:'rgb(53,58,68)',fontSize:'25px'}} ></IoArrowRedo>
                 }
             {flagExists?
                 <div>
@@ -332,27 +336,32 @@ const Regionviewer = (props) => {
                 :
                 <div></div>
                 }
-           <h1>Region Name: {props.data.data.name}</h1>
+           <h1 >Region Name: {props.data.data.name}</h1>
            <h1>Parent Region: 
            </h1>
-           <a  style={{color:"blue"}} className="hoverEffect" onClick={()=>props.setShowRegionViewer(false)}>{parentRegion.name}</a>
-           <a className="hoverEffect" onClick={changeRegionWindow}>Change region</a>
+           <a  style={{color:'rgb(77,138,171)',fontSize:'25px'}} className="hoverEffect" onClick={()=>props.setShowRegionViewer(false)}>{parentRegion.name}</a>
+           <IoPencil style={{color:'orange',fontSize:'17px'}} className="hoverEffect" onClick={changeRegionWindow}>Change region</IoPencil>
            <h1>Region Capital: {props.data.data.capital}</h1>
             <h1>Region Leader: {props.data.data.leader}</h1>
             <h1># of Sub Regions: {props.data.data.subregions.length}</h1>
-            <div>
-            <div style={{overflow:"hidden",overflowY:"scroll",width:"300px",height:"500px"}}>
+            {!showChangeRegion?
+            <div style={{position:'absolute',marginLeft:'50%',top:'10%'}}>
+            <h1 style={{color:'white',textAlign:'center',fontSize:'25px'}}>
+            REGION LANDMARKS:
+            </h1>
+            <div style={{backgroundColor:'black',overflow:"hidden",overflowY:"scroll",width:"300px",height:"500px"}}>
             {landmarks.map((landmark,index)=>(
-                <div style={{color:'blue', width:'90%'}}>
+                <div style={{color:'white', width:'90%'}}>
+                <a onClick={()=>openDeleteLandmarkModal(landmark,index)} className='hoverEffect' style={{fontWeight:'bold',color:'red',float:'left',marginRight:'20px'}} >x</a>
                 {landmark}
-                <a onClick={()=>openDeleteLandmarkModal(landmark,index)} className='hoverEffect' style={{float:'right'}} >x</a>
                 <IoPencil onClick={()=>openEditLandmarkModal(landmark,index)} className='hoverEffect' style={{float:'right'}}></IoPencil>
                 </div>
             ))
             }
+           
             {
                 props.data.data.subregionlandmarks.map((sublandmark)=>(
-                    <div style={{color:'red',width:'90%'}}>
+                    <div style={{marginLeft:'30px',color:'gray',width:'90%'}}>
                 {sublandmark}
                
                 </div>
@@ -369,16 +378,29 @@ const Regionviewer = (props) => {
                         />
                 <WButton onClick={addLandmark}><i>Add landmark</i></WButton>
                 </div>
+                :null
+            }
+            
                 {showChangeRegion?
-                <div style={{overflow:"hidden",overflowY:"scroll",width:"300px",height:"500px"}}>
-                    <a className="hoverEffect" onClick={()=>toggleChangeRegion(false)}>x</a>
+                <div style={{position:'absolute',marginLeft:'50%',top:'10%'}}>
+                <h1 style={{color:'white',textAlign:'center',fontSize:'25px'}}>
+                CHANGE PARENT REGION:
+                </h1>
+                <div style={{backgroundColor:'black',overflow:"hidden",overflowY:"scroll",width:"300px",height:"500px"}}>
+                    <a style={{color:'red'}} className="hoverEffect" onClick={()=>toggleChangeRegion(false)}>x</a>
                     {allUserRegions.map((region)=>(
-                        <div>
-                        <a  className="hoverEffect"  onClick={()=>changeParent(region)} style={{fontSize:"12px"}}>{region.name}</a>
+                        
+                        region._id != parentRegion._id?
+                        <div className="hoverEffect" onClick={()=>changeParent(region)} style={{width:'100%'}}>
+                        <a     style={{fontWeight:'bold',fontSize:"17px",color:'white'}}>{region.name}</a>
                         </div>
+                        :
+                        null
+                        
                     ))
 
                     }
+                </div>
                 </div>
                 :
                 null

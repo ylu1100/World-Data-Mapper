@@ -135,10 +135,12 @@ const TableEntry = (props) => {
                             onFocus={handleFocus}
                             className='table-input' onBlur={handleNameEdit}
                             onFocusOut={handleNameEdit}
+                            
                             autoFocus={true} defaultValue={name} type='text'
                             wType="outlined" barAnimation="solid" inputClass="table-input-class"
                         />
                         : <div className="table-text"
+                           
                             onClick={() => {toggleNameEdit(!editingName);props.setRowCol({row:props.index,col:0})}}
                         >{name}
                         </div>
@@ -179,7 +181,7 @@ const TableEntry = (props) => {
                 {
                flagExists?
                 <div>
-                     <img style={{width:"24%"}} src={require(`../../${imgPath}`)} ></img> 
+                     <img style={{width:"50%"}} src={require(`../../${imgPath}`)} ></img> 
                      
                 </div>
                 :
