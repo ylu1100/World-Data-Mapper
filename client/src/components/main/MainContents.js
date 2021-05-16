@@ -1,7 +1,8 @@
 import React   ,{useState}         from 'react';
 import TableHeader      from './TableHeader';
 import TableContents    from './TableContents';
-
+import Home from '../main/home'
+import RotatingEarth 		from '../../imagesandgifs/rotatingearth.gif'; 
 const MainContents = (props) => {
     // const[regionslist,setRegionslist]=useState(props.regionslist)
 
@@ -56,7 +57,9 @@ const MainContents = (props) => {
         props.redo()
         removeKeyEvent()
       }
+    
     return (
+      props.activeList._id!=undefined?
         <div   tabIndex='0'  onKeyDown={checkKeyEvent} className='table ' >
             <TableHeader
                 sortBy={props.sortBy}
@@ -85,6 +88,15 @@ const MainContents = (props) => {
                 editItem={props.editItem}
             />
         </div>
+      :
+      <div className='table '>
+       <div style={{position:"relative"}}>
+            <div style={{position:"absolute",top:"50%",left:"50%",transform:"translateX(-50%) translateY(45%)"}}>
+            <img src= {RotatingEarth}></img>
+            
+            </div>
+        </div>
+      </div>
     );
 };
 

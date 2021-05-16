@@ -144,6 +144,7 @@ const Homescreen = (props) => {
 	}
 	
 	const refetchEverything=async(region)=>{
+		setSortBy('')
 		setActiveList(region)
 		props.tps.clearAllTransactions()
 		mapsquery.refetch()
@@ -363,7 +364,7 @@ const Homescreen = (props) => {
 		// }
 		// console.log(listids)
 		// document.cookie="listId="+todo._id
-		
+		setSortBy('')
 		const setRecent= await setRecentMap({variables:{mapId:id}})
 
 		setActiveList(todo);
@@ -474,7 +475,7 @@ const Homescreen = (props) => {
 			}
 			<WLMain>
 				{
-					activeList ? 
+					
 							<div className="container-secondary">
 								<MainContents
 									sortBy={sortBy}
@@ -498,8 +499,8 @@ const Homescreen = (props) => {
 									activeList={activeList} setActiveList={setActiveList}
 								/>
 							</div>
-						:
-							<div className="container-secondary" />
+						
+							
 				}
 
 			</WLMain>
