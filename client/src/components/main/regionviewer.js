@@ -103,6 +103,10 @@ const Regionviewer = (props) => {
             alert('Duplicate landmarks not allowed')
             return
         }
+        if(landmarkInput.length==0){
+            alert('Empty Input.No changes made')
+            return
+        }
         let ancestorIds=[]
         for(let i=0;i<ancestorList.length;i++){
             ancestorIds.push(ancestorList[i]._id)
@@ -221,6 +225,18 @@ const Regionviewer = (props) => {
         props.setRegionViewerData(newdata)
     }
     const changeLandmark=async(oldlandmark,index,newlandmark)=>{
+        if(newlandmark==oldlandmark){
+            alert('No changes made')
+            return
+        }
+        if(newlandmark.length==0){
+            alert('Empty input.No changes made')
+            return
+        }
+        if(landmarks.includes(newlandmark)){
+            alert('Duplicate landmarks not allowed')
+            return
+        }
         let ancestorIds=[]
         for(let i=0;i<ancestorList.length;i++){
             ancestorIds.push(ancestorList[i]._id)
