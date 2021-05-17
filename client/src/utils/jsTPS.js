@@ -175,7 +175,7 @@ export class EditLandmark_Transaction extends jsTPS_Transaction {
     }
 
     async undoTransaction() {
-        console.log('hii')
+
 		const {data } = await this.updateFunction({ 
             variables:{  _id: this.itemID,
                     landmarkIndex:this.index,landmark:this.prevlandmark ,

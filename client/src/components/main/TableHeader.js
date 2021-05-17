@@ -23,8 +23,40 @@ const TableHeader = (props) => {
     return (
        
         <WRow className="table-header">
-        <WCol size="1"></WCol>
-             <WCol size="2">
+        <WCol size="2">
+            <div className='button-group'>
+            <div className="table-header-buttons">
+                    <WButton onClick={props.disabled||props.addingItem? clickDisabled : props.addItem} wType="texted" className={`${buttonStyle}`}>
+                        <i className="material-icons">add_box</i>
+                    </WButton>
+                    {/* <WButton onClick={props.disabled ? clickDisabled : () => {props.setActiveList({});props.tps.clearAllTransactions()}} wType="texted" className={`${buttonStyle}`}>
+                        <i className="material-icons">close</i>
+                    </WButton> */}
+                </div>
+            {   
+                        props.tps.hasTransactionToUndo()?
+                        <WButton className="table-entry-buttons undo-redo" onClick={props.undo} wType="texted" clickAnimation="ripple-light" shape="rounded">
+                            <i className="material-icons">undo</i>
+                        </WButton>
+                        :
+                        <WButton className="table-entry-buttons undo-redo button-disable" onClick={props.undo} wType="texted" clickAnimation="ripple-light" shape="rounded">
+                            <i className="material-icons">undo</i>
+                        </WButton>
+                        }
+                        {props.tps.hasTransactionToRedo()?
+                        <WButton className="table-entry-buttons undo-redo" onClick={props.redo} wType="texted" clickAnimation="ripple-light" shape="rounded">
+                            <i className="material-icons">redo</i>
+                        </WButton>
+                        :
+                        <WButton className="table-entry-buttons undo-redo button-disable" onClick={props.redo} wType="texted" clickAnimation="ripple-light" shape="rounded">
+                            <i className="material-icons">redo</i>
+                        </WButton>
+                        }
+                       
+            </div>            
+            </WCol>
+       
+             <WCol size="1">
 
                 {
                     props.regionslist.length==0?
@@ -127,30 +159,8 @@ const TableHeader = (props) => {
             }
             </WCol>
            
-            <WCol size="1">
-            <div className='button-group'>
-            {   
-                        props.tps.hasTransactionToUndo()?
-                        <WButton className="table-entry-buttons undo-redo" onClick={props.undo} wType="texted" clickAnimation="ripple-light" shape="rounded">
-                            <i className="material-icons">undo</i>
-                        </WButton>
-                        :
-                        <WButton className="table-entry-buttons undo-redo button-disable" onClick={props.undo} wType="texted" clickAnimation="ripple-light" shape="rounded">
-                            <i className="material-icons">undo</i>
-                        </WButton>
-                        }
-                        {props.tps.hasTransactionToRedo()?
-                        <WButton className="table-entry-buttons undo-redo" onClick={props.redo} wType="texted" clickAnimation="ripple-light" shape="rounded">
-                            <i className="material-icons">redo</i>
-                        </WButton>
-                        :
-                        <WButton className="table-entry-buttons undo-redo button-disable" onClick={props.redo} wType="texted" clickAnimation="ripple-light" shape="rounded">
-                            <i className="material-icons">redo</i>
-                        </WButton>
-                        }
-            </div>            
-            </WCol>
-            <WCol size="1">
+            
+            <WCol size="2">
             {
                     props.regionslist.length==0?
                     <WButton  className='table-header-section button-disable' wType="texted" >Landmark</WButton>
@@ -158,16 +168,7 @@ const TableHeader = (props) => {
                   <WButton  className='table-header-section button-disable2' wType="texted" >Landmark</WButton>
             }
             </WCol>
-            <WCol size="2">
-                <div className="table-header-buttons">
-                    <WButton onClick={props.disabled||props.addingItem? clickDisabled : props.addItem} wType="texted" className={`${buttonStyle}`}>
-                        <i className="material-icons">add_box</i>
-                    </WButton>
-                    <WButton onClick={props.disabled ? clickDisabled : () => {props.setActiveList({});props.tps.clearAllTransactions()}} wType="texted" className={`${buttonStyle}`}>
-                        <i className="material-icons">close</i>
-                    </WButton>
-                </div>
-            </WCol>
+            
 
         </WRow>
     );

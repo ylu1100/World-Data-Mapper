@@ -118,7 +118,7 @@ const TableEntry = (props) => {
     }
     return (
         <WRow  onKeyDown={checkKeyEvent} className='table-entry'>
-         <WCol size="1">
+         <WCol size="2">
                 <div className='button-group'>
                     
                     <WButton className="table-entry-buttons" onClick={() => {props.setSubregionToBeDeleted(data);props.setShowDeleteSubregion(true);}} wType="texted">
@@ -128,7 +128,7 @@ const TableEntry = (props) => {
                     
                 </div>
                 </WCol>
-            <WCol size="2">
+            <WCol size="1">
                 {
                     editingName ||(props.editingRowCol.row==props.index && props.editingRowCol.col==0)
                         ? <WInput
@@ -188,7 +188,7 @@ const TableEntry = (props) => {
                 <div></div>
                 }
             </WCol>    
-            <WCol size="1"></WCol>
+            
                 <WCol size="2">
                
                     {

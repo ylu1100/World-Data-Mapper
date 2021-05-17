@@ -14,6 +14,7 @@ import {EditLandmark_Transaction,DeleteLandmark_Transaction,
     AddLandmark_Transaction,ChangeParent_Transaction } from '../../utils/jsTPS';
 const Regionviewer = (props) => {
     let allUserRegions=[]
+    let subregions=[]
     const [landmarkInput,setLandmarkInput]=useState("")
     const [addLandmarkToList] = useMutation(mutations.ADD_LANDMARK)
     const [landmarks,setLandmarks]=useState(props.data.regionslist[props.data.index].landmarks)
@@ -27,6 +28,60 @@ const Regionviewer = (props) => {
     const [EditLandmark] = useMutation(mutations.EDIT_LANDMARK)
     const [InsertLandmark]=useMutation(mutations.INSERT_LANDMARK)
     
+    const [state,setState]=useState({
+        ctrlPressed:false,
+        zPressed:false,
+        undoPressed:false,
+        redoPressed:false,
+    })
+    const checkKeyEvent=(event)=>{
+        if(event.key=='Control'){
+          console.log('cpressed')
+          setState({
+            ctrlPressed:true
+          })
+        }
+        if(event.key=='z'){
+          console.log('zpressed')
+          if(state.ctrlPressed){
+            ctrlZEvent()
+          }
+        }
+        else if(event.key=='y'){
+          console.log('ypressed')
+          if(state.ctrlPressed){
+            ctrlYEvent()
+          }
+        }
+      }
+        
+      const  removeKeyEvent=()=>{
+        console.log('fin')
+        setState({
+          ctrlPressed:false,
+          undoPressed:false,
+          redoPressed:false,
+        })
+      }
+    const  ctrlZEvent=()=>{
+          setState({
+            undoPressed:true,
+            ctrlPressed:false,
+          })
+         tpsUndo()
+         
+          removeKeyEvent()
+      }
+    const  ctrlYEvent=()=>{
+        setState({
+          redoPressed:true,
+          ctrlPressed:false,
+        })
+        tpsRedo()
+        
+        removeKeyEvent()
+      }
+
     const [showUpdate,setShowUpdate]=useState(false);
     let parentRegion=""
     let flagExists=true
@@ -35,11 +90,14 @@ const Regionviewer = (props) => {
 		variables:{parentId:props.data.data._id},
      
 	})
+
     const regionsquery =  useQuery(query.GET_DB_REGIONS,{
-		variables:{parentId:props.data.data.parentId},
+		variables:{parentId:props.data.data._id},
 	})
-    
-    const mapsquery=useQuery(query.GET_DB_TODOS);
+    if(regionsquery.data!=undefined){
+        subregions=regionsquery.data.getAllRegions
+    }
+   
     const addLandmark=async()=>{
         if(props.data.data.landmarks.indexOf(landmarkInput)>=0){
             alert('Duplicate landmarks not allowed')
@@ -70,6 +128,7 @@ const Regionviewer = (props) => {
 	})
     const getancestorsquery=useQuery(query.GET_ALL_PARENTS,{ //get all parents
 		variables:{_id:props.data.data._id},
+        
 	})
     if(getancestorsquery.data!==undefined){
         ancestorList=[...getancestorsquery.data.getAllParents]
@@ -82,7 +141,8 @@ const Regionviewer = (props) => {
         
     }
     const userregions=useQuery(query.GET_ALL_USERREGIONS,{
-        variables:{_id:props.data.data._id}
+        variables:{_id:props.data.data._id},
+        
     })
 	if(userregions.data){
         console.log("alluserregions")
@@ -111,6 +171,7 @@ const Regionviewer = (props) => {
             newdata.data=data
             props.setRegionViewerData(newdata)
         }
+        setLandmarkInput('')
 		return retVal;
 	}
 
@@ -135,6 +196,7 @@ const Regionviewer = (props) => {
             newdata.data=data
             props.setRegionViewerData(newdata)
         }
+        setLandmarkInput('')
 		return retVal;
 	}
     const openDeleteLandmarkModal=(landmark,index)=>{
@@ -203,6 +265,9 @@ const Regionviewer = (props) => {
         newdata.data=data
         console.log(data)
         props.setRegionViewerData(newdata)
+        getancestorsquery.refetch()
+        ancestorList=[...getancestorsquery.data.getAllParents]
+        ancestorList.reverse()
         
     }
     const goPrevRegion=()=>{
@@ -248,7 +313,7 @@ const Regionviewer = (props) => {
         flagExists=false
     }
     return (
-        <WLayout wLayout="header-lside" >
+        <WLayout tabIndex='0'  onKeyDown={checkKeyEvent}  wLayout="header-lside" >
         <WLHeader>
 				<WNavbar color="colored">
 					<ul>
@@ -262,22 +327,22 @@ const Regionviewer = (props) => {
                  
                     {props.data.index==0?
                         <WNavItem >
-                        <IoArrowBack style={{color:'gray'}}></IoArrowBack>
+                        <IoArrowBack style={{color:'gray',fontSize:'30px'}}></IoArrowBack>
                         </WNavItem>
                     :
                     <WNavItem hoverAnimation="lighten">
-                    <IoArrowBack onClick={()=>goPrevRegion()}  className="reactIconButton"></IoArrowBack>
+                    <IoArrowBack style={{fontSize:'30px'}} onClick={()=>goPrevRegion()}  className="reactIconButton"></IoArrowBack>
                     </WNavItem>
                     }
                   
                     
                     {props.data.index==props.data.regionslist.length-1?
                         <WNavItem >
-                        <IoArrowForward style={{color:'gray'}}></IoArrowForward>
+                        <IoArrowForward style={{color:'gray',fontSize:'30px'}}></IoArrowForward>
                         </WNavItem>
                     :
                     <WNavItem hoverAnimation="lighten">
-                    <IoArrowForward onClick={()=>goNextRegion()}  className="reactIconButton"></IoArrowForward>
+                    <IoArrowForward style={{fontSize:'30px'}} onClick={()=>goNextRegion()}  className="reactIconButton"></IoArrowForward>
                     </WNavItem>
                     }
                     
@@ -343,7 +408,7 @@ const Regionviewer = (props) => {
            <IoPencil style={{color:'orange',fontSize:'17px'}} className="hoverEffect" onClick={changeRegionWindow}>Change region</IoPencil>
            <h1>Region Capital: {props.data.data.capital}</h1>
             <h1>Region Leader: {props.data.data.leader}</h1>
-            <h1># of Sub Regions: {props.data.data.subregions.length}</h1>
+            <h1># of Sub Regions: {subregions.length}</h1>
             {!showChangeRegion?
             <div style={{position:'absolute',marginLeft:'50%',top:'10%'}}>
             <h1 style={{color:'white',textAlign:'center',fontSize:'25px'}}>

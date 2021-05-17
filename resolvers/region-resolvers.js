@@ -14,12 +14,13 @@ module.exports={
 			subregions.push(...maps)
 			
 			let validRegionsIndex=[]
-			
+			let memo=[]
+			let invalidMemo=[]
 			for(let i=0;i<subregions.length;i++){
 				let sr=subregions[i]
 				let sr2;
 				let valid=false
-				let num=0
+
 				while(sr.parentId!==null){
 					
 					sr2=await Region.findOne({_id:new ObjectId(sr.parentId)})
@@ -28,6 +29,7 @@ module.exports={
 						if(!sr2){
 							sr2=await Map.findOne({_id:new ObjectId(sr._id)})
 							if(!sr2){
+								invalidMemo.push(subregions[i]._id)
 								break
 							}
 							else{
@@ -43,12 +45,31 @@ module.exports={
 						
 					}
 					else{
+						
+						if(memo.includes(sr2._id.toString())){
+				
+							valid=true
+							
+							break;
+						}
+						else if(invalidMemo.includes(sr2._id.toString())){
+							
+							valid=false
+							break
+						}
+						else{
 						sr=sr2
+						}
 					}
 				}
 				
 				if(valid){
 					validRegionsIndex.push(i)
+					memo.push(subregions[i]._id.toString())
+					
+				}
+				else{
+					invalidMemo.push(subregions[i]._id.toString())
 				}
 			}
 			
