@@ -24,7 +24,7 @@ const LoggedIn = (props) => {
         <div>
        
         <WNavItem hoverAnimation="lighten">
-            <h1 className="navbar-options">{props.user.fullName}</h1>
+            <h1 style={{color:'pink'}} className="navbar-options">{props.user.fullName}</h1>
         </WNavItem>
         <WNavItem hoverAnimation="lighten">
             <WButton className="navbar-options" onClick={handleLogout} wType="texted" hoverAnimation="text-primary">

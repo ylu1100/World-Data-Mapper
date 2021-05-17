@@ -13,7 +13,7 @@ const DeleteSubregion = (props) => {
     return (
         <div style={{backgroundColor:'rgb(64,69,78)'}} className="delete-modal">
             <div className="modal-header" onClose={() => props.setShowDeleteSubregion(false)}>
-                Delete Subregion and all its descendants?
+                Delete {props.subregionToBeDeleted.name} and all its descendants?
 			</div>
 
             <div >

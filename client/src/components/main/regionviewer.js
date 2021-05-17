@@ -99,6 +99,10 @@ const Regionviewer = (props) => {
     }
    
     const addLandmark=async()=>{
+        if( props.data.data.subregionlandmarks.indexOf(landmarkInput)>=0){
+            alert('Duplicate landmarks not allowed')
+            return
+        }
         if(props.data.data.landmarks.indexOf(landmarkInput)>=0){
             alert('Duplicate landmarks not allowed')
             return
@@ -225,6 +229,10 @@ const Regionviewer = (props) => {
         props.setRegionViewerData(newdata)
     }
     const changeLandmark=async(oldlandmark,index,newlandmark)=>{
+        if( props.data.data.subregionlandmarks.indexOf(newlandmark)>=0){
+            alert('Duplicate landmarks not allowed')
+            return
+        }
         if(newlandmark==oldlandmark){
             alert('No changes made')
             return
@@ -283,6 +291,7 @@ const Regionviewer = (props) => {
         props.setRegionViewerData(newdata)
         getancestorsquery.refetch()
         ancestorList=[...getancestorsquery.data.getAllParents]
+        console.log(ancestorList)
         ancestorList.reverse()
         
     }
@@ -318,8 +327,13 @@ const Regionviewer = (props) => {
         setLandmarks(props.data.regionslist[props.data.index+1].landmarks)
         props.tps.clearAllTransactions()
      }
+     const landmarkEnterPress=(e)=>{
+         if(e.keyCode===13){
+             addLandmark()
+         }
+     }
     const changeRegionWindow=()=>{
-        toggleChangeRegion(true);
+        toggleChangeRegion(!showChangeRegion);
         
     }
     try{
@@ -417,14 +431,14 @@ const Regionviewer = (props) => {
                 :
                 <div></div>
                 }
-           <h1 >Region Name: {props.data.data.name}</h1>
-           <h1>Parent Region: 
+           <h1 style={{color:'white'}} >Region Name: {props.data.data.name}</h1>
+           <h1 style={{color:'white'}} >Parent Region: 
            </h1>
            <a  style={{color:'rgb(77,138,171)',fontSize:'25px'}} className="hoverEffect" onClick={()=>props.setShowRegionViewer(false)}>{parentRegion.name}</a>
            <IoPencil style={{color:'orange',fontSize:'17px'}} className="hoverEffect" onClick={changeRegionWindow}>Change region</IoPencil>
-           <h1>Region Capital: {props.data.data.capital}</h1>
-            <h1>Region Leader: {props.data.data.leader}</h1>
-            <h1># of Sub Regions: {subregions.length}</h1>
+           <h1 style={{color:'white'}} >Region Capital: {props.data.data.capital}</h1>
+            <h1 style={{color:'white'}} >Region Leader: {props.data.data.leader}</h1>
+            <h1 style={{color:'white'}} ># of Sub Regions: {subregions.length}</h1>
             {!showChangeRegion?
             <div style={{position:'absolute',marginLeft:'50%',top:'10%'}}>
             <h1 style={{color:'white',textAlign:'center',fontSize:'25px'}}>
@@ -450,6 +464,7 @@ const Regionviewer = (props) => {
             }
             </div>
             <WInput        
+                        onKeyUp={landmarkEnterPress}
                              style={{marginTop:"10px",width:"300px"}}
                             onChange={updateLandmarkInput}
                             className='table-input' 
@@ -464,7 +479,7 @@ const Regionviewer = (props) => {
             
                 {showChangeRegion?
                 <div style={{position:'absolute',marginLeft:'50%',top:'10%'}}>
-                <h1 style={{color:'white',textAlign:'center',fontSize:'25px'}}>
+                <h1 style={{color:'pink',textAlign:'center',fontSize:'25px'}}>
                 CHANGE PARENT REGION:
                 </h1>
                 <div style={{backgroundColor:'black',overflow:"hidden",overflowY:"scroll",width:"300px",height:"500px"}}>
