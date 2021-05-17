@@ -375,22 +375,27 @@ module.exports={
 			const region= await Region.findOne({_id:objectId})
 			let currLandmarks=[...region.landmarks]
 			let currSubLandmarks=[...region.subregionlandmarks]
+			console.log(region)
+			console.log('parentregions')
+			console.log(parentRegions)
 			//update all ancestors
 			for(let i=0;i<parentRegions.length-1;i++){
 				const ObjId=new ObjectId(parentRegions[i])
-				const region=await Region.findOne({_id:ObjId})
-				sublandmarklist=[...region.subregionlandmarks]
+				const parentregion=await Region.findOne({_id:ObjId})
+				console.log(parentregion)
+				sublandmarklist=[...parentregion.subregionlandmarks]
 				//remove landmark and subregionlandmarks from ancestors
-				for(let i=0;i<region.landmarks.length;i++){
+				for(let i=0;i<currLandmarks.length;i++){
 					sublandmarklist.splice(sublandmarklist.indexOf(currLandmarks[i]),1)
 				}
-				for(let i=0;i<region.subregionlandmarks.length;i++){
+				for(let i=0;i<currSubLandmarks.length;i++){
 					sublandmarklist.splice(sublandmarklist.indexOf(currSubLandmarks[i]),1)
 				}
 			const update= await Region.updateOne({_id:parentRegions[i]},{subregionlandmarks:sublandmarklist})
 			
 			}
 			const curr=await Region.findOne({_id:objectId})
+			
 			let regionancestor=curr;
 			while(regionancestor!=null){
 				//region ancestor=parent

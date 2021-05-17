@@ -45,7 +45,7 @@ const App = (props) => {
 		{!showRegionViewer?
 				<Redirect exact from="/" to={ {pathname: "/home"} } /> 
 				:
-				<Redirect  from="/" to={ {pathname: "/regionviewer/"+regionViewerData._id} } /> 
+				<Redirect  from="/" to={ {pathname: "/regionviewer/"+regionViewerData.data._id} } /> 
 		}
 		
 		{!showRegionViewer?		
